@@ -116,11 +116,29 @@ All in `js/catalog.js`:
 `js/results.js` just renders whatever `catalog.js` decides — you shouldn't
 need to touch it for pricing or wording changes.
 
-## 5. The pitch video
+## 5. The pitch video (fix this before going live)
 
-`Media/Carter Pitch 2024(with hologram).mp4` is ~259 MB — far too large to serve
-from a website. Host a compressed version on YouTube/Vimeo and either put the
-link in `reelUrl` or embed it on a future "Work" page.
+The homepage's "Watch our pitch" section (just above the footer CTA) currently
+plays `Media/Carter Pitch 2024(with hologram).mp4` directly. That works fine
+locally, but **it will break the moment you deploy**:
+
+- The file is ~259 MB. `.gitignore` excludes the whole `Media/` folder from
+  Git on purpose, since GitHub hard-rejects any file over 100 MB. It will
+  never reach GitHub/Netlify as-is.
+- Even if it could, a 259 MB video is a terrible experience on mobile data.
+
+A Vimeo version is ready to go: the video is already uploaded
+(`https://vimeo.com/983887201`) and there's a ready-made embed for it
+commented out right above the `<video>` tag in `index.html`'s "REEL" section.
+Delete the `<video>...</video>` block, uncomment the `<div class="reel-embed">`
+block above it, and you're done.
+
+We held off on switching to it because it showed a security warning when
+previewed by opening `index.html` directly as a local file (`file://...`)
+rather than through the local server. That's a known quirk of testing
+cross-site embeds from a bare file, not a problem with the embed itself, so
+this should be re-tested once the site is live on a real domain (or via
+`http://localhost:8123`) before assuming it's broken.
 
 ## 6. Accessibility notes
 

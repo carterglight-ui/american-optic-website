@@ -31,12 +31,12 @@
     contextLine = category ? "Enquiry type: " + category + (q ? " (“" + q + "”)" : "") : (q ? "Enquiry: “" + q + "”" : "");
   } else if (category && tier) {
     titleEl.textContent = "Let’s get you an exact quote";
-    blurbEl.textContent = "You were looking at the " + tier + " estimate (~$" + Number(price || 0).toLocaleString("en-US") + ") for " + category + ". Every quote is custom — the details below help us nail the number.";
-    contextLine = "Interested in: " + category + " — " + tier + " (~$" + Number(price || 0).toLocaleString("en-US") + ")" + (q ? '\nOriginal request: "' + q + '"' : "");
+    blurbEl.textContent = "You were looking at the " + tier + " estimate (~$" + Number(price || 0).toLocaleString("en-US") + ") for " + category + ". Every quote is custom, and the details below help us nail the number.";
+    contextLine = "Interested in: " + category + ", " + tier + " (~$" + Number(price || 0).toLocaleString("en-US") + ")" + (q ? '\nOriginal request: "' + q + '"' : "");
   } else if (category) {
     titleEl.textContent = "Let’s build your quote";
     blurbEl.textContent = "Tell us about the " + category.toLowerCase() + " project and we'll follow up with exact pricing.";
-    contextLine = "Project type: " + category + (q ? ' — "' + q + '"' : "");
+    contextLine = "Project type: " + category + (q ? ' ("' + q + '")' : "");
   } else if (q) {
     contextLine = 'Original request: "' + q + '"';
   }
@@ -61,7 +61,7 @@
 
   if (!CFG.formEndpoint && noteEl) {
     noteEl.hidden = false;
-    noteEl.textContent = "Hitting send opens your email app with this pre-filled to " + (CFG.email || "us") + " — review it and hit send there.";
+    noteEl.textContent = "Hitting send opens your email app with this pre-filled to " + (CFG.email || "us") + ". Review it and hit send there.";
   }
 
   function setStatus(msg, kind) {
@@ -70,7 +70,7 @@
   }
 
   function buildMailto(data) {
-    var subject = "Quote request" + (category ? " — " + category : "") + (tier ? " (" + tier + ")" : "");
+    var subject = "Quote request" + (category ? ": " + category : "") + (tier ? " (" + tier + ")" : "");
     var lines = [
       "Name: " + data.name,
       "Email: " + data.email,
@@ -110,7 +110,7 @@
         fetch(CFG.formEndpoint, { method: "POST", headers: { Accept: "application/json" }, body: fd })
           .then(function (res) {
             if (res.ok) {
-              setStatus("Thanks — that's in. We'll follow up within one business day.", "ok");
+              setStatus("Thanks, that's in. We'll follow up within one business day.", "ok");
               form.reset();
               form.hidden = true;
             } else {

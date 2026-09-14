@@ -29,7 +29,7 @@
   function renderTiers(query, cat) {
     document.getElementById("result-title").textContent = cat.headline;
     document.getElementById("result-blurb").textContent = cat.blurb;
-    document.title = cat.label + " video — American Optic Media";
+    document.title = cat.label + " Video | American Optic Media";
 
     var estimateNote = document.getElementById("estimate-note");
     if (estimateNote) estimateNote.hidden = false;
@@ -101,18 +101,18 @@
   function renderIndustrial(query, cat) {
     document.getElementById("result-title").textContent = cat.headline;
     document.getElementById("result-blurb").textContent = cat.blurb;
-    document.title = cat.label + " — American Optic Media";
+    document.title = cat.label + " | American Optic Media";
 
     var tiersEl = document.getElementById("tiers");
     tiersEl.className = "scope-panel-wrap";
     tiersEl.innerHTML =
       '<div class="scope-panel">' +
         '<p class="eyebrow eyebrow--accent">' + esc(cat.label) + '</p>' +
-        '<p class="scope-panel__price">' + CAT.money(cat.startingFrom) + '<small>starting from — varies by site, access & scope</small></p>' +
+        '<p class="scope-panel__price">' + CAT.money(cat.startingFrom) + '<small>starting from, varies by site, access & scope</small></p>' +
         '<ul class="scope-panel__list">' +
           cat.includes.map(function (t) { return "<li>" + svgCheck() + "<span>" + esc(t) + "</span></li>"; }).join("") +
         "</ul>" +
-        '<p class="scope-panel__foot">Every drone & industrial job is different — tell us about the site and scope and we’ll build an exact quote.</p>' +
+        '<p class="scope-panel__foot">Every drone & industrial job is different. Tell us about the site and scope and we’ll build an exact quote.</p>' +
         '<div class="scope-panel__actions">' +
           '<a class="btn btn--primary" href="' + quoteUrl({ q: query, category: cat.label }) + '">Get a custom quote <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>' +
         "</div>" +
@@ -126,7 +126,7 @@
     var title = query ? "Let’s find you the right fit" : "Tell us about your project";
     document.getElementById("result-title").textContent = title;
     document.getElementById("result-blurb").textContent = "";
-    document.title = "Custom quote — American Optic Media";
+    document.title = "Custom Quote | American Optic Media";
 
     var tiersEl = document.getElementById("tiers");
     tiersEl.className = "scope-panel-wrap";

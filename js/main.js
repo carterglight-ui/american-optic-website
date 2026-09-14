@@ -13,7 +13,7 @@
   /* ---- Contact links from config --------------------------------- */
   function mailtoQuote(extra) {
     var email = CFG.email || "";
-    var subject = "Video project enquiry — American Optic Media";
+    var subject = "Video project enquiry: American Optic Media";
     var lines = ["Hi American Optic Media,", ""];
     if (extra && extra.query) lines.push('What I need: "' + extra.query + '"');
     if (extra && extra.category) lines.push("Category: " + extra.category);

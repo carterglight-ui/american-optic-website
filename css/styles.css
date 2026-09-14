@@ -305,16 +305,8 @@ ul { list-style: none; padding: 0; }
 }
 
 /* ----- Hero -------------------------------------------------- */
-.hero { position: relative; padding-block: clamp(48px, 8vw, 96px) clamp(56px, 8vw, 104px); }
-.hero__grid {
-  display: grid;
-  gap: var(--s-7);
-  grid-template-columns: 1fr;
-  align-items: center;
-}
-@media (min-width: 1000px) {
-  .hero__grid { grid-template-columns: 1.15fr .85fr; gap: var(--s-8); }
-}
+.hero { position: relative; padding-block: clamp(48px, 8vw, 96px) clamp(40px, 6vw, 64px); }
+.hero__content { max-width: 760px; }
 .hero__title {
   font-family: var(--font-display);
   font-weight: 900;
@@ -350,46 +342,6 @@ ul { list-style: none; padding: 0; }
 .hero__tags li { display: flex; align-items: center; gap: var(--s-4); }
 .hero__tags li::after { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 .hero__tags li:last-child::after { display: none; }
-
-.hero__panel {
-  position: relative;
-  border: 1px solid var(--line);
-  border-radius: var(--r-xl);
-  background: linear-gradient(180deg, var(--surface-1), var(--ink));
-  padding: var(--s-6);
-  box-shadow: var(--shadow-2);
-  overflow: hidden;
-}
-.hero__panel::before {
-  content: "";
-  position: absolute;
-  inset: -1px -1px auto -1px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: .7;
-}
-.hero__panel-mark {
-  width: 140px;
-  height: 68px;
-  background: var(--accent-faint);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  display: grid;
-  place-items: center;
-  margin-bottom: var(--s-5);
-}
-.hero__panel-mark img { width: 96px; height: auto; }
-.hero__panel h2 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -.01em;
-  font-size: 22px;
-}
-.hero__panel p { color: var(--text-dim); margin-top: var(--s-2); font-size: 15px; }
-.hero__panel-list { margin-top: var(--s-5); display: grid; gap: var(--s-3); }
-.hero__panel-list li { display: flex; gap: var(--s-3); align-items: flex-start; font-size: 14px; color: var(--text-dim); }
-.hero__panel-list svg { width: 18px; height: 18px; color: var(--accent); flex: none; margin-top: 2px; }
 
 /* ----- Search ("ask" bar) ---------------------------------- */
 .ask { position: relative; z-index: 2; margin-top: clamp(-28px, -4vw, -44px); }
@@ -541,6 +493,34 @@ ul { list-style: none; padding: 0; }
   margin-top: var(--s-2);
 }
 .step p { color: var(--text-dim); font-size: 14px; margin-top: var(--s-2); }
+
+/* ----- Reel video -------------------------------------- */
+.reel-video {
+  width: 100%;
+  max-height: 70vh;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-2);
+  background: var(--surface-1);
+}
+/* Kept for the commented-out Vimeo version in index.html */
+.reel-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-2);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+.reel-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 
 /* ----- CTA band --------------------------------------- */
 .cta-band {
