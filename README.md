@@ -116,29 +116,28 @@ All in `js/catalog.js`:
 `js/results.js` just renders whatever `catalog.js` decides — you shouldn't
 need to touch it for pricing or wording changes.
 
-## 5. The pitch video (fix this before going live)
+## 5. The pitch video
 
-The homepage's "Watch our pitch" section (just above the footer CTA) currently
-plays `Media/Carter Pitch 2024(with hologram).mp4` directly. That works fine
-locally, but **it will break the moment you deploy**:
+The homepage's "Watch our pitch" section (just above the footer CTA) embeds
+the pitch video via Vimeo (`https://player.vimeo.com/video/983887201`),
+confirmed working on the live deployed site. This is intentional: the raw
+file is ~259 MB, `.gitignore` excludes `Media/` from Git (GitHub hard-rejects
+anything over 100 MB), and even if it didn't, a 259 MB video is a terrible
+experience on mobile data. Vimeo streams it instead, so the deployed page
+stays fast.
 
-- The file is ~259 MB. `.gitignore` excludes the whole `Media/` folder from
-  Git on purpose, since GitHub hard-rejects any file over 100 MB. It will
-  never reach GitHub/Netlify as-is.
-- Even if it could, a 259 MB video is a terrible experience on mobile data.
+A local-file fallback (`<video src="Media/...">`) is commented out right
+below the Vimeo embed in `index.html`'s "REEL" section, in case you ever want
+to preview a different local cut before it's uploaded anywhere. It only works
+when `Media/` is actually present, i.e. local previews, never the deployed
+site.
 
-A Vimeo version is ready to go: the video is already uploaded
-(`https://vimeo.com/983887201`) and there's a ready-made embed for it
-commented out right above the `<video>` tag in `index.html`'s "REEL" section.
-Delete the `<video>...</video>` block, uncomment the `<div class="reel-embed">`
-block above it, and you're done.
-
-We held off on switching to it because it showed a security warning when
-previewed by opening `index.html` directly as a local file (`file://...`)
-rather than through the local server. That's a known quirk of testing
-cross-site embeds from a bare file, not a problem with the embed itself, so
-this should be re-tested once the site is live on a real domain (or via
-`http://localhost:8123`) before assuming it's broken.
+To swap in a different video later, edit the `<iframe src="...">`: replace
+the id in `https://player.vimeo.com/video/<id>` with the new Vimeo video's id
+(or use `https://www.youtube.com/embed/<id>` for YouTube instead). If a video
+ever shows as private/unavailable when embedded, check its Privacy settings
+on vimeo.com and make sure "Where can this be embedded" allows your domain
+(or "Anywhere").
 
 ## 6. Accessibility notes
 
