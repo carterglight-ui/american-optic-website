@@ -118,26 +118,37 @@ need to touch it for pricing or wording changes.
 
 ## 5. The pitch video
 
-The homepage's "Watch our pitch" section (just above the footer CTA) embeds
-the pitch video via Vimeo (`https://player.vimeo.com/video/983887201`),
-confirmed working on the live deployed site. This is intentional: the raw
-file is ~259 MB, `.gitignore` excludes `Media/` from Git (GitHub hard-rejects
-anything over 100 MB), and even if it didn't, a 259 MB video is a terrible
-experience on mobile data. Vimeo streams it instead, so the deployed page
-stays fast.
+The homepage's "Watch our pitch" section (just above the footer CTA) plays
+`assets/pitch-reel.mp4` directly, self-hosted, no third-party player involved.
 
-A local-file fallback (`<video src="Media/...">`) is commented out right
-below the Vimeo embed in `index.html`'s "REEL" section, in case you ever want
-to preview a different local cut before it's uploaded anywhere. It only works
-when `Media/` is actually present, i.e. local previews, never the deployed
-site.
+This is a compressed copy of `Media/Carter Pitch 2024(with hologram).mp4`:
+the original is 4K and ~259 MB (too big for GitHub, which hard-rejects any
+file over 100 MB); `assets/pitch-reel.mp4` is the same video re-encoded to
+1080p at ~33 MB, which fits comfortably in the repo and plays instantly. It
+was generated with:
 
-To swap in a different video later, edit the `<iframe src="...">`: replace
-the id in `https://player.vimeo.com/video/<id>` with the new Vimeo video's id
-(or use `https://www.youtube.com/embed/<id>` for YouTube instead). If a video
-ever shows as private/unavailable when embedded, check its Privacy settings
-on vimeo.com and make sure "Where can this be embedded" allows your domain
-(or "Anywhere").
+```bash
+ffmpeg -i "Media/Carter Pitch 2024(with hologram).mp4" \
+  -vf "scale=1920:-2" -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
+  -c:a aac -b:a 128k -movflags +faststart \
+  assets/pitch-reel.mp4
+```
+
+We tried Vimeo and YouTube-style embeds first, but some networks block
+third-party video-player domains outright (we hit this ourselves testing on
+two separate networks) and show a "couldn't verify the security of your
+connection" page instead of the video. Self-hosting the compressed file
+sidesteps that entirely: it's just a normal video file served from the same
+domain as everything else, so nothing can block it that isn't already
+blocking the whole site.
+
+A Vimeo-embed version is commented out right below the `<video>` tag in
+`index.html`'s "REEL" section, kept for reference in case you ever want to
+switch back.
+
+To swap in a different video later: compress a new cut the same way
+(`ffmpeg` command above, replacing the input file) and overwrite
+`assets/pitch-reel.mp4`, or point the `<source src="...">` at a new filename.
 
 ## 6. Accessibility notes
 
