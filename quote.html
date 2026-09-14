@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Get a Custom Quote — American Optic Media</title>
+  <meta name="description" content="Tell American Optic Media about your project and get an exact, custom quote.">
+  <link rel="icon" type="image/png" href="assets/favicon-64.png">
+  <meta name="robots" content="noindex">
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3A5.5 5.5 0 0 1 21 8.5M14 6a3 3 0 0 1 3 3M10.5 13.5a11 11 0 0 0 5 5l1.7-2.2a1.4 1.4 0 0 1 1.5-.5c1 .3 2 .5 3 .5a1.5 1.5 0 0 1 1.3 1.5V21a1.5 1.5 0 0 1-1.6 1.5A18 18 0 0 1 2.5 5.6 1.5 1.5 0 0 1 4 4h2.7A1.5 1.5 0 0 1 8.2 5.3c0 1 .2 2 .5 3a1.4 1.4 0 0 1-.5 1.5Z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="index.html" aria-label="American Optic Media home">
+          <img class="brand__mark" src="assets/ao-mark-lime-128.png" alt="" width="128" height="128">
+          <span class="brand__name"><b>American Optic</b> <span>Media</span></span>
+        </a>
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+          <svg class="icon-open" aria-hidden="true"><use href="#i-menu"/></svg>
+          <svg class="icon-close" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+        <div class="nav__links" id="nav-links">
+          <a href="index.html#solutions">Solutions</a>
+          <a href="index.html#process">Process</a>
+          <a href="index.html#work">Work</a>
+          <a class="btn btn--primary nav__cta" href="quote.html" aria-current="page">Start a Project <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="result-hero">
+      <div class="container">
+        <p class="eyebrow eyebrow--accent">Custom quote</p>
+        <h1 id="quote-title">Tell us about your project</h1>
+        <p id="quote-blurb" style="color:var(--text-dim); margin-top:16px; font-size:17px; max-width:60ch;">The fastest way to get an exact number. A few details and we'll follow up personally.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container quote-layout">
+        <form class="quote-form" id="quote-form" novalidate>
+          <div id="form-status" role="status" aria-live="polite"></div>
+
+          <input type="hidden" name="_context" id="field-context">
+
+          <div class="field">
+            <label for="f-name">Name <span aria-hidden="true">*</span></label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-email">Email <span aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="f-phone">Phone <span class="optional">(optional)</span></label>
+              <input id="f-phone" name="phone" type="tel" autocomplete="tel">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-business">Business / brand name <span class="optional">(optional)</span></label>
+            <input id="f-business" name="business" type="text" autocomplete="organization">
+          </div>
+
+          <div class="field">
+            <label for="f-project">What are you looking for?</label>
+            <input id="f-project" name="project" type="text" placeholder="e.g. car dealership ad, social media content, drone site footage">
+          </div>
+
+          <div class="field">
+            <label for="f-message">Tell us about your project <span aria-hidden="true">*</span></label>
+            <textarea id="f-message" name="message" rows="6" required placeholder="Timeline, budget range, locations, anything you already know."></textarea>
+          </div>
+
+          <p class="form-note" id="form-note" hidden></p>
+
+          <button class="btn btn--primary btn--lg btn--block" type="submit" id="quote-submit">
+            Send <svg aria-hidden="true"><use href="#i-arrow"/></svg>
+          </button>
+          <p class="form-fineprint">We'll reply personally — usually within one business day.</p>
+        </form>
+
+        <aside class="quote-aside" aria-label="Direct contact">
+          <div class="quote-aside__card">
+            <h2>Prefer to skip the form?</h2>
+            <ul>
+              <li><a href="#" data-call-cta><svg aria-hidden="true"><use href="#i-phone"/></svg> <span id="aside-phone">Call or text</span></a></li>
+              <li><a href="#" data-email-link data-keep-text><svg aria-hidden="true"><use href="#i-mail"/></svg> <span id="aside-email">Email us directly</span></a></li>
+            </ul>
+            <p class="quote-aside__note">Based in <span data-location>Jacksonville, Florida</span>. We travel for the right project.</p>
+          </div>
+          <div class="quote-aside__card">
+            <h2>What happens next</h2>
+            <ul class="quote-aside__steps">
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg> We read every message personally</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg> We'll ask a few follow-up questions if needed</li>
+              <li><svg aria-hidden="true"><use href="#i-check"/></svg> You get a fixed, itemised quote — no surprises</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div>
+          <a class="brand" href="index.html" aria-label="American Optic Media home">
+            <img class="brand__mark" src="assets/ao-mark-lime-128.png" alt="" width="128" height="128">
+            <span class="brand__name"><b>American Optic</b> <span>Media</span></span>
+          </a>
+          <p>Full-service video production. Commercials, social, industrial and corporate.</p>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html#solutions">Solutions</a></li>
+            <li><a href="index.html#process">Process</a></li>
+            <li><a href="quote.html">Get a Quote</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#" data-email-link>email</a></li>
+            <li><a href="#" data-call-cta>phone</a></li>
+            <li><span data-location>Location</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bar">
+        <span>&copy; <span id="year"></span> American Optic Media. All rights reserved.</span>
+        <span>Licensed &amp; insured</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/site-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/quote.js"></script>
+</body>
+</html>

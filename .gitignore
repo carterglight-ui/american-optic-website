@@ -1,0 +1,8 @@
+# Original source files (logo art, raw pitch video) — not used directly by
+# the site (see assets/, which IS tracked) and the video is ~260MB, far over
+# GitHub's 100MB file limit anyway.
+Media/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
