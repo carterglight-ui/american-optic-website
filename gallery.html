@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gallery | American Optic Media</title>
+  <script>document.documentElement.classList.add('js');</script>
+  <meta name="description" content="Photos, YouTube and TV content, and social media work from American Optic Media.">
+  <link rel="icon" type="image/png" href="assets/favicon-64.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="14" r="3.5"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4 10 14M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></symbol>
+  </svg>
+
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="index.html" aria-label="American Optic Media home">
+          <img class="brand__mark" src="assets/ao-mark-lime-128.png" alt="" width="128" height="128">
+          <span class="brand__name"><b>American Optic</b> <span>Media</span></span>
+        </a>
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+          <svg class="icon-open" aria-hidden="true"><use href="#i-menu"/></svg>
+          <svg class="icon-close" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+        <div class="nav__links" id="nav-links">
+          <a href="index.html#solutions">Solutions</a>
+          <a href="gallery.html" aria-current="page">Gallery</a>
+          <a href="index.html#process">Process</a>
+          <a href="index.html#work">Work</a>
+          <a class="btn btn--primary nav__cta" href="#" data-quote-cta>Start a Project <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="result-hero">
+      <div class="container">
+        <p class="eyebrow eyebrow--accent">Gallery</p>
+        <h1>See the work</h1>
+        <p>Photos, TV and YouTube content, and social work, organized by type. Scroll or use the arrows to browse each row.</p>
+      </div>
+    </section>
+
+    <!-- PHOTOS -->
+    <section class="section gallery-section" aria-labelledby="gallery-photos-h">
+      <div class="container">
+        <div class="gallery-section__head">
+          <div>
+            <p class="eyebrow">Photos</p>
+            <h2 id="gallery-photos-h">Photography</h2>
+          </div>
+          <div class="gallery-nav" data-row-target="row-photos">
+            <button class="gallery-nav__btn" type="button" data-dir="-1" aria-label="Scroll photos left"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button class="gallery-nav__btn" type="button" data-dir="1" aria-label="Scroll photos right"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+        <ul class="gallery-row" id="row-photos">
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--photo">
+              <svg aria-hidden="true"><use href="#i-camera"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your photo</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--photo">
+              <svg aria-hidden="true"><use href="#i-camera"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your photo</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--photo">
+              <svg aria-hidden="true"><use href="#i-camera"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your photo</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--photo">
+              <svg aria-hidden="true"><use href="#i-camera"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your photo</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--photo">
+              <svg aria-hidden="true"><use href="#i-camera"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your photo</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- YOUTUBE / TV -->
+    <section class="section gallery-section" aria-labelledby="gallery-youtube-h">
+      <div class="container">
+        <div class="gallery-section__head">
+          <div>
+            <p class="eyebrow">YouTube &amp; TV content</p>
+            <h2 id="gallery-youtube-h">Broadcast &amp; YouTube</h2>
+          </div>
+          <div class="gallery-nav" data-row-target="row-youtube">
+            <button class="gallery-nav__btn" type="button" data-dir="-1" aria-label="Scroll YouTube and TV content left"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button class="gallery-nav__btn" type="button" data-dir="1" aria-label="Scroll YouTube and TV content right"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+        <ul class="gallery-row" id="row-youtube">
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--video">
+              <svg aria-hidden="true"><use href="#i-play"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your video</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--video">
+              <svg aria-hidden="true"><use href="#i-play"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your video</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--video">
+              <svg aria-hidden="true"><use href="#i-play"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your video</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--video">
+              <svg aria-hidden="true"><use href="#i-play"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your video</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--video">
+              <svg aria-hidden="true"><use href="#i-play"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your video</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SOCIAL -->
+    <section class="section gallery-section" aria-labelledby="gallery-social-h">
+      <div class="container">
+        <div class="gallery-section__head">
+          <div>
+            <p class="eyebrow">Social media content</p>
+            <h2 id="gallery-social-h">Social</h2>
+          </div>
+          <div class="gallery-nav" data-row-target="row-social">
+            <button class="gallery-nav__btn" type="button" data-dir="-1" aria-label="Scroll social content left"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button class="gallery-nav__btn" type="button" data-dir="1" aria-label="Scroll social content right"><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+        <ul class="gallery-row" id="row-social">
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--social">
+              <svg aria-hidden="true"><use href="#i-share"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your reel</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--social">
+              <svg aria-hidden="true"><use href="#i-share"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your reel</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--social">
+              <svg aria-hidden="true"><use href="#i-share"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your reel</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--social">
+              <svg aria-hidden="true"><use href="#i-share"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your reel</p>
+          </li>
+          <li class="gallery-card gallery-card--empty">
+            <div class="gallery-card__thumb gallery-card__thumb--social">
+              <svg aria-hidden="true"><use href="#i-share"/></svg>
+            </div>
+            <p class="gallery-card__title">Add your reel</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="work" style="padding-top:0">
+      <div class="container">
+        <div class="cta-band reveal">
+          <p class="eyebrow eyebrow--accent">Like what you see</p>
+          <h2>Ready to add your project<br>to this wall?</h2>
+          <p>Tell us what you need and we'll build a quote.</p>
+          <div class="cta-band__actions">
+            <a class="btn btn--primary btn--lg" href="#" data-quote-cta>Get a Quote <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__grid">
+        <div>
+          <a class="brand" href="index.html" aria-label="American Optic Media home">
+            <img class="brand__mark" src="assets/ao-mark-lime-128.png" alt="" width="128" height="128">
+            <span class="brand__name"><b>American Optic</b> <span>Media</span></span>
+          </a>
+          <p>Full-service video production. Commercials, social, industrial and corporate.</p>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="index.html#solutions">Solutions</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="index.html#process">Process</a></li>
+            <li><a href="#" data-quote-cta>Get a Quote</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#" data-email-link>email</a></li>
+            <li><a href="#" data-call-cta>phone</a></li>
+            <li><span data-location>Location</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bar">
+        <span>&copy; <span id="year"></span> American Optic Media. All rights reserved.</span>
+        <span>Licensed &amp; insured</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/site-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/gallery.js"></script>
+</body>
+</html>

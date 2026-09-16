@@ -907,6 +907,100 @@ ul { list-style: none; padding: 0; }
 }
 .quote-aside__steps svg { width: 16px; height: 16px; color: var(--accent); flex: none; margin-top: 2px; }
 
+/* ----- Gallery ------------------------------------------- */
+.gallery-section { padding-block: clamp(28px, 5vw, 48px); }
+.gallery-section__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
+}
+.gallery-section__head h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(22px, 3vw, 30px);
+  letter-spacing: -.01em;
+  margin-top: var(--s-2);
+}
+.gallery-nav { display: flex; gap: var(--s-2); flex: none; }
+.gallery-nav__btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  border-radius: var(--r-pill);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.gallery-nav__btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+.gallery-nav__btn svg { width: 18px; height: 18px; }
+.gallery-nav__btn[data-dir="-1"] svg { transform: scaleX(-1); }
+
+.gallery-row {
+  display: flex;
+  gap: var(--s-5);
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x proximity;
+  perspective: 1200px;
+  padding: var(--s-5) 10vw var(--s-6);
+  margin-inline: -10vw;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.gallery-row::-webkit-scrollbar { display: none; }
+
+.gallery-card {
+  flex: 0 0 auto;
+  width: min(70vw, 280px);
+  scroll-snap-align: center;
+  transform: perspective(1200px) rotateY(var(--rotate, 0deg)) scale(var(--scale, 1));
+  opacity: var(--opacity, 1);
+  transition: transform .2s ease, opacity .2s ease;
+}
+.gallery-card__thumb {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-2);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  position: relative;
+}
+.gallery-card__thumb svg { width: 34px; height: 34px; }
+.gallery-card__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-card__thumb--photo { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, var(--surface-1)), var(--ink)); color: var(--accent); }
+.gallery-card__thumb--video { background: linear-gradient(160deg, var(--surface-2), var(--ink)); color: var(--accent); }
+.gallery-card__thumb--social { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 10%, var(--surface-1)), var(--surface-1)); color: var(--accent); }
+.gallery-card--empty .gallery-card__thumb { border-style: dashed; color: var(--text-mute); background: var(--surface-1); box-shadow: none; }
+.gallery-card__title {
+  margin-top: var(--s-3);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-align: center;
+}
+.gallery-card--empty .gallery-card__title { color: var(--text-mute); font-weight: 500; }
+
+/* Once real photos/videos replace a placeholder, wrap the thumb+title in
+   <a class="gallery-card__link" href="..." target="_blank" rel="noopener">
+   inside the <li class="gallery-card">, drop the --empty modifier, and set
+   a real thumbnail on .gallery-card__thumb (background-image or <img>). */
+.gallery-card__link { display: block; text-decoration: none; }
+.gallery-card__link:hover .gallery-card__thumb,
+.gallery-card__link:focus-visible .gallery-card__thumb { border-color: var(--accent); }
+.gallery-card__link .gallery-card__title { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-card { transform: none !important; }
+}
+
 /* ----- Reveal-on-scroll (progressive enhancement) -------- */
 /* Hidden only when JS is running; without JS everything shows normally. */
 .js .reveal { opacity: 0; transform: translateY(14px); }
