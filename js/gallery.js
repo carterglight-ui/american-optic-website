@@ -12,15 +12,33 @@
   var rows = document.querySelectorAll(".gallery-row");
   if (!rows.length) return;
 
-  /* ---- Prev/Next buttons (always wired, regardless of 3D effect) --- */
+  /* ---- Prev/Next buttons (always wired, regardless of 3D effect) ---
+     Hand-rolled tween instead of scrollBy({behavior:"smooth"}): some
+     browser/automation contexts silently no-op the native smooth
+     scroll, which would leave the buttons looking dead. setTimeout
+     (not rAF, which some of those same contexts also never fire)
+     keeps this working everywhere and we control the easing anyway. */
+  function animateScrollBy(el, delta, duration) {
+    var start = el.scrollLeft;
+    var startTime = Date.now();
+    function step() {
+      var progress = Math.min(1, (Date.now() - startTime) / duration);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.scrollLeft = start + delta * eased;
+      if (progress < 1) setTimeout(step, 16);
+    }
+    step();
+  }
+
   document.querySelectorAll(".gallery-nav").forEach(function (nav) {
     var row = document.getElementById(nav.dataset.rowTarget);
     if (!row) return;
     nav.querySelectorAll(".gallery-nav__btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var card = row.querySelector(".gallery-card");
-        var step = card ? card.getBoundingClientRect().width + 20 : 260;
-        row.scrollBy({ left: step * Number(btn.dataset.dir), behavior: reduceMotion ? "auto" : "smooth" });
+        var step = (card ? card.getBoundingClientRect().width + 20 : 260) * Number(btn.dataset.dir);
+        if (reduceMotion) row.scrollLeft += step;
+        else animateScrollBy(row, step, 320);
       });
     });
   });
