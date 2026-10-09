@@ -1,5 +1,5 @@
 /* ============================================================
-   American Optic Media — shared behaviour (loaded on every page)
+   American Optic Media: shared behaviour (loaded on every page)
    ============================================================ */
 (function () {
   "use strict";
@@ -74,7 +74,12 @@
   if (reveals.length && "IntersectionObserver" in window && !reduceMotion) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("is-visible"); io.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        el.classList.add("is-visible");
+        io.unobserve(el);
+        // drop the stagger delay once revealed so hover effects respond instantly
+        setTimeout(function () { el.style.transitionDelay = ""; }, 900);
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
     reveals.forEach(function (el, i) {
@@ -106,4 +111,96 @@
       window.location.href = "results.html?q=" + encodeURIComponent(askInput.value);
     });
   }
+
+  /* ---- Ask bar: placeholder types out example requests ------- */
+  if (askInput && !reduceMotion) {
+    var phrases = ["car dealership ad", "social media content", "drone site footage", "staff training video", "TV commercial", "customer testimonial"];
+    var staticHint = askInput.placeholder;
+    var pi = 0, ci = 0, erasing = false, typeTimer = null, typing = true;
+
+    var typeStep = function () {
+      if (!typing) return;
+      var word = phrases[pi];
+      if (!erasing) {
+        ci++;
+        askInput.placeholder = "e.g. " + word.slice(0, ci);
+        if (ci === word.length) { erasing = true; typeTimer = setTimeout(typeStep, 1700); return; }
+        typeTimer = setTimeout(typeStep, 60);
+      } else {
+        ci--;
+        askInput.placeholder = "e.g. " + word.slice(0, ci);
+        if (ci === 0) { erasing = false; pi = (pi + 1) % phrases.length; typeTimer = setTimeout(typeStep, 380); return; }
+        typeTimer = setTimeout(typeStep, 28);
+      }
+    };
+    askInput.addEventListener("focus", function () {
+      typing = false;
+      clearTimeout(typeTimer);
+      askInput.placeholder = staticHint;
+    });
+    askInput.addEventListener("blur", function () {
+      if (askInput.value) return;
+      typing = true; ci = 0; erasing = false;
+      clearTimeout(typeTimer);
+      typeTimer = setTimeout(typeStep, 800);
+    });
+    typeTimer = setTimeout(typeStep, 2200);
+  }
+
+  /* ---- Hero video: autoplay muted, pause control, timecode ---- */
+  var hv = document.querySelector(".hero__video");
+  if (hv) {
+    var hbtn = document.querySelector(".hero__toggle");
+    var tcEl = document.querySelector(".hero__tc");
+    var userPaused = reduceMotion; // reduced-motion visitors see the poster until they press play
+    hv.muted = true;
+
+    var syncButton = function () {
+      if (!hbtn) return;
+      var p = hv.paused;
+      hbtn.setAttribute("data-paused", String(p));
+      hbtn.setAttribute("aria-label", p ? "Play background video" : "Pause background video");
+    };
+    var tcPad = function (n) { return (n < 10 ? "0" : "") + n; };
+    var tcTick = function () {
+      if (!tcEl) return;
+      var t = hv.currentTime || 0;
+      var s = Math.floor(t);
+      tcEl.textContent = "00:00:" + tcPad(s) + ":" + tcPad(Math.floor((t - s) * 24));
+    };
+    var playHero = function () {
+      var p = hv.play();
+      if (p && p.catch) p.catch(syncButton); // e.g. low-power mode blocks autoplay: poster stays, button shows Play
+    };
+
+    hv.addEventListener("play", syncButton);
+    hv.addEventListener("pause", syncButton);
+    setInterval(tcTick, 80);
+    if (hbtn) {
+      hbtn.addEventListener("click", function () {
+        if (hv.paused) { userPaused = false; playHero(); }
+        else { userPaused = true; hv.pause(); }
+      });
+    }
+    // Save battery: pause while the hero is scrolled out of view
+    var heroEl = hv.closest(".hero");
+    if (heroEl && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { if (!userPaused) playHero(); }
+        else hv.pause();
+      }).observe(heroEl);
+    } else if (!userPaused) {
+      playHero();
+    }
+    syncButton();
+  }
+
+  /* ---- Card hover spotlight follows the pointer -------------- */
+  document.addEventListener("pointermove", function (e) {
+    var c = e.target.closest ? e.target.closest(".card") : null;
+    if (!c) return;
+    var r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", (e.clientX - r.left) + "px");
+    c.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }, { passive: true });
 })();

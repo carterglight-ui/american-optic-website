@@ -7,14 +7,17 @@ plain web server).
 ```
 index.html          Homepage + "what type of video are you looking for?" search
 results.html         Estimate / referral page (reads ?q= from the search)
-quote.html           Custom-quote contact form — where every CTA ends up
+quote.html           Custom-quote contact form, where every CTA ends up
+gallery.html         Photos, YouTube/TV and social rows with a 3D scroll
 css/styles.css       All styling. Brand tokens are at the top in :root.
-js/site-config.js    Business contact info + optional links — EDIT THIS FIRST.
-js/main.js           Shared behaviour (nav, reveal, contact links, search submit)
-js/catalog.js         Your scope, categories, keywords & pricing — EDIT THIS for pricing changes.
-js/results.js        Renders results.html from js/catalog.js — rarely needs editing.
-js/quote.js           Contact-form behaviour (prefill + submit).
-assets/              Logos + favicon (generated from Media/Logo/)
+js/site-config.js    Business contact info + optional links. EDIT THIS FIRST.
+js/main.js           Shared behaviour (nav, hero video, contact links, search)
+js/catalog.js        Scope, categories, keywords & pricing. EDIT for pricing changes.
+js/results.js        Renders results.html from js/catalog.js. Rarely needs editing.
+js/quote.js          Contact-form behaviour (prefill, send, fallback).
+js/gallery.js        Gallery 3D scroll + Prev/Next buttons.
+js/lightbox.js       On-page video/photo viewer (any <a data-lightbox>).
+assets/              Logos, favicon, hero loop + poster, link-preview image, gallery photos
 Media/               Your original source files (not used directly by the site)
 ```
 
@@ -26,26 +29,54 @@ Already set in **`js/site-config.js`**:
 |-------|---------------|
 | `email` | `Carter.g.light@gmail.com` |
 | `phone` / `phoneHref` | `(904) 608-4693` / `+19046084693` |
-| `location` | `Jacksonville, Florida` — **unconfirmed placeholder, please check this** |
-| `reelUrl` | empty — optional YouTube/Vimeo link, currently unused in the layout |
-| `calendarUrl` | empty — if you use Calendly/etc., paste it here and every "quote" CTA links straight there instead of the form |
-| `formEndpoint` | empty — see "The contact form" below |
+| `location` | `Jacksonville, Florida` |
+| `calendarUrl` | empty. If you use Calendly/etc., paste it here and every "quote" CTA links straight there instead of the form |
+| `formEndpoint` | `https://formsubmit.co/ajax/Carter.g.light@gmail.com`, see "The contact form" below |
 
 ## 2. The contact form (`quote.html`)
 
-Out of the box, submitting the form **opens the visitor's email app** with
-everything pre-filled to `Carter.g.light@gmail.com` — no setup required, but
-they have to hit send themselves.
+Messages are delivered straight to your inbox through
+[FormSubmit](https://formsubmit.co), a free service that needs no account.
 
-To make it submit silently, straight to your inbox, with no email app involved:
+**One-time activation (required):** the first time a message is sent through
+the form, FormSubmit emails `Carter.g.light@gmail.com` an activation link.
+Send one test message from the live site, open that email (check spam), and
+click the confirm link. Until that is done, nothing is lost: the form detects
+the failure and opens the visitor's email app pre-filled instead.
 
-1. Go to [formspree.io](https://formspree.io) and create a free account.
-2. Create a new form, point it at your email, confirm the verification email.
-3. Copy the endpoint it gives you (looks like `https://formspree.io/f/abcdwxyz`).
-4. Paste it into `formEndpoint` in `js/site-config.js`.
+How it behaves:
 
-That's it — no other code changes. (Any similar static-form service, e.g.
-Web3Forms, works the same way.)
+- Success shows a "Message sent" screen. Replies go to the visitor's own email.
+- Any failure (not activated, offline, service down) falls back to the
+  visitor's email app, with your phone number shown as a second option.
+- A hidden spam-trap field (`_honey`) silently drops bots.
+- To switch back to email-app-only, set `formEndpoint` to `""`.
+- To use a different service (Formspree, Web3Forms), paste its endpoint into
+  `formEndpoint`. Fields sent: name, email, phone, business, project, message.
+
+## 2b. The hero video
+
+The homepage hero loops `assets/hero-loop.mp4` (13 seconds, 720p, muted, no
+audio track, ~2.7 MB) with `assets/hero-poster.jpg` as the still frame. It
+pauses when scrolled out of view, has a visible pause button, and stays on the
+poster for visitors who have turned on "reduce motion". It was cut from the
+original 4K pitch footage with the letterbox bars cropped out:
+
+```bash
+ffmpeg -ss <start> -t <seconds> -i "Media/Carter Pitch 2024(with hologram).mp4" \
+  -filter_complex "[0:v]crop=3000:1688:420:236,scale=1280:720,fps=24,format=yuv420p[v]" ...
+```
+
+To change the footage, cut a new clip the same way (16:9, under about 4 MB)
+and overwrite `assets/hero-loop.mp4`, then regenerate `assets/hero-poster.jpg`
+from a good frame.
+
+## 2c. After connecting americanopticmedia.com
+
+These places still point at `https://aomedia.netlify.app` and should be
+updated to the real domain once it is connected: the `og:url`, `og:image` and
+JSON-LD `url`/`image` lines in the `<head>` of `index.html`. (Link previews
+need absolute URLs, which is why they are not relative.)
 
 ## 3. Branding
 

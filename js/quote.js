@@ -1,8 +1,9 @@
 /* ============================================================
-   American Optic Media — quote / contact form
-   No backend by default: submits by opening a pre-filled mailto:
-   to js/site-config.js's `email`. If you set `formEndpoint` there
-   (e.g. a Formspree URL), it POSTs silently instead. See README.
+   American Optic Media: quote / contact form
+   Sends to your inbox through the endpoint in js/site-config.js
+   (FormSubmit). If that ever fails (not yet activated, offline,
+   service down), it falls back to opening the visitor's email app
+   pre-filled, so a lead is never silently lost.
    ============================================================ */
 (function () {
   "use strict";
@@ -58,6 +59,7 @@
   var statusEl = document.getElementById("form-status");
   var noteEl = document.getElementById("form-note");
   var submitBtn = document.getElementById("quote-submit");
+  var successEl = document.getElementById("form-success");
 
   if (!CFG.formEndpoint && noteEl) {
     noteEl.hidden = false;
@@ -85,6 +87,28 @@
       "&body=" + encodeURIComponent(lines.join("\n"));
   }
 
+  function showSent() {
+    form.hidden = true;
+    if (successEl) {
+      successEl.hidden = false;
+      successEl.focus();
+    }
+    if (titleEl) titleEl.textContent = "Thanks, we've got it";
+    if (blurbEl) blurbEl.textContent = "Your message is on its way to us.";
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function fallbackToEmailApp(data) {
+    var mail = buildMailto(data);
+    statusEl.className = "err";
+    statusEl.innerHTML =
+      "We couldn't send that automatically, so we're opening your email app with everything filled in. " +
+      'If nothing opens, <a href="' + mail + '">tap here to email us</a>' +
+      (CFG.phoneHref ? ' or call or text <a href="tel:' + CFG.phoneHref + '">' + (CFG.phone || CFG.phoneHref) + "</a>." : ".");
+    submitBtn.disabled = false;
+    window.location.href = mail;
+  }
+
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -93,6 +117,10 @@
         return;
       }
       var el = form.elements;
+
+      // Bots fill the hidden trap field; people never see it. Pretend it worked.
+      if (el["_honey"] && el["_honey"].value) { showSent(); return; }
+
       var data = {
         name: el["name"].value.trim(),
         email: el["email"].value.trim(),
@@ -104,28 +132,33 @@
 
       submitBtn.disabled = true;
 
-      if (CFG.formEndpoint) {
-        setStatus("Sending…");
-        var fd = new FormData(form);
-        fetch(CFG.formEndpoint, { method: "POST", headers: { Accept: "application/json" }, body: fd })
-          .then(function (res) {
-            if (res.ok) {
-              setStatus("Thanks, that's in. We'll follow up within one business day.", "ok");
-              form.reset();
-              form.hidden = true;
-            } else {
-              throw new Error("bad status");
-            }
-          })
-          .catch(function () {
-            setStatus("Something went wrong sending that. Please email us directly at " + (CFG.email || "") + ".", "err");
-            submitBtn.disabled = false;
-          });
-      } else {
+      if (!CFG.formEndpoint) {
         setStatus("Opening your email app…");
         window.location.href = buildMailto(data);
         submitBtn.disabled = false;
+        return;
       }
+
+      setStatus("Sending…");
+      var fd = new FormData(form);
+      fd.set("_replyto", data.email);
+      fd.set("_subject", "New quote request: " + (data.project || category || "General") + " (" + data.name + ")");
+
+      fetch(CFG.formEndpoint, { method: "POST", headers: { Accept: "application/json" }, body: fd })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (json) {
+            return { ok: res.ok, json: json };
+          });
+        })
+        .then(function (r) {
+          if (r.ok && String(r.json.success) !== "false") {
+            setStatus("");
+            showSent();
+          } else {
+            throw new Error("not accepted");
+          }
+        })
+        .catch(function () { fallbackToEmailApp(data); });
     });
   }
 })();

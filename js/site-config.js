@@ -18,12 +18,12 @@ window.AO_CONFIG = {
   calendarUrl: "",
 
   // --- Quote form delivery ---
-  // Out of the box (leave this "") the quote form opens the visitor's email
-  // app with everything pre-filled to `email` above — no setup needed, but
-  // THEY have to hit send.
-  // For the form to submit straight to your inbox with no email app involved,
-  // sign up free at https://formspree.io, create a form pointed at your email,
-  // confirm the verification email, then paste the endpoint it gives you here,
-  // e.g. "https://formspree.io/f/abcdwxyz". See README.md for the 2-minute walkthrough.
-  formEndpoint: ""
+  // Messages go straight to your inbox through FormSubmit (formsubmit.co),
+  // a free form service that needs no account. ONE-TIME SETUP: after the site
+  // is live, send a test message through the form, then open the activation
+  // email FormSubmit sends to the address below and click the confirm link.
+  // Until that is done, the form automatically falls back to opening the
+  // visitor's email app, so no lead is lost.
+  // Set to "" to go back to the email-app-only behaviour.
+  formEndpoint: "https://formsubmit.co/ajax/Carter.g.light@gmail.com"
 };

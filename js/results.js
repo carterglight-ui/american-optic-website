@@ -29,7 +29,7 @@
   function renderTiers(query, cat) {
     document.getElementById("result-title").textContent = cat.headline;
     document.getElementById("result-blurb").textContent = cat.blurb;
-    document.title = cat.label + " Video | American Optic Media";
+    document.title = (/video/i.test(cat.label) ? cat.label : cat.label + " Video") + " | American Optic Media";
 
     var estimateNote = document.getElementById("estimate-note");
     if (estimateNote) estimateNote.hidden = false;
