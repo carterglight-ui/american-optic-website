@@ -27,7 +27,7 @@ Already set in **`js/site-config.js`**:
 
 | Field | Current value |
 |-------|---------------|
-| `email` | `Carter.g.light@gmail.com` |
+| `email` | `carter@americanopticmedia.com` (public address shown on the site) |
 | `phone` / `phoneHref` | `(904) 608-4693` / `+19046084693` |
 | `location` | `Jacksonville, Florida` |
 | `calendarUrl` | empty. If you use Calendly/etc., paste it here and every "quote" CTA links straight there instead of the form |
@@ -73,10 +73,10 @@ from a good frame.
 
 ## 2c. After connecting americanopticmedia.com
 
-These places still point at `https://aomedia.netlify.app` and should be
-updated to the real domain once it is connected: the `og:url`, `og:image` and
-JSON-LD `url`/`image` lines in the `<head>` of `index.html`. (Link previews
-need absolute URLs, which is why they are not relative.)
+The `og:url`, `og:image` and JSON-LD `url`/`image` lines in the `<head>` of
+`index.html` now point at `https://americanopticmedia.com`. (Link previews
+need absolute URLs, which is why they are not relative.) The old
+`aomedia.netlify.app` address still works.
 
 ## 3. Branding
 

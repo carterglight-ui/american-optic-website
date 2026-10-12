@@ -4,7 +4,7 @@
    ============================================================ */
 window.AO_CONFIG = {
   // --- Business contact (shown in footer, CTAs, the quote page) ---
-  email:      "Carter.g.light@gmail.com",
+  email:      "carter@americanopticmedia.com",
   phone:      "(904) 608-4693",
   phoneHref:  "+19046084693",                // digits only, with country code
   location:   "Jacksonville, Florida",       // TODO: confirm service area — unconfirmed placeholder
@@ -24,6 +24,8 @@ window.AO_CONFIG = {
   // email FormSubmit sends to the address below and click the confirm link.
   // Until that is done, the form automatically falls back to opening the
   // visitor's email app, so no lead is lost.
+  // The form delivers to the Gmail inbox on purpose; the public address above
+  // is what visitors see and email directly.
   // Set to "" to go back to the email-app-only behaviour.
   formEndpoint: "https://formsubmit.co/ajax/Carter.g.light@gmail.com"
 };
