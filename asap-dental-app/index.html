@@ -423,6 +423,17 @@ button:active:not(:disabled),a.btn:active{transform:scale(.96)}
 .burst{position:absolute;inset:0;pointer-events:none;z-index:45;overflow:hidden}
 .burst i{position:absolute;width:8px;height:8px;border-radius:2px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}
+
+a.video{color:inherit;text-decoration:none}
+.feature{position:relative;display:flex;align-items:flex-end;aspect-ratio:16/10;max-width:100%;border-radius:22px;overflow:hidden;background:#0a2d38 center 35%/cover;color:#fff;text-decoration:none;box-shadow:var(--shadow);transition:transform .14s ease}
+.feature:active{transform:scale(.98)}
+.feature::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,30,40,.1) 30%,rgba(5,30,40,.88) 100%)}
+.feature .play{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.94);color:#13304A;display:grid;place-items:center;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:breathe 2.4s ease-in-out infinite}
+.feature .play .ico{width:26px;height:26px;fill:currentColor;stroke:none;margin-left:3px}
+.feature .cap{position:relative;padding:16px;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.feature .cap b{font-family:var(--f-display);font-size:24px;text-transform:uppercase;line-height:1;letter-spacing:.02em}
+.feature .cap>span:last-child{font-size:13px;opacity:.9}
+@keyframes breathe{50%{transform:translate(-50%,-50%) scale(1.08)}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -473,7 +484,7 @@ button:active:not(:disabled),a.btn:active{transform:scale(.96)}
       <li>Try the breathing exercise and office tour</li>
       <li>Leave a Google review from the profile tab</li>
     </ul>
-    <p class="note">Practice facts come from ASAP's website and press releases; please double-check them. Doctor bios, one doctor's name, video links and the Google review link are still placeholders.</p>
+    <p class="note">Practice facts come from ASAP's website and press releases; please double-check them. Bios for Dr. Sabino and Dr. Shbeb and the Google review link are still placeholders.</p>
     <button class="reset" id="resetDemo" type="button">Restart demo from sign-up</button>
   </aside>
 
@@ -567,14 +578,15 @@ const SERVICES = [
    quiz:{q:'What do you do during a 3D X-ray?', a:['Lie in a tunnel','Stand still and bite a guide','Hold your breath for a minute'], c:1, why:'It\'s an open machine; you just stand still for a few seconds.'}},
 ];
 
+const SP = 'https://mysmilemail-my.sharepoint.com/:v:/p/carterl/';
+const COMMERCIAL = {t:'Meet ASAP Dental Care', d:'Our commercial. See who we are in under a minute.', img:'img/jaxson-car.jpg', tag:'Commercial', url:SP + 'IQDB0YGmuYigRavdeksUk6jJAbX2vatBvBQM2xYRE_oIoR8?e=W4Lq5m'};
 const VIDEOS = [
-  {t:'Meet the ASAP team', d:'Say hi before you visit', img:'img/team.jpg', tag:'Team'},
-  {t:'Tour our office', d:'From the front door to the chair', img:'img/waiting-room.jpg', tag:'Tour'},
-  {t:'What happens at a cleaning', d:'Step by step, no surprises', img:'img/exam.jpg', tag:'First visit'},
-  {t:'Inside our dental lab', d:'Where your crowns and dentures are made', img:'img/lab-polish.jpg', tag:'Lab'},
-  {t:'The 3D X-ray in action', d:'Watch the scanner do its thing', img:'img/3d-xray.jpg', tag:'Tech'},
-  {t:'Jaxson visits ASAP', d:'The Jaguars\' mascot stops by', img:'img/jaxson-stadium.jpg', tag:'Jaguars'},
-];
+  {t:'Patient education, part 1', img:'img/exam.jpg', url:SP + 'IQBciGj0a8fDTY-9kasbkpFIAWy0tMG7jI66l5cd4WzVKOk?e=KHbwSr'},
+  {t:'Patient education, part 2', img:'img/treatment-room-2.jpg', url:SP + 'IQCN-_ozStuIRqRbt_0_IiejAT5M-IVVDs6nYrQ_mv4_3ns?e=ZluXoi'},
+  {t:'Patient education, part 3', img:'img/3d-xray.jpg', url:SP + 'IQCIDjqQV51vRonasfTjomzRAYpQDXlsr_u1n9QI855zqA0?e=s36U1a'},
+  {t:'Patient education, part 4', img:'img/lab-polish.jpg', url:SP + 'IQBaehEUPT5sT4r_c5VdxlPNAdPwKCn_QQYXIHvMwNRUJJI?e=M2pwbG'},
+  {t:'Patient education, part 5', img:'img/operatories.jpg', url:SP + 'IQB0qYHnBbxGR41xwgFHEvxUARtd-lpW9VKIZeG630Mz3DU?e=wBWfye'},
+].map(v => ({...v, tag:'Education', d:'Learn what to expect before your visit'}));
 
 const DOCTORS = [
   {id:'letteri', name:'Dr. Nicholas Letteri, DMD', short:'Dr. Letteri', role:'Dentist', img:'img/dr-letteri.jpg',
@@ -583,7 +595,9 @@ const DOCTORS = [
   {id:'shbeb', name:'Dr. Shbeb, DDS', short:'Dr. Shbeb', role:'Dentist', img:'img/dr-shbeb.jpg',
    bio:'Dr. Shbeb brings more than 10 years of experience in general dentistry and oral surgery.',
    facts:['Doctor of Dental Surgery (DDS)', 'General dentistry and oral surgery']},
-  {id:'dr3', name:'Doctor (name needed)', short:'Doctor', role:'Dentist', img:'img/dr-3.jpg'},
+  {id:'ahmed', name:'Dr. Nadeem Ahmed, DMD', short:'Dr. Ahmed', role:'Dentist', img:'img/dr-3.jpg',
+   bio:'Dr. Ahmed earned a Doctor of Dental Medicine from the University of Florida College of Dentistry and completed additional training at the Las Vegas Institute for Advanced Dental Studies.',
+   facts:['DMD, University of Florida College of Dentistry', 'Advanced training, Las Vegas Institute for Advanced Dental Studies', 'Member, American Dental Association']},
   {id:'cueto', name:'Dr. Yevah Cueto, DMD', short:'Dr. Cueto', role:'General Dentist', img:'img/dr-cueto.jpg',
    bio:'A Jacksonville native, Dr. Cueto studied nutritional and food science at the University of Florida before earning a Doctor of Dental Medicine from LECOM School of Dental Medicine.',
    facts:['DMD, LECOM School of Dental Medicine', 'B.S. in Nutritional and Food Science, University of Florida']},
@@ -596,7 +610,7 @@ const LOCATIONS = [
   {id:'atlantic', name:'Atlantic Blvd', addr:'12777 Atlantic Blvd, Ste 26, Jacksonville, FL 32225', phone:'(904) 312-7777', hours:'Tue–Sat 9 AM–5 PM'},
   {id:'bonneval', name:'Bonneval Rd · Southside', addr:'6960 Bonneval Rd, #201, Jacksonville, FL 32216', phone:'(904) 281-9988', hours:'Tue–Sat 9 AM–5 PM'},
   {id:'dunn', name:'Dunn Ave · Northside', addr:'3000 Dunn Ave, Ste 38, Jacksonville, FL 32218', phone:'(904) 768-3790', hours:'Wed, Fri, Sat 9 AM–6 PM'},
-  {id:'sanjose', name:'San Jose Blvd', addr:'Jacksonville, FL'},
+  {id:'sanjose', name:'San Jose Blvd · Mandarin', addr:'11362 San Jose Blvd, Ste 7, Jacksonville, FL 32223', phone:'(904) 998-1555'},
   {id:'orangepark', name:'Orange Park', addr:'Orange Park, FL'},
   {id:'lakecity', name:'Lake City', addr:'Lake City, FL'},
   {id:'crescent', name:'Crescent City', addr:'Crescent City, FL'},
@@ -853,6 +867,7 @@ ROUTES.home = () => {
   <button class="jags" id="jagsBtn">
     <span class="in"><img src="img/jaguars-head.png" alt=""><span><b>The Official Dentist of the Jacksonville Jaguars</b><span>Duuuval smiles start here. Tap to see us in the community.</span></span></span>
   </button>
+  ${featureCard()}
   <div class="card review-card">
     <div style="flex:1"><b>Had a great visit?</b><p class="small muted">A quick Google review helps other nervous patients find us.</p><div class="stars" style="margin-top:6px">${STAR.repeat(5)}</div></div>
     <button class="btn ghost" id="revBtn">Review</button>
@@ -1000,21 +1015,12 @@ ROUTES.learn.after = v => {
   $('#tRead', v).onclick = () => { learnTab = 'read'; render(); };
   $('#tWatch', v).onclick = () => { learnTab = 'watch'; render(); };
   $('#tPlay', v).onclick = () => { learnTab = 'play'; render(); };
-  bindVideos(v);
 };
-const videoList = () => `<div class="section">${VIDEOS.map((x,i) => `<button class="video" data-v="${i}"><span class="thumb" style="background-image:url(${x.img})"><span class="play">${icon('play')}</span></span><span><span class="pill ${x.tag==='Jaguars'?'gold':''}">${x.tag}</span><b style="margin-top:4px">${x.t}</b><span>${x.d}</span></span></button>`).join('')}</div>`;
-function bindVideos(v) {
-  v.querySelectorAll('[data-v]').forEach(b => b.onclick = () => {
-    const x = VIDEOS[+b.dataset.v];
-    sheet(`<img src="${x.img}" alt="" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px">
-      <h3 style="font-family:var(--f-display);font-size:24px;text-transform:uppercase">${x.t}</h3>
-      <p class="muted">${x.d}. Once you send the video link, it plays right here.</p>
-      <button class="btn block" data-close>Got it</button>`);
-  });
-}
+const videoCard = x => `<a class="video" href="${x.url}" target="_blank" rel="noopener"><span class="thumb" style="background-image:url(${x.img})"><span class="play">${icon('play')}</span></span><span><span class="pill">${x.tag}</span><b style="margin-top:4px">${x.t}</b><span>${x.d}</span></span></a>`;
+const featureCard = () => `<a class="feature" href="${COMMERCIAL.url}" target="_blank" rel="noopener" style="background-image:url(${COMMERCIAL.img})"><span class="play">${icon('play')}</span><span class="cap"><span class="pill gold">${COMMERCIAL.tag}</span><b>${COMMERCIAL.t}</b><span>${COMMERCIAL.d}</span></span></a>`;
+const videoList = () => `${featureCard()}<div class="section"><span class="eyebrow">Patient education</span>${VIDEOS.map(videoCard).join('')}</div><p class="small muted">Videos open in a new tab.</p>`;
 ROUTES.videos = () => `${topbar('Videos')}${videoList()}`;
 ROUTES.videos.tab = 'learn';
-ROUTES.videos.after = bindVideos;
 
 ROUTES.service = id => {
   const s = SERVICES.find(x => x.id === id);
@@ -1289,7 +1295,7 @@ TOOL_AFTER.sugar = v => {
 const chat = { turns:[], busy:false, ctl:null };
 const RULES = () => `You are "ASAP AI", the friendly virtual dental guide inside the ASAP Dental Care patient app.
 
-About ASAP Dental Care: a Jacksonville, Florida dental practice whose mission is "improving lives with same-day dental care". It started in 2011 as an emergency dental practice and is now full-service for the whole family, with offices across North Florida: 103rd St (Westside, open 7 days: Mon-Sat 8 AM-7 PM, Sun 10 AM-6 PM, (904) 777-4622), Atlantic Blvd, Bonneval Rd, Dunn Ave, San Jose Blvd, Orange Park, Lake City and Crescent City. It is the Official Dental Partner of the Jacksonville Jaguars. Walk-ins are welcome and urgent cases are prioritized. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions and oral surgery, wisdom teeth, dentures and partials (made in its own dental lab), implants, whitening, veneers, gum care, same-day emergency care and 3D X-rays (KaVo OP 3D). Sedation: nitrous oxide, oral sedation and IV sedation. Insurance: files most PPO claims for patients; financing through CareCredit, Cherry, Sunbit and LendingClub; annual membership plan for patients without insurance. The practice has performed over 229,000 procedures since 2011. The dentists include Dr. Nicholas Letteri, DMD (Tampa native, DMD from LECOM School of Dental Medicine); Dr. Shbeb, DDS (10+ years in general dentistry and oral surgery); Dr. Yevah Cueto, DMD (general dentist, Jacksonville native, University of Florida and LECOM graduate); and Dr. Gregory Sabino, DDS. Don't invent any other details about them.
+About ASAP Dental Care: a Jacksonville, Florida dental practice whose mission is "improving lives with same-day dental care". It started in 2011 as an emergency dental practice and is now full-service for the whole family, with offices across North Florida: 103rd St (Westside, open 7 days: Mon-Sat 8 AM-7 PM, Sun 10 AM-6 PM, (904) 777-4622), Atlantic Blvd, Bonneval Rd, Dunn Ave, San Jose Blvd, Orange Park, Lake City and Crescent City. It is the Official Dental Partner of the Jacksonville Jaguars. Walk-ins are welcome and urgent cases are prioritized. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions and oral surgery, wisdom teeth, dentures and partials (made in its own dental lab), implants, whitening, veneers, gum care, same-day emergency care and 3D X-rays (KaVo OP 3D). Sedation: nitrous oxide, oral sedation and IV sedation. Insurance: files most PPO claims for patients; financing through CareCredit, Cherry, Sunbit and LendingClub; annual membership plan for patients without insurance. The practice has performed over 229,000 procedures since 2011. The dentists include Dr. Nicholas Letteri, DMD (Tampa native, DMD from LECOM School of Dental Medicine); Dr. Shbeb, DDS (10+ years in general dentistry and oral surgery); Dr. Yevah Cueto, DMD (general dentist, Jacksonville native, University of Florida and LECOM graduate); Dr. Nadeem Ahmed, DMD (University of Florida College of Dentistry, advanced training at the Las Vegas Institute for Advanced Dental Studies); and Dr. Gregory Sabino, DDS. Don't invent any other details about them.
 
 Many people using this app feel anxious about the dentist. Be warm, calm, encouraging and plain-spoken, like a top-tier dental team that genuinely cares. Keep answers short: under 110 words, short paragraphs, or up to 4 bullet lines starting with "- ". No headings. You may use **bold** sparingly. The patient's preferred office is: ${myOffice().name}.
 
@@ -1471,7 +1477,7 @@ ROUTES.locations = () => `${topbar('Our offices')}
   ${LOCATIONS.map(l => `<div class="card loc">
     <div class="row"><b>${l.name}</b>${l.tag ? `<span class="pill gold">${l.tag}</span>` : ''}</div>
     <span class="small muted">${l.addr}</span>
-    ${l.phone ? `<span class="small">${icon('phone', 'ico sm')} <b>${l.phone}</b>${l.hours ? ' · ' + l.hours : ''}</span>` : '<span class="small muted">Phone and hours coming soon</span>'}
+    ${l.phone ? `<span class="small">${icon('phone', 'ico sm')} <b>${l.phone}</b>${l.hours ? ' · ' + l.hours : ' · Call for hours'}</span>` : '<span class="small muted">Phone and hours coming soon</span>'}
     <div class="row"><a class="link" href="https://www.google.com/maps/search/${encodeURIComponent('ASAP Dental Care ' + l.addr)}" target="_blank" rel="noopener">Directions</a>
     ${myOffice().id === l.id ? '<span class="pill">My office</span>' : `<button class="link" data-office="${l.id}">Make this my office</button>`}</div>
   </div>`).join('')}`;
