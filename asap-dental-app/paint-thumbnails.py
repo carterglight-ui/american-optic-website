@@ -160,6 +160,94 @@ def v_wisdom(a):
     a.line([(540, 640), (1120, 640)])                                       # gumline / bone level
     a.sparkle(1130, 270, 40)
 
+# ---- Lesson cards
+def sc(ox, oy, size): return lambda x, y: (ox + x*size, oy + y*size)
+
+@scene
+def s_cleaning(a):
+    a.tooth(560, 300, 300)
+    a.circle(1000, 380, 68)
+    ang = -0.32; x0, y0 = 1000 - math.sin(ang)*68, 380 + math.cos(ang)*68
+    a.line([(x0, y0), (x0 - math.sin(ang)*300, y0 + math.cos(ang)*300)])
+    a.sparkle(500, 280, 44)
+
+@scene
+def s_fillings(a):
+    a.tooth(650, 300, 300); f = sc(650, 300, 300)
+    a.line([f(*p) for p in bez((0.36, 0.20), (0.40, 0.38), (0.60, 0.38), (0.64, 0.20)) + bez((0.64, 0.20), (0.58, 0.14), (0.42, 0.14), (0.36, 0.20))], closed=True, w=LW - 2)
+    a.sparkle(990, 250, 44)
+
+@scene
+def s_crowns(a):
+    a.tooth(650, 330, 300, STUMP); a.tooth(650, 205, 300, CAP)
+    a.sparkle(1000, 230, 44)
+
+@scene
+def s_extractions(a):
+    a.tooth(600, 220, 280, rot=8)
+    a.line([(540, 640), (940, 640)])
+    a.line([(1010, 600), (1010, 330)]); a.line([(1010, 330), (982, 362)]); a.line([(1010, 330), (1038, 362)])
+    a.sparkle(540, 250, 40)
+
+@scene
+def s_dentures(a):
+    for i in range(5): a.tooth(470 + i*134, 320, 142, CAP)
+    a.roundrect(450, 392, 1150, 472, 36)
+    a.sparkle(1180, 270, 40)
+
+@scene
+def s_emergency(a):
+    a.tooth(650, 300, 300); f = sc(650, 300, 300)
+    a.line([f(0.57, 0.10), f(0.49, 0.25), f(0.58, 0.35), f(0.50, 0.50)], w=LW - 2)
+    a.sparkle(990, 250, 44)
+
+@scene
+def s_xray(a):
+    a.tooth(650, 300, 300)
+    for (x, y, dx, dy) in [(590, 250, 1, 1), (1010, 250, -1, 1), (590, 680, 1, -1), (1010, 680, -1, -1)]:
+        a.line([(x + dx*70, y), (x, y), (x, y + dy*70)])
+    for x in range(620, 990, 46): a.line([(x, 470), (x + 24, 470)], w=LW - 3)
+
+# ---- Tool cards
+@scene
+def t_explorer(a):
+    for i in range(12):
+        t = math.radians(200 - i*220/11)
+        a.circle(800 + 250*math.cos(t), 600 - 300*math.sin(t), 22)
+    a.sparkle(1130, 250, 40)
+
+@scene
+def t_cavity(a):
+    a.tooth(650, 220, 300); f = sc(650, 220, 300)
+    a.circle(*f(0.62, 0.20), 15)
+    a.line([(560, 730), (1040, 730)]); a.circle(760, 730, 24)
+    a.sparkle(1000, 220, 40)
+
+@scene
+def t_brush(a):
+    a.tooth(560, 310, 290)
+    ang = -1.2; ux, uy = math.cos(ang), math.sin(ang); nx, ny = -uy, ux
+    x0, y0 = 980, 690; x1, y1 = x0 + ux*330, y0 + uy*330
+    for off in (-14, 14): a.line([(x0 + nx*off, y0 + ny*off), (x1 + nx*off*.8, y1 + ny*off*.8)])
+    a.line([(x0 - nx*14, y0 - ny*14), (x0 + nx*14, y0 + ny*14)])
+    hx, hy = x1 + ux*60, y1 + uy*60
+    a.line([(x1 + nx*11, y1 + ny*11), (hx + ux*50 + nx*11, hy + uy*50 + ny*11)])
+    for t in np.linspace(-10, 100, 6):
+        bx, by = x1 + ux*t + nx*11, y1 + uy*t + ny*11
+        a.line([(bx, by), (bx + nx*34, by + ny*34)], w=LW - 2)
+    a.sparkle(500, 290, 40)
+
+@scene
+def t_sugar(a):
+    a.circle(720, 490, 170)
+    for k in range(12):
+        t = k*math.pi/6; r0 = 140 if k % 3 else 126
+        a.line([(720 + r0*math.cos(t), 490 + r0*math.sin(t)), (720 + 152*math.cos(t), 490 + 152*math.sin(t))], w=LW - 3)
+    a.line([(720, 490), (720, 390)]); a.line([(720, 490), (790, 530)])
+    a.roundrect(960, 560, 1080, 680, 16)
+    a.line([(990, 600), (1010, 600)], w=LW - 3); a.line([(1030, 640), (1050, 640)], w=LW - 3)
+    a.sparkle(1060, 320, 40)
+
 if __name__ == '__main__':
     out = sys.argv[1]
     for name, f in SCENES.items():
