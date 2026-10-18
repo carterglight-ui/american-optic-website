@@ -1,0 +1,1059 @@
+<title>ASAP Dental Care App</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=Yellowtail&display=swap">
+<style>
+/* Layout: a phone-sized patient app on the office's mint wall color. Desktop shows a framed phone beside a short guide; phones get the app full-screen. */
+:root{
+  --bg:#E3ECEA;          /* treatment-room wall mint */
+  --surface:#F6F9F9;     /* app background */
+  --card:#FFFFFF;
+  --ink:#13304A;         /* sign navy */
+  --muted:#557081;
+  --line:#D9E4E6;
+  --brand:#236A8B;       /* logo blue */
+  --brand-soft:#E3F0F5;
+  --on-brand:#FFFFFF;
+  --script:#1F6FC5;      /* "Welcomes You" blue */
+  --wainscot:#7C9FAE;    /* wainscot blue */
+  --teal:#006778;        /* Jaguars teal */
+  --gold:#C99A2E;        /* Jaguars gold */
+  --good:#2E7D5B;
+  --warn:#B4541A;
+  --frame:#0E1A22;
+  --shadow:0 1px 2px rgba(19,48,74,.06),0 6px 20px rgba(19,48,74,.08);
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-script:"Yellowtail","Brush Script MT",cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B161D;--surface:#0F1F29;--card:#162B37;--ink:#E4EEF2;--muted:#94AEBB;--line:#264050;
+  --brand:#5AAFD4;--brand-soft:#173847;--on-brand:#06202C;--script:#74ABF0;--wainscot:#6E93A3;
+  --teal:#3BB0BF;--gold:#E0B44E;--good:#5CC08F;--warn:#F08A4B;--frame:#000;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B161D;--surface:#0F1F29;--card:#162B37;--ink:#E4EEF2;--muted:#94AEBB;--line:#264050;
+  --brand:#5AAFD4;--brand-soft:#173847;--on-brand:#06202C;--script:#74ABF0;--wainscot:#6E93A3;
+  --teal:#3BB0BF;--gold:#E0B44E;--good:#5CC08F;--warn:#F08A4B;--frame:#000;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--script);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+.ico{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Stage */
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:56px;padding-block:32px}
+.guide{max-width:330px;display:flex;flex-direction:column;gap:18px}
+.guide img{width:190px}
+.guide h1{font-family:var(--f-display);font-size:34px;line-height:1.05;letter-spacing:.01em;text-transform:uppercase}
+.guide p{color:var(--muted)}
+.guide ul{margin:0;padding-left:18px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.guide .note{font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+.reset{align-self:flex-start;background:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;color:var(--muted)}
+
+.phone{width:390px;height:min(844px,calc(100vh - 64px));min-height:640px;border-radius:52px;background:var(--frame);padding:12px;box-shadow:0 30px 60px rgba(14,26,34,.25);flex:none;position:relative}
+.screen{position:relative;height:100%;border-radius:40px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column}
+.statusbar{height:44px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;position:relative;z-index:5}
+.statusbar::after{content:"";position:absolute;left:50%;top:10px;width:110px;height:30px;border-radius:20px;background:var(--frame);transform:translateX(-50%)}
+.statusbar .sig{display:flex;gap:5px;align-items:center}
+.statusbar .sig i{display:block;width:4px;background:currentColor;border-radius:1px}
+
+@media (max-width:760px){
+  .guide{display:none}
+  .stage{padding-block:0;display:block;min-height:0;height:100%}
+  body{padding-left:0;padding-right:0}
+  .phone{width:100%;height:100%;min-height:0;border-radius:0;padding:0;box-shadow:none;background:var(--surface)}
+  .screen{border-radius:0}
+  .statusbar{display:none}
+}
+
+/* Views */
+.views{flex:1;min-height:0;position:relative}
+.view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:4px 20px 28px;display:flex;flex-direction:column;gap:18px;-webkit-overflow-scrolling:touch}
+.view>*{flex-shrink:0}
+.view.anim{animation:in .28s ease}
+@keyframes in{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view.anim{animation:none}}
+
+.topbar{display:flex;align-items:center;gap:12px;min-height:44px;position:sticky;top:-4px;background:var(--surface);z-index:3;margin:0 -20px;padding:4px 20px 6px}
+.topbar h2{font-family:var(--f-display);font-size:26px;text-transform:uppercase;letter-spacing:.02em;flex:1;line-height:1}
+.iconbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;flex:none;position:relative}
+.badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;border-radius:9px;background:var(--warn);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.eyebrow{font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--muted)}
+.section{display:flex;flex-direction:column;gap:10px}
+.section-head{display:flex;justify-content:space-between;align-items:baseline}
+.link{background:none;border:0;padding:0;color:var(--brand);font-weight:700;font-size:14px}
+.card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:16px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:14px 18px;font-weight:800;font-size:15px;background:var(--brand);color:var(--on-brand);text-decoration:none}
+.btn.block{width:100%}
+.btn.ghost{background:var(--brand-soft);color:var(--brand)}
+.btn.line{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:700;font-size:13px}
+.field input,.field textarea{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;width:100%}
+.field textarea{min-height:90px;resize:vertical}
+
+/* Onboarding */
+.onboard{padding:0;gap:0}
+.ob-hero{position:relative;height:46%;min-height:300px;flex:none;background:url(img/welcome-wall.jpg) center 30%/cover}
+.ob-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,var(--surface) 100%)}
+.ob-body{padding:0 24px 28px;display:flex;flex-direction:column;gap:16px;margin-top:-40px;position:relative;z-index:1;flex:1}
+.ob-logo{width:150px;background:#fff;border-radius:22px;padding:10px 14px;box-shadow:var(--shadow)}
+.script{font-family:var(--f-script);color:var(--script);font-size:40px;line-height:1;font-weight:400}
+.partner{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:14px;line-height:1.1}
+.partner img{width:46px}
+.partner .bar{width:2px;height:30px;background:var(--ink);opacity:.7}
+.ob-actions{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.steps-dots{display:flex;gap:6px}
+.steps-dots i{height:5px;border-radius:3px;background:var(--line);flex:1}
+.steps-dots i.on{background:var(--brand)}
+.feel{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.feel button{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.feel button b{font-size:14px}
+.feel button span{font-size:12px;color:var(--muted)}
+.feel button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft)}
+
+/* Home */
+.hello{display:flex;align-items:center;gap:12px;padding-top:6px}
+.hello .who{flex:1;min-width:0}
+.hello .script{font-size:34px}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:grid;place-items:center;font-weight:800;border:0;flex:none}
+.appt{background:var(--brand);color:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+:root .appt{color:var(--on-brand)}
+.appt::after{content:"";position:absolute;right:-30px;bottom:-40px;width:150px;height:150px;border-radius:50%;border:22px solid rgba(255,255,255,.08)}
+.appt .when{font-family:var(--f-display);font-size:30px;font-weight:800;line-height:1;text-transform:uppercase}
+.appt .row{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.appt .btn{background:rgba(255,255,255,.18);color:inherit;padding:10px 14px;font-size:14px}
+.appt .btn.solid{background:var(--card);color:var(--brand)}
+.countdown{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:700;opacity:.9}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.quick button{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:700;text-align:center;line-height:1.15}
+.quick .q{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:var(--card);box-shadow:var(--shadow);color:var(--brand)}
+.comfort-card{display:flex;gap:14px;align-items:center;background:var(--brand-soft);border-radius:20px;padding:16px;border:0;text-align:left;width:100%}
+.comfort-card .bubble{width:52px;height:52px;border-radius:50%;background:var(--card);display:grid;place-items:center;color:var(--brand);flex:none}
+.comfort-card b{display:block;font-size:16px}
+.fact{display:flex;flex-direction:column;gap:8px}
+.fact .flip{font-size:13px;font-weight:800;color:var(--brand);background:none;border:0;padding:0;align-self:flex-start}
+.jags{border-radius:22px;overflow:hidden;position:relative;min-height:190px;display:flex;align-items:flex-end;background:#0a2d38 url(img/jaxson-car.jpg) center 35%/cover;color:#fff}
+.jags::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,40,50,0) 25%,rgba(0,40,50,.92) 100%)}
+.jags .in{position:relative;padding:16px;display:flex;gap:12px;align-items:center}
+.jags img{width:54px;flex:none}
+.jags b{font-family:var(--f-display);font-size:20px;text-transform:uppercase;line-height:1;display:block;letter-spacing:.02em}
+.jags span{font-size:13px;opacity:.9}
+.review-card{display:flex;gap:14px;align-items:center}
+.stars{display:flex;gap:4px;color:var(--gold)}
+.stars svg{width:20px;height:20px;fill:currentColor;stroke:none}
+
+/* Book */
+.stepper{display:flex;gap:6px}
+.stepper i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.stepper i.on{background:var(--brand)}
+.reasons{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reason{border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:8px;min-height:96px}
+.reason .ico{color:var(--brand)}
+.reason b{font-size:14px;line-height:1.2}
+.reason span{font-size:12px;color:var(--muted)}
+.reason[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft)}
+.reason.urgent .ico{color:var(--warn)}
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin:0 -20px;padding-left:20px;padding-right:20px;scrollbar-width:none}
+.days::-webkit-scrollbar{display:none}
+.day{flex:none;width:58px;border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:2px;font-variant-numeric:tabular-nums}
+.day small{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.day b{font-family:var(--f-display);font-size:24px;line-height:1}
+.day[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.day[aria-pressed="true"] small{color:inherit;opacity:.85}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slot{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:10px 0;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.slot[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.slot:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+.toggle-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.toggle-row:last-child{border-bottom:0}
+.toggle-row .txt{flex:1;min-width:0}
+.toggle-row b{display:block;font-size:14px}
+.toggle-row span{font-size:12px;color:var(--muted)}
+.switch{width:46px;height:28px;border-radius:14px;border:0;background:var(--line);position:relative;flex:none;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch[aria-checked="true"]{background:var(--good)}
+.switch[aria-checked="true"]::after{transform:translateX(18px)}
+.summary{display:flex;flex-direction:column;gap:10px}
+.summary .r{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.summary .r span{color:var(--muted)}
+.summary .r b{text-align:right}
+.success{align-items:center;text-align:center;justify-content:center}
+.success .tick{width:84px;height:84px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+.success .tick .ico{width:44px;height:44px;stroke-width:2.4}
+
+/* Learn */
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--card);border-radius:12px;padding:4px;box-shadow:var(--shadow)}
+.seg button{border:0;background:none;border-radius:9px;padding:9px;font-weight:800;font-size:14px;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--brand);color:var(--on-brand)}
+.progress{display:flex;align-items:center;gap:12px}
+.meter{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--gold);border-radius:4px;transition:width .4s}
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.svc{border:0;padding:0;background:var(--card);border-radius:18px;box-shadow:var(--shadow);text-align:left;overflow:hidden;display:flex;flex-direction:column}
+.svc .art{height:86px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);position:relative;background-size:cover;background-position:center}
+.svc .art .ico{width:34px;height:34px;stroke-width:1.5}
+.svc .art .done{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:var(--good);color:#fff;display:grid;place-items:center}
+.svc .art .done .ico{width:14px;height:14px;stroke-width:3}
+.svc .t{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px}
+.svc .t b{font-size:14px;line-height:1.2}
+.svc .t span{font-size:12px;color:var(--muted)}
+.detail-hero{margin:0 -20px;height:200px;background:var(--brand-soft) center/cover;position:relative;display:grid;place-items:center;color:var(--brand);flex:none}
+.detail-hero .ico{width:72px;height:72px;stroke-width:1.2}
+.detail-hero .back{position:absolute;top:10px;left:16px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+.stat small{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stat b{font-family:var(--f-display);font-size:22px;line-height:1.1}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.timeline li{display:grid;grid-template-columns:30px 1fr;gap:12px;padding-bottom:14px;position:relative}
+.timeline li::before{content:"";position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--line)}
+.timeline li:last-child::before{display:none}
+.timeline .n{width:30px;height:30px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:grid;place-items:center;font-weight:800;font-size:13px}
+.timeline p{padding-top:4px;font-size:14px}
+.ouch{border-left:4px solid var(--wainscot);padding:4px 0 4px 14px;display:flex;flex-direction:column;gap:4px}
+.myth{perspective:900px;border:0;padding:0;background:none;text-align:left;width:100%}
+.myth .inner{position:relative;min-height:150px;transition:transform .5s;transform-style:preserve-3d}
+.myth[aria-pressed="true"] .inner{transform:rotateY(180deg)}
+.myth .face{position:absolute;inset:0;border-radius:20px;padding:18px;backface-visibility:hidden;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.myth .front{background:var(--ink);color:var(--surface)}
+.myth .back{background:var(--good);color:#fff;transform:rotateY(180deg)}
+.myth .tag{font-family:var(--f-display);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:13px;opacity:.8}
+.myth .q{font-size:17px;font-weight:800;line-height:1.3}
+@media (prefers-reduced-motion:reduce){.myth .inner{transition:none}}
+.quiz{display:flex;flex-direction:column;gap:8px}
+.quiz button{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;text-align:left;font-weight:700;font-size:14px}
+.quiz button.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--card))}
+.quiz button.wrong{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,var(--card))}
+.quiz .fb{font-size:14px;font-weight:700}
+.video{display:grid;grid-template-columns:132px 1fr;gap:12px;align-items:center;background:none;border:0;padding:0;text-align:left;width:100%}
+.video .thumb{aspect-ratio:16/10;max-width:100%;border-radius:14px;background:center/cover;position:relative;display:grid;place-items:center}
+.video .thumb::after{content:"";position:absolute;inset:0;border-radius:14px;background:rgba(10,30,40,.25)}
+.video .play{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.92);color:#13304A;display:grid;place-items:center;position:relative;z-index:1}
+.video .play .ico{width:18px;height:18px;fill:currentColor;stroke:none;margin-left:2px}
+.video b{font-size:14px;line-height:1.25;display:block}
+.video span{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:999px;background:var(--brand-soft);color:var(--brand)}
+.pill.gold{background:color-mix(in srgb,var(--gold) 18%,var(--card));color:var(--gold)}
+
+/* Chat */
+.chat{padding-bottom:0;gap:12px}
+.ai-head{display:flex;align-items:center;gap:12px}
+.ai-face{width:44px;height:44px;border-radius:14px;background:var(--brand);color:var(--on-brand);display:grid;place-items:center;flex:none}
+.disclaimer{font-size:12px;color:var(--muted);background:var(--card);border-radius:12px;padding:10px 12px;border:1px solid var(--line)}
+.msgs{display:flex;flex-direction:column;gap:10px;flex:1 0 auto}
+.msg{max-width:86%;padding:11px 14px;border-radius:18px;font-size:14.5px;white-space:normal;overflow-wrap:anywhere}
+.msg.ai{background:var(--card);box-shadow:var(--shadow);border-bottom-left-radius:6px;align-self:flex-start}
+.msg.me{background:var(--brand);color:var(--on-brand);border-bottom-right-radius:6px;align-self:flex-end}
+.msg ul{margin:6px 0 0;padding-left:18px}
+.msg p+p{margin-top:8px}
+.msg.thinking{color:var(--muted);font-style:italic}
+.alert{background:color-mix(in srgb,var(--warn) 14%,var(--card));border:1.5px solid var(--warn);border-radius:16px;padding:12px 14px;font-size:14px;display:flex;flex-direction:column;gap:4px;align-self:stretch}
+.alert b{color:var(--warn)}
+.composer{position:sticky;bottom:0;margin:0 -20px;padding:10px 20px 14px;background:var(--surface);display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line)}
+.composer .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.composer .chip{flex:none;font-size:13px;padding:7px 12px}
+.composer form{display:flex;gap:8px}
+.composer input{flex:1;min-width:0;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:12px 16px}
+.composer .send{width:46px;height:46px;border-radius:50%;border:0;background:var(--brand);color:var(--on-brand);display:grid;place-items:center;flex:none}
+
+/* Comfort */
+.breathe{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.orb-wrap{width:200px;height:200px;display:grid;place-items:center;position:relative}
+.orb{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 35% 35%,color-mix(in srgb,var(--brand) 45%,#fff),var(--brand));transition:transform 4s ease-in-out;display:grid;place-items:center;color:#fff;font-family:var(--f-display);font-weight:800;font-size:22px}
+.orb-ring{position:absolute;inset:0;border-radius:50%;border:2px dashed var(--line)}
+.orb-label{font-family:var(--f-display);font-size:24px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;min-height:30px}
+.tour{display:flex;gap:12px;overflow-x:auto;margin:0 -20px;padding:0 20px 6px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.tour::-webkit-scrollbar{display:none}
+.tour figure{flex:none;width:250px;margin:0;scroll-snap-align:start;display:flex;flex-direction:column;gap:6px}
+.tour img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px;display:block}
+.tour figcaption b{display:block;font-size:14px}
+.tour figcaption span{font-size:12px;color:var(--muted)}
+.team-photo{width:100%;border-radius:18px;display:block}
+.docs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.doc{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12px}
+.doc .ph{width:64px;height:64px;border-radius:50%;background:var(--brand-soft);border:2px dashed var(--wainscot);display:grid;place-items:center;color:var(--wainscot)}
+.signal{display:flex;gap:14px;align-items:center;background:var(--ink);color:var(--surface);border-radius:20px;padding:16px}
+.signal .hand{width:52px;height:52px;border-radius:50%;background:var(--gold);color:#13304A;display:grid;place-items:center;flex:none;font-family:var(--f-display);font-weight:800;font-size:13px;line-height:1;text-align:center;text-transform:uppercase}
+
+/* Profile / notifications */
+.me-head{display:flex;gap:14px;align-items:center}
+.me-head .avatar{width:60px;height:60px;font-size:22px}
+.list{display:flex;flex-direction:column}
+.list .item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.list .item:last-child{border-bottom:0}
+.list .dot{width:36px;height:36px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:none}
+.list .item .txt{flex:1;min-width:0}
+.list .item b{display:block;font-size:14px}
+.list .item span{font-size:13px;color:var(--muted)}
+.list .item time{font-size:12px;color:var(--muted);flex:none}
+.unread b::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warn);margin-left:6px;vertical-align:middle}
+
+/* Tab bar */
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--line);padding:8px 6px 22px}
+.tabbar button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--muted);padding:4px 0}
+.tabbar button[aria-current="page"]{color:var(--brand)}
+.tabbar .ai-tab .ico{background:var(--brand);color:var(--on-brand);border-radius:12px;padding:6px;width:36px;height:36px;margin-top:-14px;box-shadow:var(--shadow)}
+@media (max-width:760px){.tabbar{padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}}
+
+/* Sheet, push banner, toast */
+.scrim{position:absolute;inset:0;background:rgba(8,20,28,.45);z-index:20;display:flex;align-items:flex-end}
+.sheet{background:var(--surface);width:100%;border-radius:26px 26px 0 0;padding:10px 20px 28px;max-height:88%;overflow-y:auto;display:flex;flex-direction:column;gap:14px;animation:up .25s ease}
+.sheet .grab{width:40px;height:5px;border-radius:3px;background:var(--line);align-self:center}
+@keyframes up{from{transform:translateY(40px);opacity:.5}to{transform:none;opacity:1}}
+.bigstars{display:flex;gap:8px;justify-content:center}
+.bigstars button{background:none;border:0;padding:2px;color:var(--line)}
+.bigstars button.on{color:var(--gold)}
+.bigstars svg{width:40px;height:40px;fill:currentColor}
+.push{position:absolute;left:10px;right:10px;top:10px;z-index:30;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(14px);border-radius:20px;padding:12px 14px;display:flex;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:drop .4s ease;border:0;text-align:left}
+.push img{width:38px;height:38px;border-radius:10px;background:#fff;padding:3px;object-fit:contain;flex:none}
+.push .txt{flex:1;min-width:0;font-size:13px}
+.push .txt b{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.push .txt strong{display:block;font-size:14px}
+@keyframes drop{from{transform:translateY(-120%)}to{transform:none}}
+.toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:999px;font-size:13px;font-weight:700;z-index:40;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 21V5M8 7h7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1.1-4.6A8 8 0 1121 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9a4.8 4.8 0 019-3 4.8 4.8 0 019 3c-2 4.6-9 9-9 9z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/><path d="M11.5 13.5L20 4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-tooth" viewBox="0 0 24 24"><path d="M7 3c-2.5 0-4 2-4 4.6 0 3 1.5 4.4 2 7 .5 2.8 1 6.4 2.8 6.4 1.6 0 1.7-3.6 2.4-5.4.4-1 1.2-1 1.6 0 .7 1.8.8 5.4 2.4 5.4 1.8 0 2.3-3.6 2.8-6.4.5-2.6 2-4 2-7C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/></symbol>
+  <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h11a3 3 0 10-3-3M3 15h15a3 3 0 11-3 3M3 12h7"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M4 17l-1-9 5 4 4-7 4 7 5-4-1 9z"/><path d="M4 21h16"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.4 6 11a6 6 0 01-12 0c0-4.6 6-11 6-11z"/></symbol>
+  <symbol id="i-root" viewBox="0 0 24 24"><path d="M7 3c-2.5 0-4 2-4 4.6 0 3 1.5 4.4 2 7 .5 2.8 1 6.4 2.8 6.4 1.6 0 1.7-3.6 2.4-5.4.4-1 1.2-1 1.6 0 .7 1.8.8 5.4 2.4 5.4 1.8 0 2.3-3.6 2.8-6.4.5-2.6 2-4 2-7C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/><path d="M10 9v6M14 9v6"/></symbol>
+  <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14c1 1.5 2.4 2.2 4 2.2s3-.7 4-2.2M9 9.5h.01M15 9.5h.01"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/><circle cx="12" cy="12" r="3.5"/></symbol>
+  <symbol id="i-screw" viewBox="0 0 24 24"><path d="M8 3h8l-1 5H9z"/><path d="M9 10h6M9.5 13h5M10 16h4M11 19h2l-1 2z"/></symbol>
+  <symbol id="i-pull" viewBox="0 0 24 24"><path d="M8 10c-2 0-3-1.4-3-3.2S6.2 4 8 4c1.4 0 2 .7 4 .7S14.6 4 16 4c1.8 0 3 1 3 2.8S18 10 16 10"/><path d="M12 13v8M9 18l3 3 3-3"/></symbol>
+  <symbol id="i-denture" viewBox="0 0 24 24"><path d="M3 10c0-3 4-6 9-6s9 3 9 6"/><path d="M3 10h18v2a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M7 10v4M11 10v4M15 10v4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></symbol>
+  <symbol id="i-google" viewBox="0 0 24 24"><path d="M20 12.2c0-.6 0-1.1-.1-1.7H12v3.3h4.5a3.9 3.9 0 01-1.7 2.5v2h2.7c1.6-1.4 2.5-3.6 2.5-6.1z"/><path d="M12 20c2.3 0 4.2-.8 5.5-2.1l-2.7-2c-.7.5-1.7.8-2.8.8-2.2 0-4-1.5-4.7-3.4H4.6v2.1A8 8 0 0012 20z"/><path d="M7.3 13.3a4.8 4.8 0 010-3V8.2H4.6a8 8 0 000 7.2z"/><path d="M12 6.9c1.2 0 2.3.4 3.2 1.2l2.4-2.4A8 8 0 004.6 8.2l2.7 2.1C8 8.4 9.8 6.9 12 6.9z"/></symbol>
+</svg>
+
+<div class="stage">
+  <aside class="guide">
+    <img src="img/asap-logo.png" alt="ASAP Dental Care logo">
+    <h1>Patient app prototype</h1>
+    <p>Tap through it like a real phone. Everything works in this demo except real scheduling and real texts, which come once we connect your systems.</p>
+    <ul>
+      <li>Create an account and say how you feel about the dentist</li>
+      <li>Book a visit and watch a reminder arrive</li>
+      <li>Read Smile School cards, flip the myths, take the quizzes</li>
+      <li>Ask the AI dental guide anything</li>
+      <li>Try the breathing exercise and office tour</li>
+      <li>Leave a Google review from the profile tab</li>
+    </ul>
+    <p class="note">Doctor photos, video links, phone number and the Google review link are placeholders until you send them.</p>
+    <button class="reset" id="resetDemo" type="button">Restart demo from sign-up</button>
+  </aside>
+
+  <div class="phone">
+    <div class="screen" id="screen">
+      <div class="statusbar" aria-hidden="true"><span id="clock">9:41</span><span class="sig"><i style="height:5px"></i><i style="height:8px"></i><i style="height:11px"></i><i style="height:13px"></i></span></div>
+      <div class="views" id="views"></div>
+      <nav class="tabbar" id="tabbar" aria-label="App sections">
+        <button data-tab="home"><svg class="ico"><use href="#i-home"/></svg>Home</button>
+        <button data-tab="book"><svg class="ico"><use href="#i-cal"/></svg>Book</button>
+        <button data-tab="ask" class="ai-tab"><svg class="ico"><use href="#i-chat"/></svg>Ask AI</button>
+        <button data-tab="learn"><svg class="ico"><use href="#i-book"/></svg>Learn</button>
+        <button data-tab="comfort"><svg class="ico"><use href="#i-heart"/></svg>Comfort</button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const icon = (n, cls = 'ico') => `<svg class="${cls}"><use href="#i-${n}"/></svg>`;
+const STAR = '<svg viewBox="0 0 24 24"><use href="#i-star"/></svg>';
+
+/* Placeholders the practice still needs to send */
+const OFFICE_PHONE = '(904) 000-0000';
+const GOOGLE_REVIEW_URL = 'https://www.google.com/search?q=ASAP+Dental+Care+Jacksonville+reviews';
+
+/* ---------- Content ---------- */
+const SERVICES = [
+  {id:'cleaning', name:'Cleanings & Checkups', ico:'smile', img:'img/exam.jpg', time:'45–60 min', visits:'Every 6 months',
+   what:'A professional cleaning removes the hardened plaque (tartar) your toothbrush can\'t, and the doctor checks every tooth, your gums and your bite.',
+   ouch:'Usually not. You\'ll feel scraping and some pressure. If a spot is sensitive, say so and we\'ll slow down or numb it.',
+   steps:['A quick chat about your health and anything bothering you','X-rays if you\'re due. They take seconds.','Your hygienist removes plaque and tartar','Polish and floss for that smooth-teeth feeling','The doctor does an exam and walks you through anything they see'],
+   myth:'If my gums bleed, I should stop flossing.', fact:'Keep going. Bleeding usually means inflamed gums. Gentle daily flossing typically calms them down within one to two weeks.',
+   quiz:{q:'How often do most people need a cleaning?', a:['Every 6 months','Once every 2 years','Only when something hurts'], c:0, why:'Twice a year catches small problems while they\'re still small and cheap to fix.'}},
+  {id:'fillings', name:'Fillings', ico:'tooth', time:'30–60 min', visits:'1 visit',
+   what:'A filling repairs a cavity. We remove the decayed part and rebuild the tooth with a tooth-colored material that blends right in.',
+   ouch:'We numb the area first. You\'ll feel pressure and vibration, not pain. Most people say the numbing pinch is the worst part, and it lasts a second.',
+   steps:['Numbing gel, then a gentle numbing shot','Remove the decay','Place tooth-colored filling in thin layers','A blue light hardens each layer in seconds','Shape it and check your bite'],
+   myth:'A cavity that doesn\'t hurt can wait.', fact:'Cavities often don\'t hurt until they\'re deep. A small cavity is a quick filling; waiting can turn it into a root canal.',
+   quiz:{q:'What does the blue light do?', a:['Whitens the tooth','Hardens the filling','Kills germs'], c:1, why:'The light sets the filling material so it\'s hard before you leave the chair.'}},
+  {id:'crowns', name:'Crowns & Bridges', ico:'crown', img:'img/lab.jpg', time:'2 visits', visits:'Made in our lab',
+   what:'A crown is a custom cap that covers and protects a weak or cracked tooth. A bridge fills a gap using crowns on the teeth beside it. Ours are made in our own in-house dental lab.',
+   ouch:'The tooth is numbed while we shape it. Afterward it may feel a little sore for a day or two.',
+   steps:['Numb the tooth','Shape it so the crown fits over it','Take an impression for our lab','Wear a temporary crown while yours is made','Fit, adjust and cement your final crown'],
+   myth:'Crowns always look fake.', fact:'Modern crowns are color-matched to your teeth. Because our lab is in the building, our techs can fine-tune shade and shape.',
+   quiz:{q:'What is a crown\'s main job?', a:['Whiten a tooth','Cover and protect a weak tooth','Replace a missing root'], c:1, why:'A crown wraps the whole tooth so it can handle chewing again.'}},
+  {id:'rootcanal', name:'Root Canals', ico:'root', time:'60–90 min', visits:'1–2 visits',
+   what:'When the nerve inside a tooth gets infected, a root canal cleans it out and seals it, so you keep your natural tooth instead of losing it.',
+   ouch:'For most people it feels about like a filling. The toothache that sends you in is usually much worse than the treatment, which is what relieves it.',
+   steps:['Numb the area well','Make a small opening in the top of the tooth','Clean out the infected nerve tissue','Fill and seal the canals','Usually a crown afterward to protect the tooth'],
+   myth:'Root canals are the most painful thing a dentist does.', fact:'With modern numbing, most patients compare it to getting a filling. The pain people remember is the infection before treatment.',
+   quiz:{q:'A root canal mainly helps you…', a:['Keep your natural tooth','Straighten your teeth','Whiten a dark tooth'], c:0, why:'It saves the tooth so you don\'t need an extraction.'}},
+  {id:'extractions', name:'Extractions', ico:'pull', time:'20–60 min', visits:'1 visit',
+   what:'Sometimes a tooth is too damaged to save, or wisdom teeth don\'t have room. We remove it gently and help you plan what comes next.',
+   ouch:'You\'ll be numb, so you feel pressure, not sharp pain. Mild soreness for a few days is normal and usually handled with over-the-counter pain relief.',
+   steps:['Numb the tooth and gums','Gently loosen the tooth','Remove it and place gauze','Go over aftercare with you','Talk through replacement options if needed'],
+   myth:'Drinking through a straw helps after an extraction.', fact:'Skip straws for a few days. The suction can pull out the blood clot that protects the spot while it heals.',
+   quiz:{q:'After an extraction, what should you avoid for a few days?', a:['Drinking water','Using a straw','Resting'], c:1, why:'Suction can dislodge the clot and cause a painful "dry socket."'}},
+  {id:'dentures', name:'Dentures', ico:'denture', img:'img/lab-polish.jpg', time:'Several visits', visits:'Made in our lab',
+   what:'Full or partial dentures replace missing teeth. Ours are designed, made and adjusted by our own lab techs, right here in the office.',
+   ouch:'Getting dentures doesn\'t hurt. New ones can rub at first; quick adjustments fix sore spots.',
+   steps:['Measure and take impressions','Try in a wax model to check fit and look','Our lab makes your final dentures','Fit and adjust','Follow-up visits to fine-tune comfort'],
+   myth:'Dentures are one-size-fits-all.', fact:'Every set is custom. With an in-house lab we can make adjustments faster than offices that mail them out.',
+   quiz:{q:'What\'s special about ASAP\'s dentures?', a:['They\'re made in our own lab','They\'re shipped overseas','They\'re one standard size'], c:0, why:'Our lab team is down the hall, so fittings and fixes move fast.'}},
+  {id:'implants', name:'Implants', ico:'screw', time:'A few months', visits:'Multiple visits',
+   what:'An implant is a small post placed in the jaw that acts like a tooth root. Once it heals, a crown goes on top. It looks and works like a natural tooth.',
+   ouch:'Placement is done with numbing. Most people are surprised how manageable recovery is, often less sore than an extraction.',
+   steps:['3D X-ray to plan the exact spot','Place the implant post','Heal for a few months while it bonds to bone','Attach the connector','Place your custom crown'],
+   myth:'Implants are only for older people.', fact:'Anyone with a missing tooth and healthy bone can be a candidate. The 3D scan helps us check.',
+   quiz:{q:'What does an implant replace?', a:['The tooth root','Your gums','Tooth enamel only'], c:0, why:'The post acts as a new root that supports a crown.'}},
+  {id:'whitening', name:'Whitening', ico:'spark', time:'About 1 hour', visits:'1 visit or take-home',
+   what:'Professional whitening safely lifts stains from coffee, tea and time, with stronger and more even results than store-bought strips.',
+   ouch:'Some people feel temporary sensitivity for a day or two. We can use a desensitizer if you\'re prone to it.',
+   steps:['Check your teeth are healthy enough to whiten','Protect your gums','Apply the whitening gel','Rinse and compare shades','Tips to keep it bright'],
+   myth:'Whitening damages your enamel.', fact:'Professional whitening, done as directed, doesn\'t harm enamel. Sensitivity is temporary.',
+   quiz:{q:'Common side effect of whitening?', a:['Loose teeth','Temporary sensitivity','Cavities'], c:1, why:'It fades within a day or two.'}},
+  {id:'emergency', name:'Emergency Care', ico:'bolt', time:'Same day', visits:'Call us first',
+   what:'We\'re called ASAP for a reason. Toothaches, broken teeth, lost fillings and knocked-out teeth: call and we\'ll work to see you fast.',
+   ouch:'Our first goal is getting you out of pain. We numb and treat the problem, or make it comfortable until the full fix.',
+   steps:['Call the office and tell us what happened','We find you the soonest spot','Quick exam and an X-ray of the area','Get you out of pain','Plan the permanent fix'],
+   myth:'A knocked-out tooth can\'t be saved.', fact:'It often can if you act fast. Hold it by the top (not the root), keep it in milk, and get to us within an hour.',
+   quiz:{q:'Where should you keep a knocked-out tooth?', a:['In a paper towel','In milk','In tap water'], c:1, why:'Milk keeps the root cells alive longer than water or a dry towel.'}},
+  {id:'xray', name:'3D X-Rays', ico:'scan', img:'img/3d-xray.jpg', time:'Under a minute', visits:'As needed',
+   what:'Our KaVo OP 3D scanner takes a full 3D picture of your teeth and jaw. It helps plan implants, root canals and wisdom teeth precisely.',
+   ouch:'Nothing to feel. You stand still, bite gently on a guide, and the arm rotates around your head. No tunnel, no enclosed space.',
+   steps:['Remove earrings and glasses','Step in and bite on the guide','Stand still while the arm circles you','Done in seconds','The doctor shows you the 3D view'],
+   myth:'Dental X-rays give you a big dose of radiation.', fact:'Modern digital dental X-rays use very low doses. Tell us if you are or might be pregnant, and we\'ll plan around it.',
+   quiz:{q:'What do you do during a 3D X-ray?', a:['Lie in a tunnel','Stand still and bite a guide','Hold your breath for a minute'], c:1, why:'It\'s an open machine; you just stand still for a few seconds.'}},
+];
+
+const VIDEOS = [
+  {t:'Meet the ASAP team', d:'Say hi before you visit', img:'img/team.jpg', tag:'Team'},
+  {t:'Tour our office', d:'From the front door to the chair', img:'img/waiting-room.jpg', tag:'Tour'},
+  {t:'What happens at a cleaning', d:'Step by step, no surprises', img:'img/exam.jpg', tag:'First visit'},
+  {t:'Inside our dental lab', d:'Where your crowns and dentures are made', img:'img/lab-polish.jpg', tag:'Lab'},
+  {t:'The 3D X-ray in action', d:'Watch the scanner do its thing', img:'img/3d-xray.jpg', tag:'Tech'},
+  {t:'Jaxson visits ASAP', d:'The Jaguars\' mascot stops by', img:'img/jaxson-stadium.jpg', tag:'Jaguars'},
+];
+
+const TOUR = [
+  ['img/welcome-wall.jpg','The front desk','This wall greets you when you walk in.'],
+  ['img/waiting-room.jpg','The waiting room','Comfy chairs, Wi-Fi and a TV.'],
+  ['img/operatories.jpg','Treatment area','Bright, open and calm blue.'],
+  ['img/treatment-room-2.jpg','Your chair','TVs on the wall to help pass the time.'],
+  ['img/3d-xray.jpg','3D X-ray room','Open machine, no tunnel.'],
+  ['img/lab.jpg','Our dental lab','Crowns and dentures made in-house.'],
+];
+
+const FACTS = [
+  ['Tooth enamel is the hardest substance in your body.','Harder than bone. But it can\'t grow back, which is why we protect it.'],
+  ['You make about a quart of saliva a day.','Saliva washes away food and neutralizes acid. It\'s your mouth\'s built-in cleaning crew.'],
+  ['Brushing right after soda can do more harm than good.','Acid softens enamel for a bit. Rinse with water and wait 30 minutes before you brush.'],
+  ['Your tongue print is as unique as your fingerprint.','Brush it too. It holds a lot of the bacteria behind bad breath.'],
+];
+
+const REASONS = [
+  ['cleaning','Cleaning & checkup','Every 6 months','smile'],
+  ['emergency','Toothache or emergency','Soonest available','bolt'],
+  ['consult','New patient visit','Exam + X-rays','user'],
+  ['cosmetic','Whitening or cosmetic','Smile goals','spark'],
+  ['crowns','Crown, bridge or filling','Follow-up care','crown'],
+  ['dentures','Dentures or implants','Consult with our team','denture'],
+];
+
+const COMFORT_OPTS = [
+  ['explain','Explain each step before you do it','No surprises'],
+  ['breaks','Let me take breaks','Raise your left hand anytime'],
+  ['music','I\'ll bring headphones','Music or a show helps'],
+  ['blanket','A blanket, please','Some people like the weight'],
+  ['numb','Check that I\'m fully numb','We\'ll wait and test first'],
+  ['sedation','I\'d like to ask about sedation','We\'ll talk options'],
+];
+
+/* ---------- State ---------- */
+const KEY = 'asap-dental-demo-v1';
+const fresh = () => ({ user:null, appts:[], read:[], quiz:{}, comfort:{explain:true, breaks:true},
+  reminders:{week:true, day:true, hours:true, sms:true, recall:true, news:false},
+  notes:[{id:'n1', t:'Welcome to ASAP Dental Care', d:'Your account is ready. Take a look around.', at:Date.now(), unread:true, ico:'smile'}] });
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || fresh(); } catch { S = fresh(); }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
+
+/* ---------- Router ---------- */
+const viewsEl = $('#views'), tabbar = $('#tabbar'), screen = $('#screen');
+let current = null, stack = [];
+const ROUTES = {};
+function go(name, arg, opts = {}) {
+  if (name === 'book' && bk.step === 3) resetBk();
+  if (!opts.replace && current && !opts.tab) stack.push(current);
+  if (opts.tab) stack = [];
+  current = {name, arg};
+  render();
+}
+function back() { current = stack.pop() || {name:'home'}; render(); }
+function render() {
+  const {name, arg} = current;
+  const html = ROUTES[name](arg);
+  viewsEl.innerHTML = `<section class="view anim ${ROUTES[name].cls || ''}" id="v-${name}">${html}</section>`;
+  const v = viewsEl.firstElementChild;
+  ROUTES[name].after?.(v, arg);
+  const tab = ROUTES[name].tab;
+  tabbar.hidden = !!ROUTES[name].noTabs;
+  tabbar.querySelectorAll('button').forEach(b => b.toggleAttribute('aria-current', false) || (b.dataset.tab === tab && b.setAttribute('aria-current','page')));
+}
+tabbar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(b.dataset.tab, null, {tab:true}); });
+viewsEl.addEventListener('click', e => {
+  const t = e.target.closest('[data-go]');
+  if (t) { e.preventDefault(); go(t.dataset.go, t.dataset.arg); return; }
+  if (e.target.closest('[data-back]')) back();
+});
+
+/* ---------- Helpers ---------- */
+const first = () => (S.user?.name || 'Friend').split(' ')[0];
+const initials = () => (S.user?.name || 'A').split(' ').map(s => s[0]).slice(0,2).join('').toUpperCase();
+const nextAppt = () => S.appts.filter(a => a.at > Date.now()).sort((a,b) => a.at - b.at)[0];
+const fmtDay = ts => new Date(ts).toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
+const fmtTime = ts => new Date(ts).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+const ago = ts => { const m = Math.round((Date.now() - ts) / 60000); return m < 1 ? 'now' : m < 60 ? m + 'm' : m < 1440 ? Math.round(m/60) + 'h' : Math.round(m/1440) + 'd'; };
+const unread = () => S.notes.filter(n => n.unread).length;
+const topbar = (title, {backBtn = true, right = ''} = {}) =>
+  `<div class="topbar">${backBtn ? `<button class="iconbtn" data-back aria-label="Back">${icon('back')}</button>` : ''}<h2>${title}</h2>${right}</div>`;
+function toast(msg) {
+  screen.querySelector('.toast')?.remove();
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; screen.append(t);
+  setTimeout(() => t.remove(), 2400);
+}
+function notify(n) {
+  S.notes.unshift({id:'n' + Date.now(), at:Date.now(), unread:true, ...n}); save();
+  screen.querySelector('.push')?.remove();
+  const p = document.createElement('button'); p.className = 'push'; p.type = 'button';
+  p.innerHTML = `<img src="img/asap-logo.png" alt=""><div class="txt"><b><span>ASAP Dental Care</span><span>now</span></b><strong>${esc(n.t)}</strong>${esc(n.d)}</div>`;
+  p.onclick = () => { p.remove(); go('notes'); };
+  screen.append(p);
+  setTimeout(() => p.remove(), 5200);
+  if (current?.name === 'home') render();
+}
+function sheet(html, after) {
+  const s = document.createElement('div'); s.className = 'scrim';
+  s.innerHTML = `<div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div>`;
+  s.addEventListener('click', e => { if (e.target === s || e.target.closest('[data-close]')) s.remove(); });
+  screen.append(s); after?.(s.firstElementChild, () => s.remove());
+}
+
+/* ---------- Onboarding ---------- */
+ROUTES.welcome = () => `
+  <div class="ob-hero" role="img" aria-label="ASAP Dental Care welcome wall"></div>
+  <div class="ob-body">
+    <img class="ob-logo" src="img/asap-logo.png" alt="ASAP Dental Care">
+    <h1 class="script">Welcomes You</h1>
+    <p class="muted">Book visits, learn what to expect, ask questions anytime, and feel at home before you ever sit in the chair.</p>
+    <div class="partner"><img src="img/jaguars-head.png" alt="Jacksonville Jaguars logo"><span class="bar"></span><span>The Official Dentist of the Jacksonville Jaguars</span></div>
+    <div class="ob-actions">
+      <button class="btn block" data-go="signup">Create my account</button>
+      <button class="btn block line" id="haveAcct">I already have an account</button>
+    </div>
+  </div>`;
+ROUTES.welcome.cls = 'onboard'; ROUTES.welcome.noTabs = true;
+ROUTES.welcome.after = v => { $('#haveAcct', v).onclick = () => { S.user = {name:'Jordan Rivera', email:'jordan@example.com', feel:1}; save(); go('home', null, {tab:true}); toast('Signed in with sample patient'); }; };
+
+let draft = {name:'', phone:'', email:'', dob:'', feel:null};
+ROUTES.signup = () => `
+  ${topbar('Create account')}
+  <div class="steps-dots"><i class="on"></i><i class="on"></i><i></i></div>
+  <form id="suForm" class="section" novalidate>
+    <div class="field"><label for="su-name">Full name</label><input id="su-name" autocomplete="name" value="${esc(draft.name)}" placeholder="Jordan Rivera" required></div>
+    <div class="field"><label for="su-phone">Mobile number</label><input id="su-phone" type="tel" autocomplete="tel" value="${esc(draft.phone)}" placeholder="(904) 555-0123"><span class="small muted">For appointment reminders by text.</span></div>
+    <div class="field"><label for="su-email">Email</label><input id="su-email" type="email" autocomplete="email" value="${esc(draft.email)}" placeholder="you@email.com"></div>
+    <div class="field"><label for="su-dob">Date of birth</label><input id="su-dob" type="date" value="${esc(draft.dob)}"></div>
+    <div class="section">
+      <b>How do you feel about dental visits?</b>
+      <span class="small muted">There's no wrong answer. It helps us take care of you.</span>
+      <div class="feel" id="feel">
+        ${[['Totally fine','Bring it on'],['A little nervous','Some butterflies'],['Pretty anxious','I put it off'],['Very anxious','It\'s really hard']].map(([b,s],i)=>`<button type="button" data-f="${i}" aria-pressed="${draft.feel===i}"><b>${b}</b><span>${s}</span></button>`).join('')}
+      </div>
+    </div>
+    <button class="btn block" id="suGo" type="submit">Create account</button>
+    <p class="small muted" style="text-align:center">Demo only. Nothing you type leaves this page.</p>
+  </form>`;
+ROUTES.signup.noTabs = true;
+ROUTES.signup.after = v => {
+  const f = $('#suForm', v);
+  ['name','phone','email','dob'].forEach(k => $('#su-' + k, v).addEventListener('input', e => draft[k] = e.target.value));
+  $('#feel', v).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; draft.feel = +b.dataset.f; $('#feel', v).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!draft.name.trim()) { $('#su-name', v).focus(); toast('Add your name to continue'); return; }
+    S.user = {name:draft.name.trim(), phone:draft.phone, email:draft.email, dob:draft.dob, feel:draft.feel ?? 0};
+    if (S.user.feel >= 1) S.comfort = {explain:true, breaks:true, numb:true};
+    save(); stack = []; go('home', null, {tab:true});
+    setTimeout(() => notify({t:'You\'re all set, ' + first() + '!', d:'Book your first visit whenever you\'re ready.', ico:'smile'}), 900);
+  });
+};
+
+/* ---------- Home ---------- */
+let factIdx = new Date().getDate() % FACTS.length, factOpen = false;
+ROUTES.home = () => {
+  const a = nextAppt();
+  const nervous = (S.user?.feel ?? 0) >= 1;
+  const hrs = a ? Math.max(0, Math.round((a.at - Date.now()) / 3600000)) : 0;
+  const learned = Object.keys(S.quiz).length;
+  return `
+  <div class="hello">
+    <div class="who"><span class="eyebrow">ASAP Dental Care</span><h1 class="script">Hi, ${esc(first())}</h1></div>
+    <button class="iconbtn" data-go="notes" aria-label="Notifications">${icon('bell')}${unread() ? `<span class="badge">${unread()}</span>` : ''}</button>
+    <button class="avatar" data-go="profile" aria-label="Profile">${esc(initials())}</button>
+  </div>
+  ${a ? `
+  <div class="appt">
+    <span class="eyebrow" style="color:inherit;opacity:.8">Your next visit</span>
+    <div class="when">${fmtDay(a.at)}</div>
+    <div>${fmtTime(a.at)} · ${esc(a.reason)}</div>
+    <div class="countdown">${icon('clock')} ${hrs < 48 ? `In about ${hrs} hours` : `In ${Math.round(hrs/24)} days`} · reminders on</div>
+    <div class="row"><button class="btn solid" data-go="prep">Get ready</button><button class="btn" data-go="book">Reschedule</button></div>
+  </div>` : `
+  <div class="appt">
+    <span class="eyebrow" style="color:inherit;opacity:.8">No visit booked yet</span>
+    <div class="when">Let's get you in</div>
+    <div>Pick a time that works. It takes about 30 seconds.</div>
+    <div class="row"><button class="btn solid" data-go="book">Book a visit</button></div>
+  </div>`}
+  <div class="quick">
+    <button data-go="book"><span class="q">${icon('cal')}</span>Book</button>
+    <button data-go="ask"><span class="q">${icon('chat')}</span>Ask AI</button>
+    <button data-go="videos"><span class="q">${icon('video')}</span>Videos</button>
+    <button data-go="emergency"><span class="q" style="color:var(--warn)">${icon('bolt')}</span>Emergency</button>
+  </div>
+  ${nervous ? `<button class="comfort-card" data-go="comfort"><span class="bubble">${icon('heart')}</span><span><b>Feeling nervous? You're not alone.</b><span class="small muted">Breathing exercise, office tour and your comfort plan.</span></span></button>` : ''}
+  <div class="card fact">
+    <span class="eyebrow">Tooth fact of the day</span>
+    <b>${FACTS[factIdx][0]}</b>
+    ${factOpen ? `<p class="muted">${FACTS[factIdx][1]}</p><button class="flip" id="nextFact">Next fact ${icon('next','ico')}</button>` : `<button class="flip" id="openFact">Tell me more</button>`}
+  </div>
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Smile School</span><button class="link" data-go="learn">See all</button></div>
+    <div class="progress"><div class="meter"><i style="width:${learned/SERVICES.length*100}%"></i></div><span class="small"><b>${learned}</b>/${SERVICES.length} lessons</span></div>
+  </div>
+  <div class="jags">
+    <div class="in"><img src="img/jaguars-head.png" alt=""><div><b>The Official Dentist of the Jacksonville Jaguars</b><span>Duuuval smiles start here.</span></div></div>
+  </div>
+  <div class="card review-card">
+    <div style="flex:1"><b>Had a great visit?</b><p class="small muted">A quick Google review helps other nervous patients find us.</p><div class="stars" style="margin-top:6px">${STAR.repeat(5)}</div></div>
+    <button class="btn ghost" id="revBtn">Review</button>
+  </div>`;
+};
+ROUTES.home.tab = 'home';
+ROUTES.home.after = v => {
+  $('#openFact', v)?.addEventListener('click', () => { factOpen = true; render(); });
+  $('#nextFact', v)?.addEventListener('click', () => { factIdx = (factIdx + 1) % FACTS.length; factOpen = false; render(); });
+  $('#revBtn', v).onclick = openReview;
+};
+
+/* ---------- Book ---------- */
+let bk;
+const resetBk = () => bk = {step:0, reason:null, day:null, time:null, note:''};
+resetBk();
+function days() {
+  const out = [], d = new Date(); d.setHours(0,0,0,0);
+  while (out.length < 14) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0) out.push(new Date(d)); }
+  return out;
+}
+const SLOTS = ['8:00','8:45','9:30','10:15','11:00','11:45','1:30','2:15','3:00','3:45','4:30','5:15'];
+const taken = (dayTs, i) => ((dayTs / 86400000 | 0) * 7 + i * 13) % 5 === 0;
+ROUTES.book = () => {
+  const r = REASONS.find(x => x[0] === bk.reason);
+  const step = bk.step;
+  let body = '';
+  if (step === 0) body = `
+    <div class="section"><b style="font-size:18px">What brings you in?</b>
+    <div class="reasons">${REASONS.map(([id,t,s,ic]) => `<button class="reason ${id==='emergency'?'urgent':''}" data-r="${id}" aria-pressed="${bk.reason===id}">${icon(ic)}<b>${t}</b><span>${s}</span></button>`).join('')}</div></div>
+    ${bk.reason === 'emergency' ? `<div class="alert"><b>In pain right now?</b>Call us at <b style="color:inherit">${OFFICE_PHONE}</b> so we can fit you in today. You can still request a time below.</div>` : ''}
+    <button class="btn block" id="bkNext" ${bk.reason ? '' : 'disabled'}>Choose a time</button>`;
+  if (step === 1) body = `
+    <div class="section"><b style="font-size:18px">Pick a day</b>
+    <div class="days">${days().map(d => `<button class="day" data-d="${+d}" aria-pressed="${bk.day===+d}"><small>${d.toLocaleDateString('en-US',{weekday:'short'})}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-US',{month:'short'})}</small></button>`).join('')}</div></div>
+    ${bk.day ? `<div class="section"><b style="font-size:18px">Pick a time</b><div class="slots">${SLOTS.map((s,i) => { const h = +s.split(':')[0]; const label = s + (h >= 8 && h < 12 ? ' AM' : ' PM'); return `<button class="slot" data-t="${label}" aria-pressed="${bk.time===label}" ${taken(bk.day,i)?'disabled':''}>${label}</button>`; }).join('')}</div></div>` : '<p class="muted">Choose a day to see open times.</p>'}
+    <button class="btn block" id="bkNext" ${bk.time ? '' : 'disabled'}>Continue</button>`;
+  if (step === 2) body = `
+    <div class="card summary">
+      <div class="r"><span>Visit</span><b>${r[1]}</b></div>
+      <div class="r"><span>When</span><b>${fmtDay(bk.day)}, ${bk.time}</b></div>
+      <div class="r"><span>Where</span><b>ASAP Dental Care, Jacksonville</b></div>
+    </div>
+    <div class="section"><b>Your comfort plan comes with you</b>
+      <div class="chips">${COMFORT_OPTS.filter(o => S.comfort[o[0]]).map(o => `<span class="chip" aria-pressed="true">${o[1]}</span>`).join('') || '<span class="muted small">None yet.</span>'}</div>
+      <button class="link" data-go="plan" style="align-self:flex-start">Edit comfort plan</button>
+    </div>
+    <div class="field"><label for="bk-note">Anything we should know? (optional)</label><textarea id="bk-note" placeholder="e.g. Upper left tooth is sensitive to cold">${esc(bk.note)}</textarea></div>
+    <button class="btn block" id="bkConfirm">Confirm appointment</button>`;
+  if (step === 3) body = `
+    <div class="section success" style="flex:1">
+      <div class="tick">${icon('check')}</div>
+      <h2 style="font-family:var(--f-display);font-size:32px;text-transform:uppercase">You're booked!</h2>
+      <p class="muted">${r[1]}<br><b style="color:var(--ink)">${fmtDay(bk.day)} at ${bk.time}</b></p>
+      <p class="small muted">We'll remind you a week before, the day before and two hours before. Watch the top of the screen.</p>
+      <button class="btn block" data-go="prep">See how to get ready</button>
+      <button class="btn block line" id="bkHome">Back to home</button>
+    </div>`;
+  return `${topbar(step === 3 ? 'Confirmed' : 'Book a visit', {backBtn: step > 0 && step < 3})}
+    ${step < 3 ? `<div class="stepper">${[0,1,2].map(i => `<i class="${i<=step?'on':''}"></i>`).join('')}</div>` : ''}${body}`;
+};
+ROUTES.book.tab = 'book';
+ROUTES.book.after = v => {
+  const tb = $('.topbar [data-back]', v);
+  if (tb) { tb.removeAttribute('data-back'); tb.onclick = () => { bk.step--; render(); }; }
+  v.addEventListener('click', e => {
+    const r = e.target.closest('[data-r]'); if (r) { bk.reason = r.dataset.r; render(); }
+    const d = e.target.closest('[data-d]'); if (d) { bk.day = +d.dataset.d; bk.time = null; const sl = v.querySelector('.days').scrollLeft; render(); $('.days').scrollLeft = sl; }
+    const t = e.target.closest('[data-t]'); if (t && !t.disabled) { bk.time = t.dataset.t; const sl = v.querySelector('.days').scrollLeft, st = v.scrollTop; render(); $('.days').scrollLeft = sl; $('.view').scrollTop = st; }
+  });
+  $('#bkNext', v)?.addEventListener('click', () => { bk.step++; render(); });
+  $('#bk-note', v)?.addEventListener('input', e => bk.note = e.target.value);
+  $('#bkHome', v)?.addEventListener('click', () => { resetBk(); go('home', null, {tab:true}); });
+  $('#bkConfirm', v)?.addEventListener('click', () => {
+    const [hm, ap] = bk.time.split(' '); let [h, m] = hm.split(':').map(Number); if (ap === 'PM' && h < 12) h += 12;
+    const at = new Date(bk.day); at.setHours(h, m);
+    const reason = REASONS.find(x => x[0] === bk.reason)[1];
+    S.appts = S.appts.filter(a => a.at < Date.now()); // one upcoming visit in the demo
+    S.appts.push({at:+at, reason, note:bk.note}); save();
+    bk.step = 3; render();
+    setTimeout(() => notify({t:'Appointment confirmed', d:`${reason}, ${fmtDay(+at)} at ${bk.time}. Reply C to confirm or R to reschedule.`, ico:'cal'}), 1800);
+  });
+};
+
+/* ---------- Get ready ---------- */
+ROUTES.prep = () => { const a = nextAppt(); return `
+  ${topbar('Get ready')}
+  ${a ? `<div class="card summary"><div class="r"><span>Visit</span><b>${esc(a.reason)}</b></div><div class="r"><span>When</span><b>${fmtDay(a.at)}, ${fmtTime(a.at)}</b></div></div>` : ''}
+  <div class="section"><span class="eyebrow">What your visit looks like</span>
+    <ol class="timeline">
+      <li><span class="n">1</span><p><b>Check in at the front desk.</b> Look for the big "Welcomes You" wall.</p></li>
+      <li><span class="n">2</span><p><b>Relax in the waiting room.</b> Most people wait under 10 minutes.</p></li>
+      <li><span class="n">3</span><p><b>Meet your hygienist.</b> They'll go over your comfort plan first.</p></li>
+      <li><span class="n">4</span><p><b>Cleaning or treatment.</b> Raise your left hand anytime to pause.</p></li>
+      <li><span class="n">5</span><p><b>The doctor checks in</b> and explains anything they find, in plain English.</p></li>
+    </ol>
+  </div>
+  <div class="card section"><span class="eyebrow">Bring with you</span>
+    <div class="list">${['Photo ID','Insurance card','List of medications','Headphones, if music helps you relax'].map(t => `<div class="item"><span class="dot">${icon('check')}</span><div class="txt"><b>${t}</b></div></div>`).join('')}</div>
+  </div>
+  <button class="btn block ghost" data-go="comfort">Open the Comfort Zone</button>`; };
+ROUTES.prep.tab = 'home';
+
+/* ---------- Learn ---------- */
+let learnTab = 'read';
+ROUTES.learn = () => {
+  const learned = Object.keys(S.quiz).length;
+  return `${topbar('Smile School', {backBtn:false})}
+  <div class="seg" role="tablist"><button role="tab" id="tRead" aria-selected="${learnTab==='read'}">Read</button><button role="tab" id="tWatch" aria-selected="${learnTab==='watch'}">Watch</button></div>
+  ${learnTab === 'read' ? `
+    <div class="card progress"><div style="flex:1;display:flex;flex-direction:column;gap:8px"><b>${learned === SERVICES.length ? 'Smile School graduate!' : 'Finish a quiz to earn a star'}</b><div class="meter"><i style="width:${learned/SERVICES.length*100}%"></i></div></div><span class="stars">${STAR}</span><b style="font-variant-numeric:tabular-nums">${learned}/${SERVICES.length}</b></div>
+    <div class="svc-grid">${SERVICES.map(s => `<button class="svc" data-go="service" data-arg="${s.id}"><span class="art" ${s.img ? `style="background-image:url(${s.img})"` : ''}>${s.img ? '' : icon(s.ico)}${S.quiz[s.id] ? `<span class="done">${icon('check')}</span>` : ''}</span><span class="t"><b>${s.name}</b><span>${s.time}</span></span></button>`).join('')}</div>`
+  : videoList()}`;
+};
+ROUTES.learn.tab = 'learn';
+ROUTES.learn.after = v => {
+  $('#tRead', v).onclick = () => { learnTab = 'read'; render(); };
+  $('#tWatch', v).onclick = () => { learnTab = 'watch'; render(); };
+  bindVideos(v);
+};
+const videoList = () => `<div class="section">${VIDEOS.map((x,i) => `<button class="video" data-v="${i}"><span class="thumb" style="background-image:url(${x.img})"><span class="play">${icon('play')}</span></span><span><span class="pill ${x.tag==='Jaguars'?'gold':''}">${x.tag}</span><b style="margin-top:4px">${x.t}</b><span>${x.d}</span></span></button>`).join('')}</div>`;
+function bindVideos(v) {
+  v.querySelectorAll('[data-v]').forEach(b => b.onclick = () => {
+    const x = VIDEOS[+b.dataset.v];
+    sheet(`<img src="${x.img}" alt="" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:16px">
+      <h3 style="font-family:var(--f-display);font-size:24px;text-transform:uppercase">${x.t}</h3>
+      <p class="muted">${x.d}. Once you send the video link, it plays right here.</p>
+      <button class="btn block" data-close>Got it</button>`);
+  });
+}
+ROUTES.videos = () => `${topbar('Videos')}${videoList()}`;
+ROUTES.videos.tab = 'learn';
+ROUTES.videos.after = bindVideos;
+
+ROUTES.service = id => {
+  const s = SERVICES.find(x => x.id === id);
+  const q = S.quiz[id];
+  return `
+  <div class="detail-hero" ${s.img ? `style="background-image:url(${s.img})"` : ''}>${s.img ? '' : icon(s.ico)}<button class="iconbtn back" data-back aria-label="Back">${icon('back')}</button></div>
+  <div class="section"><span class="eyebrow">Smile School</span><h2 style="font-family:var(--f-display);font-size:32px;text-transform:uppercase;line-height:1">${s.name}</h2><p>${s.what}</p></div>
+  <div class="stats"><div class="stat"><small>Time in chair</small><b>${s.time}</b></div><div class="stat"><small>How often</small><b>${s.visits}</b></div></div>
+  <div class="ouch"><span class="eyebrow">Does it hurt?</span><p>${s.ouch}</p></div>
+  <div class="section"><span class="eyebrow">What happens, step by step</span><ol class="timeline">${s.steps.map((t,i) => `<li><span class="n">${i+1}</span><p>${t}</p></li>`).join('')}</ol></div>
+  <div class="section"><span class="eyebrow">Myth or fact? Tap the card</span>
+    <button class="myth" id="myth" aria-pressed="false"><div class="inner">
+      <div class="face front"><span class="tag">Myth</span><span class="q">"${s.myth}"</span><span class="small" style="opacity:.75">Tap to see the truth</span></div>
+      <div class="face back"><span class="tag">The truth</span><span>${s.fact}</span></div>
+    </div></button>
+  </div>
+  <div class="card section"><span class="eyebrow">Quick quiz</span><b>${s.quiz.q}</b>
+    <div class="quiz" id="quiz">${s.quiz.a.map((a,i) => `<button data-i="${i}" class="${q ? (i===s.quiz.c ? 'right' : '') : ''}" ${q ? 'disabled' : ''}>${a}</button>`).join('')}<p class="fb" id="fb">${q ? `<span style="color:var(--good)">Star earned.</span> ${s.quiz.why}` : ''}</p></div>
+  </div>
+  <div style="display:flex;gap:10px"><button class="btn" style="flex:1" id="bookThis">Book this</button><button class="btn ghost" style="flex:1" data-go="ask" data-arg="${s.name}">Ask AI about it</button></div>`;
+};
+ROUTES.service.tab = 'learn';
+ROUTES.service.after = (v, id) => {
+  const s = SERVICES.find(x => x.id === id);
+  $('#myth', v).onclick = e => { const b = e.currentTarget; b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); };
+  $('#quiz', v).addEventListener('click', e => {
+    const b = e.target.closest('button[data-i]'); if (!b || b.disabled) return;
+    const i = +b.dataset.i, ok = i === s.quiz.c;
+    b.classList.add(ok ? 'right' : 'wrong');
+    if (ok) {
+      v.querySelectorAll('#quiz button').forEach(x => x.disabled = true);
+      $('#fb', v).innerHTML = `<span style="color:var(--good)">Correct, star earned!</span> ${s.quiz.why}`;
+      S.quiz[id] = true; save();
+      if (Object.keys(S.quiz).length === SERVICES.length) setTimeout(() => notify({t:'Smile School graduate!', d:'You finished every lesson. Show the front desk for a high five.', ico:'star'}), 600);
+    } else { b.disabled = true; $('#fb', v).innerHTML = '<span style="color:var(--warn)">Not quite. Try another.</span>'; }
+  });
+  $('#bookThis', v).onclick = () => {
+    const map = {cleaning:'cleaning', emergency:'emergency', whitening:'cosmetic', dentures:'dentures', implants:'dentures', crowns:'crowns', fillings:'crowns'};
+    resetBk(); bk.reason = map[id] || 'consult'; bk.step = 1; go('book', null, {tab:true});
+  };
+};
+ROUTES.emergency = () => ROUTES.service('emergency');
+ROUTES.emergency.tab = 'home';
+ROUTES.emergency.after = v => ROUTES.service.after(v, 'emergency');
+
+/* ---------- Ask AI ---------- */
+const chat = { turns:[], busy:false, ctl:null };
+const RULES = `You are "ASAP AI", the friendly virtual dental guide inside the ASAP Dental Care patient app. ASAP Dental Care is a dental office in Jacksonville, Florida and the Official Dentist of the Jacksonville Jaguars. It has an in-house dental lab (crowns, bridges, dentures made on site) and a KaVo OP 3D X-ray. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions, dentures, implants, whitening, same-day emergency care, 3D X-rays.
+
+Many people using this app feel anxious about the dentist. Be warm, calm, encouraging and plain-spoken. Keep answers short: under 110 words, short paragraphs, or up to 4 bullet lines starting with "- ". No headings. You may use **bold** sparingly.
+
+You are not a dentist and cannot examine, diagnose or prescribe. Give general education, explain what to expect, and when someone needs an exam, suggest booking in the app's Book tab. If someone mentions facial swelling, fever with tooth pain, a knocked-out tooth, heavy bleeding that won't stop, or trouble breathing or swallowing, tell them clearly to call the office right away, and to call 911 or go to the ER for trouble breathing or swallowing. Never quote prices, insurance coverage or appointment availability; say the front desk can confirm. Don't make up doctor names.`;
+const SUGGEST = ['Does a filling hurt?','My tooth is sensitive to cold','How can I feel less nervous?','What happens at my first visit?','Is the 3D X-ray safe?'];
+const RED = /swell|swollen|fever|knock(ed)?[- ]?out|can'?t (breathe|swallow)|trouble (breathing|swallowing)|bleeding (won|that won|a lot)|abscess/i;
+const CANNED = [
+  [/hurt|pain|numb/i, 'Most treatments here start with numbing, so what you feel is pressure, not pain. If anything feels sharp, raise your left hand and your team will stop right away.\n\nIf you\'re hurting right now, book a visit in the Book tab, or call the office for an emergency spot.'],
+  [/nervous|anxious|scared|afraid|anxiety/i, 'You\'re in good company. Lots of our patients feel the same way. A few things that help:\n- Try the breathing exercise in the Comfort tab\n- Set up your comfort plan so the team knows what you need\n- Bring headphones\n- Agree on a stop signal (raise your left hand)'],
+  [/cold|sensitive|sensitivity/i, 'Sensitivity to cold is common. It can come from worn enamel, gum recession, a cavity or a cracked filling.\n- Try a sensitivity toothpaste for 2 weeks\n- Use a soft brush and gentle pressure\n\nIf it lasts longer or is getting worse, book a checkup so the doctor can find the cause.'],
+  [/first visit|new patient|what happens/i, 'Your first visit is mostly getting to know you:\n- Check in and a quick health review\n- X-rays (they take seconds)\n- A cleaning if there\'s time\n- The doctor\'s exam and a plan, explained in plain English'],
+  [/x-?ray|radiation|3d/i, 'Our 3D X-ray is an open machine with no tunnel. You stand still and bite a guide for a few seconds. Digital dental X-rays use very low doses. Tell the team if you\'re pregnant or might be.'],
+];
+const fallback = q => (CANNED.find(([r]) => r.test(q)) || [0, 'Good question! I can share general info about treatments, what to expect, and how to feel more comfortable. For anything specific to your mouth, the best next step is a quick exam. You can book one in the Book tab.'])[1];
+function fmtAI(t) {
+  const lines = esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').split('\n');
+  let html = '', inList = false, para = [];
+  const flush = () => { if (para.length) { html += `<p>${para.join(' ')}</p>`; para = []; } };
+  for (const l of lines) {
+    if (/^\s*[-•]\s+/.test(l)) { flush(); if (!inList) { html += '<ul>'; inList = true; } html += `<li>${l.replace(/^\s*[-•]\s+/, '')}</li>`; }
+    else { if (inList) { html += '</ul>'; inList = false; } if (l.trim()) para.push(l); else flush(); }
+  }
+  flush(); if (inList) html += '</ul>';
+  return html;
+}
+const emergencyCard = `<div class="alert"><b>This could need care today.</b>Call ASAP Dental Care now at ${OFFICE_PHONE}. If you have trouble breathing or swallowing, call 911.</div>`;
+ROUTES.ask = topic => `
+  <div class="ai-head"><span class="ai-face">${icon('tooth')}</span><div style="flex:1"><h2 style="font-family:var(--f-display);font-size:24px;text-transform:uppercase;line-height:1">ASAP AI</h2><span class="small muted">Your dental guide, any time of day</span></div></div>
+  <p class="disclaimer">ASAP AI answers general questions. It isn't a dentist and can't diagnose you. For emergencies call the office or 911.</p>
+  <div class="msgs" id="msgs" aria-live="polite">
+    <div class="msg ai"><p>Hi ${esc(first())}! Ask me anything about your teeth, a treatment, or what to expect. No question is too small.</p></div>
+    ${chat.turns.map(t => t.role === 'user' ? `<div class="msg me">${esc(t.content)}</div>` : `<div class="msg ai">${fmtAI(t.content)}</div>${t.alert ? emergencyCard : ''}`).join('')}
+  </div>
+  <div class="composer">
+    <div class="chips" id="sugg">${SUGGEST.map(s => `<button class="chip">${s}</button>`).join('')}</div>
+    <form id="askForm"><input id="askIn" placeholder="Type your question…" autocomplete="off" value="${topic ? esc('Tell me about ' + topic.toLowerCase()) : ''}" aria-label="Your question"><button class="send" aria-label="Send">${icon('send')}</button></form>
+  </div>`;
+ROUTES.ask.cls = 'chat'; ROUTES.ask.tab = 'ask';
+ROUTES.ask.after = v => {
+  const box = $('#askIn', v), msgs = $('#msgs', v);
+  v.scrollTop = v.scrollHeight;
+  $('#sugg', v).onclick = e => { const b = e.target.closest('button'); if (b) send(b.textContent); };
+  $('#askForm', v).onsubmit = e => { e.preventDefault(); send(box.value); };
+  async function send(q) {
+    q = q.trim(); if (!q || chat.busy) return;
+    box.value = ''; chat.busy = true;
+    chat.turns.push({role:'user', content:q});
+    msgs.insertAdjacentHTML('beforeend', `<div class="msg me">${esc(q)}</div><div class="msg ai thinking">Thinking…</div>`);
+    const bubble = msgs.lastElementChild; v.scrollTop = v.scrollHeight;
+    const alert = RED.test(q);
+    let text = '';
+    const sample = await samplePromise;
+    if (sample) {
+      chat.ctl = new AbortController();
+      const turns = chat.turns.slice(-12).map(({role, content}) => ({role, content}));
+      try {
+        const r = await sample([{role:'user', content:RULES}, ...turns], {cache:false, modelTier:'quick', signal:chat.ctl.signal,
+          onText: ({text:t}) => { bubble.classList.remove('thinking'); bubble.innerHTML = fmtAI(t); v.scrollTop = v.scrollHeight; }});
+        text = r.text;
+      } catch (e) { text = e.text || fallback(q); }
+    } else {
+      await new Promise(r => setTimeout(r, 700));
+      text = fallback(q);
+    }
+    bubble.classList.remove('thinking'); bubble.innerHTML = fmtAI(text);
+    chat.turns.push({role:'assistant', content:text, alert});
+    if (alert) bubble.insertAdjacentHTML('afterend', emergencyCard);
+    chat.busy = false; v.scrollTop = v.scrollHeight;
+  }
+  if (current.arg) { /* topic prefilled from a lesson */ box.focus(); }
+};
+const samplePromise = (async () => { try { return await window.claude?.use?.('sample') ?? null; } catch { return null; } })();
+
+/* ---------- Comfort ---------- */
+let breathing = null;
+ROUTES.comfort = () => `
+  ${topbar('Comfort Zone', {backBtn:false})}
+  <p>Dental nerves are really common. Here are a few ways to feel ready before you come in.</p>
+  <div class="card breathe">
+    <span class="eyebrow">Box breathing · 1 minute</span>
+    <div class="orb-wrap"><div class="orb-ring"></div><div class="orb" id="orb"></div></div>
+    <div class="orb-label" id="orbLabel">Ready when you are</div>
+    <button class="btn" id="breathBtn">${icon('wind')} Start breathing</button>
+  </div>
+  <div class="signal"><span class="hand">Left<br>hand</span><div><b>Your stop signal</b><p class="small" style="opacity:.85">Raise your left hand anytime and we pause. No explaining needed.</p></div></div>
+  <div class="section"><div class="section-head"><span class="eyebrow">Take a look around</span><button class="link" data-go="videos">Watch the tour</button></div>
+    <div class="tour">${TOUR.map(([src,t,d]) => `<figure><img src="${src}" alt="${t}" loading="lazy"><figcaption><b>${t}</b><span>${d}</span></figcaption></figure>`).join('')}</div>
+  </div>
+  <div class="section"><span class="eyebrow">Meet your team</span>
+    <img class="team-photo" src="img/team.jpg" alt="The ASAP Dental Care team in front of the Welcomes You wall">
+    <p class="small muted">These are the friendly faces you'll see. Doctor profiles are coming soon.</p>
+    <div class="docs">${['Doctor','Doctor','Doctor'].map(() => `<div class="doc"><span class="ph">${icon('user')}</span><b>Photo coming</b><span class="muted">Dentist</span></div>`).join('')}</div>
+  </div>
+  <button class="comfort-card" data-go="plan"><span class="bubble">${icon('shield')}</span><span><b>Your comfort plan</b><span class="small muted">${Object.values(S.comfort).filter(Boolean).length} preferences shared with your care team</span></span></button>`;
+ROUTES.comfort.tab = 'comfort';
+ROUTES.comfort.after = v => {
+  const orb = $('#orb', v), label = $('#orbLabel', v), btn = $('#breathBtn', v);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const phases = [['Breathe in', 1.9], ['Hold', 1.9], ['Breathe out', 1], ['Hold', 1]];
+  btn.onclick = () => {
+    if (breathing) { stopBreath(); return; }
+    let i = 0, cycles = 0, n = 4;
+    btn.innerHTML = icon('x') + ' Stop';
+    const tick = () => {
+      if (!document.contains(orb)) return stopBreath();
+      const [txt, scale] = phases[i];
+      label.textContent = txt; orb.textContent = n;
+      if (n === 4 && !reduce) orb.style.transform = `scale(${scale})`;
+      n--;
+      if (n === 0) { n = 4; i = (i + 1) % 4; if (i === 0 && ++cycles === 4) { stopBreath(); label.textContent = 'Nice work. Feel a little calmer?'; } }
+    };
+    tick(); breathing = setInterval(tick, 1000);
+  };
+  function stopBreath() { clearInterval(breathing); breathing = null; if (document.contains(btn)) { btn.innerHTML = icon('wind') + ' Start again'; orb.style.transform = ''; orb.textContent = ''; label.textContent = 'Ready when you are'; } }
+};
+
+ROUTES.plan = () => `
+  ${topbar('Comfort plan')}
+  <p class="muted">Pick what helps. Your hygienist and doctor see this before your visit, so you don't have to ask.</p>
+  <div class="card">${COMFORT_OPTS.map(([k,t,d]) => `<div class="toggle-row"><div class="txt"><b>${t}</b><span>${d}</span></div><button class="switch" role="switch" data-k="${k}" aria-checked="${!!S.comfort[k]}" aria-label="${t}"></button></div>`).join('')}</div>
+  <button class="btn block" id="sharePlan">Save and share with my team</button>`;
+ROUTES.plan.tab = 'comfort';
+ROUTES.plan.after = v => {
+  v.querySelectorAll('.switch').forEach(s => s.onclick = () => { const k = s.dataset.k; S.comfort[k] = !S.comfort[k]; s.setAttribute('aria-checked', S.comfort[k]); save(); });
+  $('#sharePlan', v).onclick = () => { toast('Comfort plan shared with your care team'); back(); };
+};
+
+/* ---------- Profile, notifications, review ---------- */
+ROUTES.profile = () => {
+  const a = nextAppt(), past = S.appts.filter(x => x.at <= Date.now());
+  const R = [['week','1 week before'],['day','1 day before'],['hours','2 hours before'],['sms','Text messages too'],['recall','Cleaning due reminders','Every 6 months'],['news','Office news & Jaguars events','Occasional updates']];
+  return `${topbar('Profile')}
+  <div class="me-head"><span class="avatar">${esc(initials())}</span><div><h2 style="font-size:20px">${esc(S.user?.name || '')}</h2><span class="small muted">${esc(S.user?.email || 'Patient')}</span></div></div>
+  <div class="section"><span class="eyebrow">Appointments</span>
+    <div class="card list">${a ? `<div class="item"><span class="dot">${icon('cal')}</span><div class="txt"><b>${esc(a.reason)}</b><span>${fmtDay(a.at)}, ${fmtTime(a.at)}</span></div><span class="pill">Upcoming</span></div>` : `<div class="item"><span class="dot">${icon('cal')}</span><div class="txt"><b>No upcoming visits</b><span>Book one from the Book tab</span></div></div>`}
+    ${past.map(p => `<div class="item"><span class="dot">${icon('check')}</span><div class="txt"><b>${esc(p.reason)}</b><span>${fmtDay(p.at)}</span></div></div>`).join('')}</div>
+  </div>
+  <div class="section"><span class="eyebrow">Reminders & updates</span>
+    <div class="card">${R.map(([k,t,d]) => `<div class="toggle-row"><div class="txt"><b>${t}</b>${d ? `<span>${d}</span>` : ''}</div><button class="switch" role="switch" data-k="${k}" aria-checked="${!!S.reminders[k]}" aria-label="${t}"></button></div>`).join('')}</div>
+    <button class="btn line block" id="testRem">${icon('bell')} Preview a reminder</button>
+  </div>
+  <div class="section"><span class="eyebrow">Share the love</span>
+    <button class="btn block" id="revBtn2">${icon('star')} Leave us a Google review</button>
+  </div>
+  <div class="card list">
+    <div class="item"><span class="dot">${icon('phone')}</span><div class="txt"><b>Call the office</b><span>${OFFICE_PHONE}</span></div></div>
+    <div class="item"><span class="dot">${icon('heart')}</span><div class="txt"><b>Comfort plan</b><span>${Object.values(S.comfort).filter(Boolean).length} preferences</span></div><button class="link" data-go="plan">Edit</button></div>
+  </div>
+  <button class="btn line block" id="signOut">Sign out (restart demo)</button>`;
+};
+ROUTES.profile.tab = 'home';
+ROUTES.profile.after = v => {
+  v.querySelectorAll('.switch').forEach(s => s.onclick = () => { const k = s.dataset.k; S.reminders[k] = !S.reminders[k]; s.setAttribute('aria-checked', S.reminders[k]); save(); });
+  $('#testRem', v).onclick = () => {
+    const a = nextAppt();
+    notify(a ? {t:'See you tomorrow!', d:`${a.reason} at ${fmtTime(a.at)}. Reply C to confirm, R to reschedule.`, ico:'cal'}
+             : {t:'Time for your cleaning', d:'It\'s been about 6 months. Tap to book a time that works.', ico:'smile'});
+  };
+  $('#revBtn2', v).onclick = openReview;
+  $('#signOut', v).onclick = restart;
+};
+
+ROUTES.notes = () => {
+  const html = `${topbar('Notifications')}
+  <div class="card list">${S.notes.map(n => `<div class="item ${n.unread ? 'unread' : ''}"><span class="dot">${icon(n.ico || 'bell')}</span><div class="txt"><b>${esc(n.t)}</b><span>${esc(n.d)}</span></div><time>${ago(n.at)}</time></div>`).join('')}</div>`;
+  S.notes.forEach(n => n.unread = false); save();
+  return html;
+};
+ROUTES.notes.tab = 'home';
+
+function openReview() {
+  sheet(`<div style="text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center">
+      <img src="img/asap-logo.png" alt="" style="width:110px;background:#fff;border-radius:16px;padding:6px">
+      <h3 style="font-family:var(--f-display);font-size:26px;text-transform:uppercase">How was your visit?</h3>
+      <p class="muted small">Your review helps other nervous patients feel brave enough to come in.</p></div>
+    <div class="bigstars" id="bs">${[1,2,3,4,5].map(i => `<button data-s="${i}" aria-label="${i} star${i>1?'s':''}">${STAR}</button>`).join('')}</div>
+    <div id="revNext" hidden style="display:flex;flex-direction:column;gap:10px">
+      <a class="btn block" href="${GOOGLE_REVIEW_URL}" target="_blank" rel="noopener">${icon('google')} Post your review on Google</a>
+      <div class="field"><label for="rv-note">Or send a private note to our team</label><textarea id="rv-note" placeholder="Tell us what went well or what we can do better"></textarea></div>
+      <button class="btn line block" id="rvSend">Send private note</button>
+    </div>
+    <button class="link" data-close style="align-self:center">Maybe later</button>`, (sh, close) => {
+    $('#bs', sh).onclick = e => { const b = e.target.closest('button'); if (!b) return; const n = +b.dataset.s; sh.querySelectorAll('#bs button').forEach(x => x.classList.toggle('on', +x.dataset.s <= n)); $('#revNext', sh).hidden = false; };
+    $('#rvSend', sh).onclick = () => { close(); toast('Thanks! Your note went to the office manager.'); };
+  });
+}
+
+/* ---------- Boot ---------- */
+function restart() { S = fresh(); draft = {name:'', phone:'', email:'', dob:'', feel:null}; chat.turns = []; resetBk(); save(); stack = []; current = null; go('welcome', null, {tab:true}); }
+$('#resetDemo').onclick = restart;
+const clock = () => $('#clock').textContent = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}).replace(/\s?[AP]M/, '');
+clock(); setInterval(clock, 30000);
+go(S.user ? 'home' : 'welcome', null, {tab:true});
+})();
+</script>
