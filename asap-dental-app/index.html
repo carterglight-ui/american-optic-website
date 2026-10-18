@@ -463,6 +463,30 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,14px)}to{opacity:1;transform:translate(-50%,0)}}
 .burst{position:absolute;inset:0;pointer-events:none;z-index:45;overflow:hidden}
 .burst i{position:absolute;width:7px;height:7px;border-radius:50%}
+
+/* Launch screen: the tooth draws itself, a sparkle pops, the wordmark rises, then the app drifts in */
+.splash{position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer;
+  background:radial-gradient(120% 75% at 50% 38%,var(--card-solid) 0%,var(--surface) 55%,color-mix(in srgb,var(--brand) 9%,var(--surface)) 100%)}
+.splash-mark{position:relative;width:120px;height:120px;display:grid;place-items:center}
+.splash-mark::before{content:"";position:absolute;inset:-34px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--brand) 16%,transparent),transparent);opacity:0;animation:fadeUp 1.2s .3s var(--ease) forwards,halo 3.2s 1.5s ease-in-out infinite}
+.splash-tooth{width:120px;height:120px;overflow:visible;position:relative}
+.splash-tooth .draw{fill:transparent;stroke:var(--brand);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:drawTooth 1.5s .25s cubic-bezier(.65,0,.35,1) forwards,fillTooth .9s 1.5s var(--ease) forwards}
+.splash-tooth .spark{fill:var(--brand);transform-box:fill-box;transform-origin:center;transform:scale(0) rotate(-90deg);animation:sparkIn .8s 1.35s var(--spring) forwards,twinkle 2.4s 2.2s ease-in-out infinite}
+.splash-logo{width:150px;height:auto;opacity:0;transform:translateY(12px);animation:fadeUp .9s 1.15s var(--ease) forwards}
+.splash-tag{font-size:11px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);opacity:0;transform:translateY(8px);animation:fadeUp .9s 1.45s var(--ease) forwards}
+.splash-bar{width:110px;height:2px;border-radius:1px;background:var(--line);overflow:hidden;margin-top:10px;opacity:0;animation:fadeUp .5s .5s var(--ease) forwards}
+.splash-bar i{display:block;height:100%;background:var(--brand);transform-origin:left;transform:scaleX(0);animation:load 2.3s .5s cubic-bezier(.65,0,.35,1) forwards}
+.splash.out{animation:splashOut .8s var(--ease) forwards;pointer-events:none}
+@keyframes drawTooth{to{stroke-dashoffset:0}}
+@keyframes fillTooth{to{fill:color-mix(in srgb,var(--brand) 7%,transparent)}}
+@keyframes sparkIn{to{transform:scale(1) rotate(0)}}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.72) rotate(20deg)}}
+@keyframes halo{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+@keyframes load{to{transform:scaleX(1)}}
+@keyframes splashOut{to{opacity:0;transform:scale(1.05);filter:blur(6px)}}
+.views,.tabbar{transition:opacity .9s var(--ease),transform 1s var(--ease)}
+.screen.booting .views,.screen.booting .tabbar{opacity:0;transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 .urgent-row{color:inherit}
@@ -534,6 +558,17 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
         <button data-tab="comfort"><svg class="ico"><use href="#i-wind"/></svg>Calm</button>
         <span class="tab-dot" id="tabDot" aria-hidden="true"></span>
       </nav>
+      <div class="splash" id="splash" aria-hidden="true">
+        <div class="splash-mark">
+          <svg class="splash-tooth" viewBox="0 0 130 130">
+            <path class="draw" pathLength="1" d="M20 38 C14 14 42 8 60 18 C78 8 106 14 100 38 C100 60 94 70 92 86 C90 105 86 116 80 116 C74 116 74 96 70 84 C67 76 53 76 50 84 C46 96 46 116 40 116 C34 116 30 105 28 86 C26 70 20 60 20 38 Z"/>
+            <path class="spark" d="M114 2 C115 11 118 14 127 15 C118 16 115 19 114 28 C113 19 110 16 101 15 C110 14 113 11 114 2 Z"/>
+          </svg>
+        </div>
+        <img class="splash-logo" src="img/asap-logo.png" alt="">
+        <p class="splash-tag">Your moment of calm</p>
+        <div class="splash-bar"><i></i></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1642,6 +1677,17 @@ function restart() { S = fresh(); draft = {name:'', phone:'', email:'', dob:'', 
 $('#resetDemo').onclick = restart;
 const clock = () => $('#clock').textContent = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}).replace(/\s?[AP]M/, '');
 clock(); setInterval(clock, 30000);
+screen.classList.add('booting');
 go(S.user ? 'home' : 'welcome', null, {tab:true});
+(() => {
+  const splash = $('#splash'); let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    splash.classList.add('out'); screen.classList.remove('booting');
+    setTimeout(() => splash.remove(), 850);
+  };
+  splash.addEventListener('click', finish);           // tap to skip
+  setTimeout(finish, REDUCE ? 500 : 3200);
+})();
 })();
 </script>
