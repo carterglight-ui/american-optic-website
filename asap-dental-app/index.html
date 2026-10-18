@@ -615,13 +615,29 @@ const SERVICES = [
 
 const SP = 'https://mysmilemail-my.sharepoint.com/:v:/p/carterl/';
 const COMMERCIAL = {t:'Meet ASAP Dental Care', d:'Our commercial. See who we are in under a minute.', img:'img/thumb-commercial.jpg', tag:'Commercial', url:SP + 'IQDB0YGmuYigRavdeksUk6jJAbX2vatBvBQM2xYRE_oIoR8?e=W4Lq5m'};
+// ASAP's patient education videos. Add each video's share link as `url` once it's matched to its title.
 const VIDEOS = [
-  {t:'Patient education, part 1', img:'img/thumb-mirror_tooth.jpg', url:SP + 'IQBciGj0a8fDTY-9kasbkpFIAWy0tMG7jI66l5cd4WzVKOk?e=KHbwSr'},
-  {t:'Patient education, part 2', img:'img/thumb-brush.jpg', url:SP + 'IQCN-_ozStuIRqRbt_0_IiejAT5M-IVVDs6nYrQ_mv4_3ns?e=ZluXoi'},
-  {t:'Patient education, part 3', img:'img/thumb-crown.jpg', url:SP + 'IQCIDjqQV51vRonasfTjomzRAYpQDXlsr_u1n9QI855zqA0?e=s36U1a'},
-  {t:'Patient education, part 4', img:'img/thumb-implant.jpg', url:SP + 'IQBaehEUPT5sT4r_c5VdxlPNAdPwKCn_QQYXIHvMwNRUJJI?e=M2pwbG'},
-  {t:'Patient education, part 5', img:'img/thumb-floss.jpg', url:SP + 'IQB0qYHnBbxGR41xwgFHEvxUARtd-lpW9VKIZeG630Mz3DU?e=wBWfye'},
-].map(v => ({...v, tag:'Education', d:'Learn what to expect before your visit'}));
+  {id:'deep', t:'Deep cleaning', d:'How scaling and root planing helps your gums heal'},
+  {id:'fixed', t:'Fixed dentures', d:'A full set of teeth, anchored on implants, that stays put'},
+  {id:'ahmed', t:'Immediate implants with Dr. Ahmed', d:'Same-day implants, featuring Dr. Ahmed'},
+  {id:'immediate', t:'Immediate implants', d:'Replacing a tooth the same day it comes out'},
+  {id:'over', t:'Overdentures', d:'Dentures that snap securely onto implants'},
+  {id:'partial', t:'Partial dentures', d:'Filling gaps when you still have some natural teeth'},
+  {id:'rootcanal', t:'Root canals', d:'How we save an infected tooth, step by step'},
+  {id:'sedation', t:'Sedation dentistry', d:'Your options for feeling relaxed during treatment'},
+  {id:'whitening', t:'Teeth whitening', d:'How professional whitening brightens your smile'},
+  {id:'wisdom', t:'Wisdom teeth removal', d:'What to expect before, during and after'},
+].map(v => ({...v, tag:'Education', img:`img/thumb-v_${v.id}.jpg`, url:null}));
+const videoById = id => VIDEOS.find(v => v.id === id);
+// Share links received before their titles were known; each belongs to one video above.
+const UNMATCHED_LINKS = [
+  SP + 'IQBciGj0a8fDTY-9kasbkpFIAWy0tMG7jI66l5cd4WzVKOk?e=KHbwSr',
+  SP + 'IQCN-_ozStuIRqRbt_0_IiejAT5M-IVVDs6nYrQ_mv4_3ns?e=ZluXoi',
+  SP + 'IQCIDjqQV51vRonasfTjomzRAYpQDXlsr_u1n9QI855zqA0?e=s36U1a',
+  SP + 'IQBaehEUPT5sT4r_c5VdxlPNAdPwKCn_QQYXIHvMwNRUJJI?e=M2pwbG',
+  SP + 'IQB0qYHnBbxGR41xwgFHEvxUARtd-lpW9VKIZeG630Mz3DU?e=wBWfye',
+];
+const SERVICE_VIDEOS = {cleaning:['deep'], rootcanal:['rootcanal'], extractions:['wisdom'], dentures:['partial', 'over', 'fixed'], implants:['immediate', 'ahmed', 'fixed'], whitening:['whitening']};
 
 const DOCTORS = [
   {id:'letteri', name:'Dr. Nicholas Letteri, DMD', short:'Dr. Letteri', role:'Dentist', img:'img/dr-letteri.jpg',
@@ -735,6 +751,8 @@ viewsEl.addEventListener('click', e => {
   if (t) { e.preventDefault(); later(() => go(t.dataset.go, t.dataset.arg)); return; }
   const d = e.target.closest('[data-doc]');
   if (d) { openDoctor(d.dataset.doc); return; }
+  const vid = e.target.closest('[data-vid]');
+  if (vid) { openVideo(vid.dataset.vid); return; }
   if (e.target.closest('[data-back]')) back();
 });
 
@@ -1070,9 +1088,19 @@ ROUTES.learn.after = v => {
   requestAnimationFrame(() => place(order.indexOf(learnTab), true));
   segFrom = learnTab;
 };
-const videoCard = x => `<a class="video" href="${x.url}" target="_blank" rel="noopener"><span class="thumb" style="background-image:url(${x.img})"><span class="play">${icon('play')}</span></span><span><span class="pill">${x.tag}</span><b style="margin-top:4px">${x.t}</b><span>${x.d}</span></span></a>`;
+const videoCard = x => {
+  const inner = `<span class="thumb" style="background-image:url(${x.img})"><span class="play">${icon('play')}</span></span><span><span class="pill">${x.tag}</span><b style="margin-top:4px">${x.t}</b><span>${x.d}</span></span>`;
+  return x.url ? `<a class="video" href="${x.url}" target="_blank" rel="noopener">${inner}</a>` : `<button class="video" data-vid="${x.id}">${inner}</button>`;
+};
+function openVideo(id) {
+  const x = videoById(id);
+  sheet(`<img src="${x.img}" alt="" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:20px">
+    <span class="pill" style="align-self:flex-start">${x.tag}</span><h3 style="font-size:22px">${x.t}</h3><p class="muted">${x.d}.</p>
+    <p class="placeholder">This video is coming to the app soon.</p>
+    <button class="btn block" data-close>Got it</button>`);
+}
 const featureCard = () => `<a class="feature" href="${COMMERCIAL.url}" target="_blank" rel="noopener"><span class="art" style="background-image:url(${COMMERCIAL.img})"><span class="play">${icon('play')}</span></span><span class="cap"><span class="pill gold">${COMMERCIAL.tag}</span><b>${COMMERCIAL.t}</b><span>${COMMERCIAL.d}</span></span></a>`;
-const videoList = () => `${featureCard()}<div class="section"><span class="eyebrow">Patient education</span>${VIDEOS.map(videoCard).join('')}</div><p class="small muted">Videos open in a new tab.</p>`;
+const videoList = () => `${featureCard()}<div class="section"><span class="eyebrow">Patient education</span>${VIDEOS.map(videoCard).join('')}</div>`;
 ROUTES.videos = () => `${topbar('Videos')}${videoList()}`;
 ROUTES.videos.tab = 'learn';
 
@@ -1094,6 +1122,7 @@ ROUTES.service = id => {
   <div class="card section"><span class="eyebrow">Quick quiz</span><b>${s.quiz.q}</b>
     <div class="quiz" id="quiz">${s.quiz.a.map((a,i) => `<button data-i="${i}" class="${q ? (i===s.quiz.c ? 'right' : '') : ''}" ${q ? 'disabled' : ''}>${a}</button>`).join('')}<p class="fb" id="fb">${q ? `<span style="color:var(--good)">Star earned.</span> ${s.quiz.why}` : ''}</p></div>
   </div>
+  ${SERVICE_VIDEOS[id] ? `<div class="section"><span class="eyebrow">Watch</span>${SERVICE_VIDEOS[id].map(v => videoCard(videoById(v))).join('')}</div>` : ''}
   <div style="display:flex;gap:10px"><button class="btn" style="flex:1" id="bookThis">Book this</button><button class="btn ghost" style="flex:1" data-go="ask" data-arg="${s.name}">Ask AI about it</button></div>`;
 };
 ROUTES.service.tab = 'learn';
@@ -1442,6 +1471,7 @@ ROUTES.comfort = () => `
       <li><span class="dot">${icon('drop')}</span><span><b>Oral sedation.</b> A pill before your visit to take the edge off. Plan on a ride home.</span></li>
       <li><span class="dot">${icon('heart')}</span><span><b>IV sedation.</b> Deeper relaxation for longer procedures like implants or wisdom teeth, with a ride home.</span></li>
     </ul>
+    ${videoCard(videoById('sedation'))}
   </div>
   <div class="section"><div class="section-head"><span class="eyebrow">Take a look around</span><button class="link" data-go="videos">Watch the tour</button></div>
     <div class="tour">${TOUR.map(([src,t,d]) => `<figure><img src="${src}" alt="${t}" loading="lazy"><figcaption><b>${t}</b><span>${d}</span></figcaption></figure>`).join('')}</div>

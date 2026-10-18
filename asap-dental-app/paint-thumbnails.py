@@ -40,7 +40,25 @@ class Art:
         pts = [tuple(p) for p in pts] + ([tuple(pts[0])] if closed else [])
         s.d.line(pts, fill=255, width=w, joint='curve')
         for x, y in (pts[0], pts[-1]): s.d.ellipse([x - w/2, y - w/2, x + w/2, y + w/2], fill=255)
-    def tooth(s, ox, oy, size, shape=TOOTH): s.line(path(shape[0], shape[1], ox, oy, size), closed=True)
+    def tooth(s, ox, oy, size, shape=TOOTH, rot=0):
+        pts = path(shape[0], shape[1], ox, oy, size)
+        if rot:
+            cx, cy, a = ox + size*.5, oy + size*.55, math.radians(rot)
+            pts = [(cx + (x-cx)*math.cos(a) - (y-cy)*math.sin(a), cy + (x-cx)*math.sin(a) + (y-cy)*math.cos(a)) for x, y in pts]
+        s.line(pts, closed=True)
+    def screw(s, cx, top, length=240, w=56, threads=6):
+        s.line([(cx - w/2, top), (cx + w/2, top), (cx + w/2 - 8, top + length*.86), (cx, top + length), (cx - w/2 + 8, top + length*.86)], closed=True)
+        for k in range(threads):
+            y = top + 34 + k*(length*.74/threads); half = w/2 - 4 - k*1.6
+            s.line([(cx - half - 6, y + 6), (cx + half + 6, y - 6)], w=LW - 2)
+    def leaf(s, cx, cy, rx, ry, ang):
+        a = math.radians(ang)
+        s.line([(cx + rx*math.cos(t)*math.cos(a) - ry*math.sin(t)*math.sin(a), cy + rx*math.cos(t)*math.sin(a) + ry*math.sin(t)*math.cos(a)) for t in np.linspace(0, 2*math.pi, 60)], closed=True, w=LW - 2)
+    def roundrect(s, x0, y0, x1, y1, r):
+        pts = []
+        for cx, cy, a0 in [(x1 - r, y0 + r, -90), (x1 - r, y1 - r, 0), (x0 + r, y1 - r, 90), (x0 + r, y0 + r, 180)]:
+            pts += [(cx + r*math.cos(math.radians(a)), cy + r*math.sin(math.radians(a))) for a in np.linspace(a0, a0 + 90, 12)]
+        s.line(pts, closed=True)
     def sparkle(s, cx, cy, r):
         s.line([(cx + r*.8*math.cos(t)**3, cy + r*math.sin(t)**3) for t in np.linspace(0, 2*math.pi, 90)], closed=True, w=LW - 1)
     def circle(s, cx, cy, r): s.line([(cx + r*math.cos(t), cy + r*math.sin(t)) for t in np.linspace(0, 2*math.pi, 120)], closed=True)
@@ -61,53 +79,86 @@ def press(art, out):
 SCENES = {}
 def scene(f): SCENES[f.__name__] = f; return f
 
-@scene
-def calm(a):
-    a.tooth(650, 300, 300); a.sparkle(985, 255, 54)
+def implant_set(a, cx, top, size=280):
+    a.tooth(cx - size*.5, top, size, CAP)
+    y = top + size*.56
+    a.line([(cx - 38, y), (cx + 38, y), (cx + 30, y + 54), (cx - 30, y + 54)], closed=True)
+    a.screw(cx, y + 54, 230, 54)
 
 @scene
-def mirror_tooth(a):
-    a.tooth(560, 300, 300)
-    a.circle(1000, 380, 68)
-    ang = -0.32; x0, y0 = 1000 - math.sin(ang)*68, 380 + math.cos(ang)*68
-    a.line([(x0, y0), (x0 - math.sin(ang)*300, y0 + math.cos(ang)*300)])
-    a.sparkle(500, 280, 44)
+def v_deep(a):
+    a.tooth(560, 290, 300)
+    a.line(bez((470, 500), (600, 470), (740, 540), (900, 492)))           # gumline
+    a.line([(1090, 760), (958, 440)])                                       # scaler handle
+    a.line(bez((958, 440), (946, 404), (900, 398), (872, 440)))            # curved tip at the gumline
+    a.sparkle(500, 270, 42)
 
 @scene
-def brush(a):
-    a.tooth(560, 310, 290)
-    ang = -1.2; ux, uy = math.cos(ang), math.sin(ang); nx, ny = -uy, ux
-    x0, y0 = 980, 690; x1, y1 = x0 + ux*330, y0 + uy*330
-    for off in (-14, 14): a.line([(x0 + nx*off, y0 + ny*off), (x1 + nx*off*.8, y1 + ny*off*.8)])
-    a.line([(x0 - nx*14, y0 - ny*14), (x0 + nx*14, y0 + ny*14)])
-    hx, hy = x1 + ux*60, y1 + uy*60
-    a.line([(x1 + nx*11, y1 + ny*11), (hx + ux*50 + nx*11, hy + uy*50 + ny*11)])
-    for t in np.linspace(-10, 100, 6):
-        bx, by = x1 + ux*t + nx*11, y1 + uy*t + ny*11
-        a.line([(bx, by), (bx + nx*34, by + ny*34)], w=LW - 2)
-    a.sparkle(500, 290, 40)
+def v_fixed(a):
+    for i in range(4): a.tooth(495 + i*152, 300, 160, CAP)
+    a.line([(500, 398), (1100, 398)])
+    for x in (620, 980): a.screw(x, 410, 210, 46)
+    a.sparkle(1150, 260, 42)
 
 @scene
-def crown(a):
-    a.tooth(650, 330, 300, STUMP)
-    a.tooth(650, 205, 300, CAP)
-    a.sparkle(1000, 230, 44)
+def v_ahmed(a):
+    implant_set(a, 800, 210)
+    a.sparkle(1010, 240, 44); a.sparkle(560, 330, 28)
 
 @scene
-def implant(a):
-    a.tooth(650, 230, 300, CAP)
-    a.line([(760, 410), (840, 410), (830, 470), (770, 470)], closed=True)
-    a.line([(770, 470), (830, 470), (816, 720), (800, 752), (784, 720)], closed=True)
-    for k in range(6):
-        y = 500 + k*38; half = 34 - k*3
-        a.line([(800 - half - 8, y + 6), (800 + half + 8, y - 6)], w=LW - 2)
-    a.sparkle(1010, 250, 44)
+def v_immediate(a):
+    a.tooth(470, 260, 230, rot=-14)
+    a.line(bez((700, 300), (760, 250), (840, 250), (880, 300)))            # arrow: old tooth out, implant in
+    a.line([(880, 300), (850, 296)]); a.line([(880, 300), (876, 270)])
+    implant_set(a, 1000, 320, 240)
+    a.sparkle(1180, 290, 38)
 
 @scene
-def floss(a):
-    a.tooth(520, 320, 270); a.tooth(800, 320, 270)
-    a.line(bez((540, 210), (660, 230), (770, 300), (800, 355)) + bez((800, 355), (830, 300), (940, 230), (1060, 210)))
-    a.sparkle(1120, 260, 40)
+def v_over(a):
+    for i in range(4): a.tooth(520 + i*142, 260, 150, CAP)
+    a.roundrect(500, 340, 1100, 420, 34)
+    for x in (650, 950):
+        a.circle(x, 520, 22); a.line([(x, 542), (x, 690)]); a.line([(x - 30, 690), (x + 30, 690)])
+    a.sparkle(1160, 240, 42)
+
+@scene
+def v_partial(a):
+    for i in range(2): a.tooth(610 + i*190, 400, 200, CAP)
+    a.roundrect(585, 512, 1015, 588, 30)
+    a.line(bez((585, 550), (515, 550), (492, 480), (540, 440)))           # clasps
+    a.line(bez((1015, 550), (1085, 550), (1108, 480), (1060, 440)))
+    a.sparkle(1150, 390, 40)
+
+@scene
+def v_rootcanal(a):
+    a.tooth(650, 290, 300)
+    sc = lambda x, y: (650 + x*300, 290 + y*300)
+    a.line([sc(*p) for p in bez((0.36, 0.46), (0.40, 0.32), (0.60, 0.32), (0.64, 0.46))], w=LW - 3)
+    a.line([sc(*p) for p in bez((0.38, 0.46), (0.36, 0.70), (0.33, 0.88), (0.32, 0.98))], w=LW - 3)
+    a.line([sc(*p) for p in bez((0.62, 0.46), (0.64, 0.70), (0.67, 0.88), (0.68, 0.98))], w=LW - 3)
+    a.sparkle(990, 250, 44)
+
+@scene
+def v_sedation(a):
+    a.tooth(520, 300, 290)
+    stem = bez((960, 720), (990, 580), (1040, 440), (1120, 290), 60)
+    a.line(stem)
+    for i, (x, y) in enumerate(stem[12::11]):
+        side = 1 if i % 2 else -1
+        a.leaf(x + side*52, y - 6, 56, 22, -40 if side < 0 else 30)
+    a.sparkle(470, 280, 40)
+
+@scene
+def v_whitening(a):
+    a.tooth(650, 300, 300)
+    a.sparkle(990, 260, 54); a.sparkle(1060, 400, 30); a.sparkle(560, 300, 34)
+
+@scene
+def v_wisdom(a):
+    a.tooth(520, 330, 240)
+    a.tooth(820, 350, 240, rot=32)
+    a.line([(540, 640), (1120, 640)])                                       # gumline / bone level
+    a.sparkle(1130, 270, 40)
 
 if __name__ == '__main__':
     out = sys.argv[1]
