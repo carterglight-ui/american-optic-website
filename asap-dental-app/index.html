@@ -20,6 +20,7 @@
   --teal:#006778;        /* Jaguars teal */
   --gold:#C99A2E;        /* Jaguars gold */
   --good:#2E7D5B;
+  --enamel:#FDFCF7;--dentin:#F0DCAE;--pulp:#E58C9B;--infect:#C8432F;--decay:#5B3A22;--gum:#E8A3AA;--bone:#EBE1CF;--tooth-line:#B4C3C9;
   --warn:#B4541A;
   --frame:#0E1A22;
   --shadow:0 1px 2px rgba(19,48,74,.06),0 6px 20px rgba(19,48,74,.08);
@@ -30,12 +31,12 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0B161D;--surface:#0F1F29;--card:#162B37;--ink:#E4EEF2;--muted:#94AEBB;--line:#264050;
   --brand:#5AAFD4;--brand-soft:#173847;--on-brand:#06202C;--script:#74ABF0;--wainscot:#6E93A3;
-  --teal:#3BB0BF;--gold:#E0B44E;--good:#5CC08F;--warn:#F08A4B;--frame:#000;
+  --teal:#3BB0BF;--gold:#E0B44E;--good:#5CC08F;--enamel:#EEF1EE;--dentin:#D9C08E;--pulp:#D4707F;--infect:#E0604A;--decay:#4A2E1A;--gum:#C7808A;--bone:#33414B;--tooth-line:#7D909A;--warn:#F08A4B;--frame:#000;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0B161D;--surface:#0F1F29;--card:#162B37;--ink:#E4EEF2;--muted:#94AEBB;--line:#264050;
   --brand:#5AAFD4;--brand-soft:#173847;--on-brand:#06202C;--script:#74ABF0;--wainscot:#6E93A3;
-  --teal:#3BB0BF;--gold:#E0B44E;--good:#5CC08F;--warn:#F08A4B;--frame:#000;
+  --teal:#3BB0BF;--gold:#E0B44E;--good:#5CC08F;--enamel:#EEF1EE;--dentin:#D9C08E;--pulp:#D4707F;--infect:#E0604A;--decay:#4A2E1A;--gum:#C7808A;--bone:#33414B;--tooth-line:#7D909A;--warn:#F08A4B;--frame:#000;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);color-scheme:dark}
 
 html,body{height:100%}
@@ -343,6 +344,53 @@ p{margin:0}
 .push .txt strong{display:block;font-size:14px}
 @keyframes drop{from{transform:translateY(-120%)}to{transform:none}}
 .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:999px;font-size:13px;font-weight:700;z-index:40;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}
+
+/* Tools */
+.ico.sm{width:14px;height:14px;vertical-align:-2px}
+.range{width:100%;accent-color:var(--brand);height:28px;margin:0}
+.tool-art{background:linear-gradient(135deg,var(--brand-soft),color-mix(in srgb,var(--brand) 24%,var(--card)))!important}
+.arch{width:100%;height:auto;display:block}
+.arch .t{cursor:pointer;outline:none}
+.arch .t rect{fill:var(--enamel);stroke:var(--tooth-line);stroke-width:1.2;transition:fill .15s}
+.arch .t text{font-size:7.5px;font-weight:800;fill:var(--muted);pointer-events:none;font-family:var(--f-body)}
+.arch .t.hi rect{fill:color-mix(in srgb,var(--gold) 40%,var(--enamel));stroke:var(--gold)}
+.arch .t.sel rect{fill:var(--brand);stroke:var(--brand)}
+.arch .t.sel text{fill:var(--on-brand)}
+.arch .t:focus-visible rect{stroke:var(--script);stroke-width:3}
+svg .lbl{font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.08em;fill:var(--muted)}
+svg .lbl.sm{font-size:10px;letter-spacing:.02em}
+.tinfo{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.tinfo h3{font-family:var(--f-display);font-size:24px;text-transform:uppercase;line-height:1.05}
+.cav svg{width:100%;height:auto;display:block}
+.cav .lbl{font-family:var(--f-body);font-size:11px;font-weight:700;fill:var(--ink);letter-spacing:0}
+.cavgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.cavgrid small{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.cavgrid b{font-size:13px;line-height:1.3;display:block}
+.pill.warn{background:color-mix(in srgb,var(--warn) 16%,var(--card));color:var(--warn)}
+.brush{display:flex;flex-direction:column;align-items:center;gap:12px}
+.brush .progress{width:100%}
+.brush canvas{touch-action:none;display:block;border-radius:28px;cursor:grab;max-width:100%}
+.sugar-head{display:flex;align-items:baseline;gap:10px}
+.daybar{position:relative;height:28px;border-radius:8px;background:var(--brand-soft);overflow:hidden}
+.daybar i{position:absolute;top:0;bottom:0;background:var(--warn);opacity:.85;border-radius:3px;transition:left .2s,width .2s}
+.dayticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+/* Trust */
+.trust{display:grid;grid-template-columns:repeat(3,1fr);background:var(--card);border-radius:18px;box-shadow:var(--shadow);border:0;padding:12px 4px;text-align:center;width:100%}
+.trust>span{display:flex;flex-direction:column;gap:3px;border-left:1px solid var(--line);padding:0 4px}
+.trust>span:first-child{border-left:0}
+.trust b{font-family:var(--f-display);font-size:22px;line-height:1;color:var(--brand)}
+.trust small{font-size:11px;color:var(--muted);font-weight:700;line-height:1.2}
+.mission{font-family:var(--f-display);font-weight:800;font-size:36px;line-height:.98;text-transform:uppercase}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.statgrid .stat b{font-size:28px;color:var(--brand);font-variant-numeric:tabular-nums}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.checks li{display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:14px}
+.checks .dot{width:28px;height:28px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+.checks .dot .ico{width:16px;height:16px;stroke-width:2.4}
+.loc{display:flex;flex-direction:column;gap:6px}
+.loc .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.field select{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;width:100%}
+.seg{grid-template-columns:repeat(3,1fr)!important}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -388,11 +436,12 @@ p{margin:0}
       <li>Create an account and say how you feel about the dentist</li>
       <li>Book a visit and watch a reminder arrive</li>
       <li>Read Smile School cards, flip the myths, take the quizzes</li>
+      <li>Play with the tools: tap a tooth, grow a cavity, brush away plaque</li>
       <li>Ask the AI dental guide anything</li>
       <li>Try the breathing exercise and office tour</li>
       <li>Leave a Google review from the profile tab</li>
     </ul>
-    <p class="note">Doctor bios, one doctor's name, video links, phone number and the Google review link are placeholders until you send them.</p>
+    <p class="note">Practice facts come from ASAP's website and press releases; please double-check them. Doctor bios, one doctor's name, video links and the Google review link are still placeholders.</p>
     <button class="reset" id="resetDemo" type="button">Restart demo from sign-up</button>
   </aside>
 
@@ -419,7 +468,7 @@ const icon = (n, cls = 'ico') => `<svg class="${cls}"><use href="#i-${n}"/></svg
 const STAR = '<svg viewBox="0 0 24 24"><use href="#i-star"/></svg>';
 
 /* Placeholders the practice still needs to send */
-const OFFICE_PHONE = '(904) 000-0000';
+const MAIN_PHONE = '(904) 777-4622';
 const GOOGLE_REVIEW_URL = 'https://www.google.com/search?q=ASAP+Dental+Care+Jacksonville+reviews';
 
 /* ---------- Content ---------- */
@@ -503,6 +552,19 @@ const DOCTORS = [
   {id:'sabino', name:'Dr. Gregory Sabino', short:'Dr. Sabino', role:'Dentist', img:'img/dr-sabino.jpg'},
 ];
 const docRow = () => `<div class="docrow">${DOCTORS.map(d => `<button class="doc" data-doc="${d.id}"><img src="${d.img}" alt="${d.name}" loading="lazy"><b>${d.short}</b><span>${d.role}</span></button>`).join('')}</div>`;
+
+const LOCATIONS = [
+  {id:'103rd', name:'103rd St · Westside', addr:'7451 103rd St, Ste 18, Jacksonville, FL 32210', phone:'(904) 777-4622', hours:'Mon–Sat 8 AM–7 PM · Sun 10 AM–6 PM', tag:'Open 7 days'},
+  {id:'atlantic', name:'Atlantic Blvd', addr:'12777 Atlantic Blvd, Ste 26, Jacksonville, FL 32225', phone:'(904) 312-7777', hours:'Tue–Sat 9 AM–5 PM'},
+  {id:'bonneval', name:'Bonneval Rd · Southside', addr:'6960 Bonneval Rd, #201, Jacksonville, FL 32216', phone:'(904) 281-9988', hours:'Tue–Sat 9 AM–5 PM'},
+  {id:'dunn', name:'Dunn Ave · Northside', addr:'3000 Dunn Ave, Ste 38, Jacksonville, FL 32218', phone:'(904) 768-3790', hours:'Wed, Fri, Sat 9 AM–6 PM'},
+  {id:'sanjose', name:'San Jose Blvd', addr:'Jacksonville, FL'},
+  {id:'orangepark', name:'Orange Park', addr:'Orange Park, FL'},
+  {id:'lakecity', name:'Lake City', addr:'Lake City, FL'},
+  {id:'crescent', name:'Crescent City', addr:'Crescent City, FL'},
+];
+const myOffice = () => LOCATIONS.find(l => l.id === S.user?.office) || LOCATIONS[0];
+const officePhone = () => myOffice().phone || MAIN_PHONE;
 
 const TOUR = [
   ['img/welcome-wall.jpg','The front desk','This wall greets you when you walk in.'],
@@ -626,7 +688,7 @@ ROUTES.welcome = () => `
 ROUTES.welcome.cls = 'onboard'; ROUTES.welcome.noTabs = true;
 ROUTES.welcome.after = v => { $('#haveAcct', v).onclick = () => { S.user = {name:'Jordan Rivera', email:'jordan@example.com', feel:1}; save(); go('home', null, {tab:true}); toast('Signed in with sample patient'); }; };
 
-let draft = {name:'', phone:'', email:'', dob:'', feel:null};
+let draft = {name:'', phone:'', email:'', dob:'', feel:null, office:'103rd'};
 ROUTES.signup = () => `
   ${topbar('Create account')}
   <div class="steps-dots"><i class="on"></i><i class="on"></i><i></i></div>
@@ -635,6 +697,7 @@ ROUTES.signup = () => `
     <div class="field"><label for="su-phone">Mobile number</label><input id="su-phone" type="tel" autocomplete="tel" value="${esc(draft.phone)}" placeholder="(904) 555-0123"><span class="small muted">For appointment reminders by text.</span></div>
     <div class="field"><label for="su-email">Email</label><input id="su-email" type="email" autocomplete="email" value="${esc(draft.email)}" placeholder="you@email.com"></div>
     <div class="field"><label for="su-dob">Date of birth</label><input id="su-dob" type="date" value="${esc(draft.dob)}"></div>
+    <div class="field"><label for="su-office">Your ASAP office</label><select id="su-office">${LOCATIONS.map(l => `<option value="${l.id}" ${draft.office === l.id ? 'selected' : ''}>${l.name}</option>`).join('')}</select></div>
     <div class="section">
       <b>How do you feel about dental visits?</b>
       <span class="small muted">There's no wrong answer. It helps us take care of you.</span>
@@ -648,12 +711,12 @@ ROUTES.signup = () => `
 ROUTES.signup.noTabs = true;
 ROUTES.signup.after = v => {
   const f = $('#suForm', v);
-  ['name','phone','email','dob'].forEach(k => $('#su-' + k, v).addEventListener('input', e => draft[k] = e.target.value));
+  ['name','phone','email','dob','office'].forEach(k => $('#su-' + k, v).addEventListener('input', e => draft[k] = e.target.value));
   $('#feel', v).addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; draft.feel = +b.dataset.f; $('#feel', v).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
   f.addEventListener('submit', e => {
     e.preventDefault();
     if (!draft.name.trim()) { $('#su-name', v).focus(); toast('Add your name to continue'); return; }
-    S.user = {name:draft.name.trim(), phone:draft.phone, email:draft.email, dob:draft.dob, feel:draft.feel ?? 0};
+    S.user = {name:draft.name.trim(), phone:draft.phone, email:draft.email, dob:draft.dob, feel:draft.feel ?? 0, office:draft.office};
     if (S.user.feel >= 1) S.comfort = {explain:true, breaks:true, numb:true};
     save(); stack = []; go('home', null, {tab:true});
     setTimeout(() => notify({t:'You\'re all set, ' + first() + '!', d:'Book your first visit whenever you\'re ready.', ico:'smile'}), 900);
@@ -693,6 +756,11 @@ ROUTES.home = () => {
     <button data-go="videos"><span class="q">${icon('video')}</span>Videos</button>
     <button data-go="emergency"><span class="q" style="color:var(--warn)">${icon('bolt')}</span>Emergency</button>
   </div>
+  <button class="trust" data-go="why" aria-label="Why patients trust ASAP">
+    <span><b>229K+</b><small>procedures since 2011</small></span>
+    <span><b>4.7★</b><small>on Google</small></span>
+    <span><b>Same day</b><small>urgent care</small></span>
+  </button>
   ${nervous ? `<button class="comfort-card" data-go="comfort"><span class="bubble">${icon('heart')}</span><span><b>Feeling nervous? You're not alone.</b><span class="small muted">Breathing exercise, office tour and your comfort plan.</span></span></button>` : ''}
   <div class="section">
     <div class="section-head"><span class="eyebrow">Meet your doctors</span><button class="link" data-go="comfort">Meet the team</button></div>
@@ -706,6 +774,7 @@ ROUTES.home = () => {
   <div class="section">
     <div class="section-head"><span class="eyebrow">Smile School</span><button class="link" data-go="learn">See all</button></div>
     <div class="progress"><div class="meter"><i style="width:${learned/SERVICES.length*100}%"></i></div><span class="small"><b>${learned}</b>/${SERVICES.length} lessons</span></div>
+    <div class="chips">${TOOLS.map(t => `<button class="chip" data-go="tool" data-arg="${t.id}">${t.t}</button>`).join('')}</div>
   </div>
   <button class="jags" id="jagsBtn">
     <span class="in"><img src="img/jaguars-head.png" alt=""><span><b>The Official Dentist of the Jacksonville Jaguars</b><span>Duuuval smiles start here. Tap to see us in the community.</span></span></span>
@@ -720,14 +789,15 @@ ROUTES.home.after = v => {
   $('#openFact', v)?.addEventListener('click', () => { factOpen = true; render(); });
   $('#nextFact', v)?.addEventListener('click', () => { factIdx = (factIdx + 1) % FACTS.length; factOpen = false; render(); });
   $('#revBtn', v).onclick = openReview;
-  $('#jagsBtn', v).onclick = () => sheet(`<div class="community">
+  $('#jagsBtn', v).onclick = openCommunity;
+};
+const openCommunity = () => sheet(`<div class="community">
       <img src="img/small-market.jpg" alt="ASAP team shirt reading Just a Small Market Dental Team">
       <span class="eyebrow">ASAP × Jacksonville Jaguars</span>
       <h3 class="small-market">Just a small market dental team</h3>
       <p>As the Official Dentist of the Jacksonville Jaguars, our team shows up for Jacksonville on game day and every other day, like volunteering to sort food for neighbors in need.</p>
       <img src="img/community.jpg" alt="ASAP team member volunteering at a food drive">
       <button class="btn block" data-close>Go Jags!</button></div>`);
-};
 
 function openDoctor(id) {
   const d = DOCTORS.find(x => x.id === id);
@@ -759,7 +829,7 @@ ROUTES.book = () => {
   if (step === 0) body = `
     <div class="section"><b style="font-size:18px">What brings you in?</b>
     <div class="reasons">${REASONS.map(([id,t,s,ic]) => `<button class="reason ${id==='emergency'?'urgent':''}" data-r="${id}" aria-pressed="${bk.reason===id}">${icon(ic)}<b>${t}</b><span>${s}</span></button>`).join('')}</div></div>
-    ${bk.reason === 'emergency' ? `<div class="alert"><b>In pain right now?</b>Call us at <b style="color:inherit">${OFFICE_PHONE}</b> so we can fit you in today. You can still request a time below.</div>` : ''}
+    ${bk.reason === 'emergency' ? `<div class="alert"><b>In pain right now?</b>Call us at <b style="color:inherit">${officePhone()}</b> so we can fit you in today. You can still request a time below.</div>` : ''}
     <button class="btn block" id="bkNext" ${bk.reason ? '' : 'disabled'}>Choose a time</button>`;
   if (step === 1) body = `
     <div class="section"><b style="font-size:18px">Who would you like to see?</b>
@@ -773,7 +843,7 @@ ROUTES.book = () => {
       <div class="r"><span>Visit</span><b>${r[1]}</b></div>
       <div class="r"><span>Doctor</span><b>${bkDoc()?.name || 'First available'}</b></div>
       <div class="r"><span>When</span><b>${fmtDay(bk.day)}, ${bk.time}</b></div>
-      <div class="r"><span>Where</span><b>ASAP Dental Care, Jacksonville</b></div>
+      <div class="r"><span>Where</span><b>ASAP Dental Care, ${esc(myOffice().name)}</b></div>
     </div>
     <div class="section"><b>Your comfort plan comes with you</b>
       <div class="chips">${COMFORT_OPTS.filter(o => S.comfort[o[0]]).map(o => `<span class="chip" aria-pressed="true">${o[1]}</span>`).join('') || '<span class="muted small">None yet.</span>'}</div>
@@ -844,16 +914,17 @@ let learnTab = 'read';
 ROUTES.learn = () => {
   const learned = Object.keys(S.quiz).length;
   return `${topbar('Smile School', {backBtn:false})}
-  <div class="seg" role="tablist"><button role="tab" id="tRead" aria-selected="${learnTab==='read'}">Read</button><button role="tab" id="tWatch" aria-selected="${learnTab==='watch'}">Watch</button></div>
+  <div class="seg" role="tablist"><button role="tab" id="tRead" aria-selected="${learnTab==='read'}">Lessons</button><button role="tab" id="tPlay" aria-selected="${learnTab==='play'}">Tools</button><button role="tab" id="tWatch" aria-selected="${learnTab==='watch'}">Videos</button></div>
   ${learnTab === 'read' ? `
     <div class="card progress"><div style="flex:1;display:flex;flex-direction:column;gap:8px"><b>${learned === SERVICES.length ? 'Smile School graduate!' : 'Finish a quiz to earn a star'}</b><div class="meter"><i style="width:${learned/SERVICES.length*100}%"></i></div></div><span class="stars">${STAR}</span><b style="font-variant-numeric:tabular-nums">${learned}/${SERVICES.length}</b></div>
     <div class="svc-grid">${SERVICES.map(s => `<button class="svc" data-go="service" data-arg="${s.id}"><span class="art" ${s.img ? `style="background-image:url(${s.img})"` : ''}>${s.img ? '' : icon(s.ico)}${S.quiz[s.id] ? `<span class="done">${icon('check')}</span>` : ''}</span><span class="t"><b>${s.name}</b><span>${s.time}</span></span></button>`).join('')}</div>`
-  : videoList()}`;
+  : learnTab === 'play' ? toolGrid() : videoList()}`;
 };
 ROUTES.learn.tab = 'learn';
 ROUTES.learn.after = v => {
   $('#tRead', v).onclick = () => { learnTab = 'read'; render(); };
   $('#tWatch', v).onclick = () => { learnTab = 'watch'; render(); };
+  $('#tPlay', v).onclick = () => { learnTab = 'play'; render(); };
   bindVideos(v);
 };
 const videoList = () => `<div class="section">${VIDEOS.map((x,i) => `<button class="video" data-v="${i}"><span class="thumb" style="background-image:url(${x.img})"><span class="play">${icon('play')}</span></span><span><span class="pill ${x.tag==='Jaguars'?'gold':''}">${x.tag}</span><b style="margin-top:4px">${x.t}</b><span>${x.d}</span></span></button>`).join('')}</div>`;
@@ -914,13 +985,240 @@ ROUTES.emergency = () => ROUTES.service('emergency');
 ROUTES.emergency.tab = 'home';
 ROUTES.emergency.after = v => ROUTES.service.after(v, 'emergency');
 
+/* ---------- Tools ---------- */
+const TOOLS = [
+  {id:'explorer', t:'Tap-a-Tooth', d:'Explore all 32 adult teeth', ico:'tooth', lead:'Tap any tooth to see what it does. Dentists number them 1 to 32, so now you\'ll know what "tooth #14" means.'},
+  {id:'cavity', t:'How Deep Is It?', d:'Slide to grow a cavity and see the fix', ico:'scan', lead:'Drag the slider to see how a cavity grows through the layers of a tooth, and why catching it early keeps the fix small.'},
+  {id:'brush', t:'Brush the Plaque', d:'Scrub a smile clean with your finger', ico:'spark', lead:'Drag across the teeth to brush away the plaque. Pay attention to where it likes to hide.'},
+  {id:'sugar', t:'Sugar Clock', d:'See how snacking adds up', ico:'clock', lead:'It\'s not just how much sugar you have. It\'s how often. Slide to see your teeth\'s day.'},
+];
+const toolGrid = () => `<p class="muted">Tap, drag and slide. Each one takes about a minute.</p>
+  <div class="svc-grid">${TOOLS.map(t => `<button class="svc" data-go="tool" data-arg="${t.id}"><span class="art tool-art">${icon(t.ico)}</span><span class="t"><b>${t.t}</b><span>${t.d}</span></span></button>`).join('')}</div>`;
+const TOOL_UI = {}, TOOL_AFTER = {};
+ROUTES.tool = id => { const T = TOOLS.find(t => t.id === id); return `${topbar(T.t)}<p class="muted">${T.lead}</p>${TOOL_UI[id]()}`; };
+ROUTES.tool.tab = 'learn';
+ROUTES.tool.after = (v, id) => TOOL_AFTER[id](v);
+
+/* Tap-a-Tooth: universal numbering, viewed as if facing the patient */
+const TTYPE = {
+  incisor:{n:'Incisors', job:'Your front teeth. They slice into food, like biting into an apple, and they\'re front and center in your smile.', fact:'Chips and small gaps here can often be fixed in one visit with bonding.'},
+  canine:{n:'Canines', job:'The pointed corner teeth. They grip and tear food and guide your bite when your jaw slides side to side.', fact:'Canines have the longest roots of any tooth, which makes them very stable.'},
+  premolar:{n:'Premolars', job:'Part tearer, part grinder. They pass food from your front teeth back to your molars.', fact:'Adults have 8 premolars. Kids have none until their baby molars are replaced.'},
+  molar:{n:'Molars', job:'Your heavy-duty grinders. Their wide, bumpy tops crush food so you can swallow it.', fact:'The deep grooves on top of molars are where many cavities start. Sealants can help protect them.'},
+  wisdom:{n:'Wisdom teeth', job:'Third molars, the last teeth to arrive, usually between ages 17 and 25.', fact:'Many mouths don\'t have room for them. Our oral surgery team removes them, with sedation options.'},
+};
+const POSN = ['', 'central incisor', 'lateral incisor', 'canine', 'first premolar', 'second premolar', 'first molar', 'second molar', 'wisdom tooth'];
+const posType = p => p <= 2 ? 'incisor' : p === 3 ? 'canine' : p <= 5 ? 'premolar' : p <= 7 ? 'molar' : 'wisdom';
+function toothInfo(n) {
+  const [jaw, side, p] = n <= 8 ? ['Upper','right',9-n] : n <= 16 ? ['Upper','left',n-8] : n <= 24 ? ['Lower','left',25-n] : ['Lower','right',n-24];
+  return {n, p, type:posType(p), name:`${jaw} ${side} ${POSN[p]}`};
+}
+const TSIZE = [0, 10.5, 9.5, 10.5, 11, 11, 15, 14, 13];
+function archTeeth() {
+  const out = [];
+  const arch = (nums, upper) => {
+    const sz = nums.map(n => { const p = toothInfo(n).p; return TSIZE[p] * (upper ? 1 : p <= 2 ? .8 : .95); });
+    const total = sz.reduce((a, b) => a + b * 2 + 2.5, 0);
+    let acc = 0;
+    nums.forEach((n, i) => {
+      const f = (acc + sz[i] + 1.25) / total; acc += sz[i] * 2 + 2.5;
+      const deg = upper ? 190 - f * 200 : -10 + f * 200, a = deg * Math.PI / 180;
+      const x = 160 + (upper ? 108 : 104) * Math.cos(a), y = upper ? 148 - 126 * Math.sin(a) : 256 + 118 * Math.sin(a);
+      const t = posType(toothInfo(n).p);
+      out.push({n, x, y, t, w:sz[i] * 2, h:sz[i] * (t === 'incisor' ? 1.3 : t === 'canine' ? 1.75 : 1.95), rot: upper ? -deg - 90 : deg - 90});
+    });
+  };
+  arch(Array.from({length:16}, (_, i) => i + 1), true);
+  arch(Array.from({length:16}, (_, i) => i + 17), false);
+  return out;
+}
+let exSel = null, exGroup = null;
+const explorerSVG = () => `<svg viewBox="0 0 320 396" class="arch" role="group" aria-label="Map of the 32 adult teeth">
+  <text x="160" y="112" class="lbl" text-anchor="middle">UPPER</text>
+  <text x="160" y="296" class="lbl" text-anchor="middle">LOWER</text>
+  <text x="4" y="206" class="lbl sm">Patient's right</text>
+  <text x="316" y="206" class="lbl sm" text-anchor="end">Left</text>
+  ${archTeeth().map(o => `<g class="t${exSel === o.n ? ' sel' : ''}${exGroup === o.t ? ' hi' : ''}" data-n="${o.n}" tabindex="0" role="button" aria-label="Tooth ${o.n}, ${toothInfo(o.n).name}" transform="translate(${o.x.toFixed(1)} ${o.y.toFixed(1)})"><rect transform="rotate(${o.rot.toFixed(1)})" x="${(-o.w/2).toFixed(1)}" y="${(-o.h/2).toFixed(1)}" width="${o.w.toFixed(1)}" height="${o.h.toFixed(1)}" rx="${(o.w*.32).toFixed(1)}"/><text y="2.8" text-anchor="middle">${o.n}</text></g>`).join('')}
+</svg>`;
+function explorerInfo() {
+  if (!exSel) return `<p class="muted">Tap any tooth above, or highlight a group of teeth.</p>`;
+  const i = toothInfo(exSel), T = TTYPE[i.type];
+  return `<div class="tinfo"><span class="pill">Tooth #${i.n} · ${T.n}</span><h3>${i.name}</h3><p>${T.job}</p><p class="small muted">${T.fact}</p><button class="btn ghost block" id="soreBtn">This tooth is bothering me</button></div>`;
+}
+TOOL_UI.explorer = () => `<div class="card" style="padding:8px"><div id="arch">${explorerSVG()}</div></div>
+  <div class="chips" id="exGroups">${Object.entries(TTYPE).map(([k, t]) => `<button class="chip" data-g="${k}" aria-pressed="${exGroup === k}">${t.n}</button>`).join('')}</div>
+  <div class="card" id="exInfo" aria-live="polite">${explorerInfo()}</div>`;
+TOOL_AFTER.explorer = v => {
+  const pick = n => { exSel = n; upd(); v.querySelector(`#arch [data-n="${n}"]`)?.focus({preventScroll:true}); };
+  const upd = () => {
+    $('#arch', v).innerHTML = explorerSVG(); $('#exInfo', v).innerHTML = explorerInfo();
+    v.querySelectorAll('#exGroups .chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.g === exGroup));
+    const b = $('#soreBtn', v);
+    if (b) b.onclick = () => {
+      const i = toothInfo(exSel);
+      if (bk.step === 3) resetBk();
+      bk.note = `Tooth #${i.n} (${i.name.toLowerCase()}) has been bothering me.`;
+      toast(`Tooth #${i.n} added to your visit note`); go('book', null, {tab:true});
+    };
+  };
+  $('#arch', v).addEventListener('click', e => { const g = e.target.closest('[data-n]'); if (g) pick(+g.dataset.n); });
+  $('#arch', v).addEventListener('keydown', e => { const g = e.target.closest('[data-n]'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(+g.dataset.n); } });
+  $('#exGroups', v).addEventListener('click', e => { const c = e.target.closest('[data-g]'); if (c) { exGroup = exGroup === c.dataset.g ? null : c.dataset.g; upd(); } });
+  upd();
+};
+
+/* How Deep Is It?: cross-section of a molar; the cavity ellipse grows from the chewing surface */
+let cavD = 0;
+const CAV = [
+  {max:3, lvl:0, t:'Healthy tooth', d:'Strong enamel and a healthy nerve. Brushing, flossing and checkups keep it this way.', fix:'A cleaning and checkup every 6 months', hurt:'Nothing at all'},
+  {max:24, lvl:1, t:'Early decay in the enamel', d:'Acid has started to weaken the outer layer. At this stage it can sometimes be stopped before it becomes a hole.', fix:'Fluoride and better brushing, or a small filling', hurt:'Usually nothing, which is why checkups matter'},
+  {max:40, lvl:2, t:'A cavity in the dentin', d:'Decay has broken through to the softer layer under the enamel, where it spreads faster.', fix:'A tooth-colored filling, usually in one visit', hurt:'Maybe a twinge with sweets or cold'},
+  {max:54, lvl:3, t:'A large, deep cavity', d:'A big part of the tooth is weakened. A large filling may crack under chewing pressure.', fix:'A crown to cap and protect the tooth', hurt:'Sensitivity, maybe pain when you chew'},
+  {max:80, lvl:4, t:'Infection reaches the nerve', d:'Bacteria have reached the pulp, where the nerve and blood vessels live.', fix:'A root canal, then a crown', hurt:'Often a throbbing toothache'},
+  {max:101, lvl:5, t:'Abscess at the root tip', d:'Infection has spread past the root into the bone. This needs care soon.', fix:'A root canal or extraction, then an implant or bridge', hurt:'Severe pain or swelling. Call us right away.'},
+];
+const cavStage = () => CAV.find(c => cavD < c.max);
+const TOOTH_OUTLINE = 'M60,60 C60,30 100,35 120,45 C140,35 180,30 180,60 L182,150 C182,170 175,180 170,190 L160,290 C158,300 146,300 144,290 L132,205 C128,195 112,195 108,205 L96,290 C94,300 82,300 80,290 L70,190 C65,180 58,170 58,150 Z';
+const PULP = 'M95,110 C95,95 145,95 145,110 L146,150 C146,165 140,175 138,190 L150,285 L146,287 L130,200 C126,190 114,190 110,200 L94,287 L90,285 L102,190 C100,175 94,165 94,150 Z';
+const cavLabel = (px, py, ty, t) => `<line x1="${px}" y1="${py}" x2="236" y2="${ty}" stroke="var(--muted)" stroke-width="1"/><circle cx="${px}" cy="${py}" r="2.5" fill="var(--ink)"/><text x="240" y="${ty + 4}" class="lbl">${t}</text>`;
+function cavitySVG() {
+  const s = cavStage(), abs = cavD >= 80 ? 6 + (cavD - 80) * .7 : 0;
+  return `<defs><clipPath id="toothClip"><path d="${TOOTH_OUTLINE}"/></clipPath></defs>
+  <rect x="8" y="200" width="224" height="114" rx="14" fill="var(--bone)"/>
+  ${abs ? `<circle cx="88" cy="294" r="${abs}" fill="var(--infect)" opacity=".45"/><circle cx="152" cy="294" r="${abs}" fill="var(--infect)" opacity=".45"/>` : ''}
+  <path d="${TOOTH_OUTLINE}" fill="var(--dentin)" stroke="var(--tooth-line)" stroke-width="1.5"/>
+  <path d="M60,60 C60,30 100,35 120,45 C140,35 180,30 180,60 L182,150 C170,158 70,158 58,150 Z" fill="var(--enamel)" stroke="var(--tooth-line)" stroke-width="1.5"/>
+  <path d="M74,68 C76,52 102,56 120,64 C138,56 164,52 166,68 L168,148 C150,154 90,154 72,148 Z" fill="var(--dentin)"/>
+  <g clip-path="url(#toothClip)"><ellipse cx="120" cy="36" rx="${6 + cavD * .34}" ry="${cavD * 1.15}" fill="var(--decay)" opacity="${cavD < 3 ? 0 : .92}"/></g>
+  <path d="${PULP}" fill="${s.lvl >= 4 ? 'var(--infect)' : 'var(--pulp)'}"/>
+  <path d="M8,176 C34,166 54,166 61,186 L66,214 L8,214 Z" fill="var(--gum)"/>
+  <path d="M232,176 C206,166 186,166 179,186 L174,214 L232,214 Z" fill="var(--gum)"/>
+  ${cavLabel(172, 52, 40, 'Enamel') + cavLabel(160, 118, 98, 'Dentin') + cavLabel(132, 135, 148, 'Pulp (nerve)') + cavLabel(204, 186, 196, 'Gum') + cavLabel(155, 250, 244, 'Root') + cavLabel(214, 290, 290, 'Bone')}`;
+}
+function cavInfo() {
+  const s = cavStage();
+  return `<span class="pill ${s.lvl >= 4 ? 'warn' : ''}">Stage ${s.lvl} of 5</span><h3 style="margin-top:8px;font-size:18px">${s.t}</h3><p>${s.d}</p>
+  <div class="cavgrid"><div><small>How we fix it</small><b>${s.fix}</b></div><div><small>How it feels</small><b>${s.hurt}</b></div></div>
+  ${s.lvl >= 1 ? `<button class="btn block" data-go="book" style="margin-top:14px">Book a checkup</button>` : ''}`;
+}
+TOOL_UI.cavity = () => `<div class="card cav"><svg viewBox="0 0 320 320" id="cavSvg" role="img" aria-label="Cross-section of a tooth showing enamel, dentin, pulp, root, gum and bone">${cavitySVG()}</svg></div>
+  <div class="field"><label for="cavRange">Drag to let the cavity grow</label><input type="range" id="cavRange" class="range" min="0" max="100" value="${cavD}"></div>
+  <div class="card" id="cavInfo" aria-live="polite">${cavInfo()}</div>`;
+TOOL_AFTER.cavity = v => {
+  let lvl = cavStage().lvl;
+  $('#cavRange', v).addEventListener('input', e => {
+    cavD = +e.target.value; $('#cavSvg', v).innerHTML = cavitySVG();
+    if (cavStage().lvl !== lvl) { lvl = cavStage().lvl; $('#cavInfo', v).innerHTML = cavInfo(); }
+  });
+};
+
+/* Brush the Plaque: a plaque layer on its own canvas is erased where the finger drags */
+TOOL_UI.brush = () => `<div class="card brush"><canvas id="brushCv" aria-label="Teeth covered in plaque. Drag to brush them clean."></canvas>
+  <div class="progress"><div class="meter"><i id="brushBar" style="width:0%"></i></div><b id="brushPct" style="font-variant-numeric:tabular-nums;min-width:42px;text-align:right">0%</b></div></div>
+  <div class="card" id="brushMsg" aria-live="polite"></div>
+  <button class="btn line block" id="brushReset">Start over with fresh plaque</button>`;
+TOOL_AFTER.brush = v => {
+  const cv = $('#brushCv', v);
+  const W = Math.min(cv.parentElement.clientWidth - 32, 340), H = Math.round(W * .62), dpr = window.devicePixelRatio || 1;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px'; cv.width = W * dpr; cv.height = H * dpr;
+  const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
+  const plaque = document.createElement('canvas'); plaque.width = cv.width; plaque.height = cv.height;
+  const pctx = plaque.getContext('2d'); pctx.scale(dpr, dpr);
+  const css = getComputedStyle(document.documentElement), col = k => css.getPropertyValue(k).trim();
+  const teeth = [], ws = [.8, .95, 1.15, 1.15, .95, .8], sum = ws.reduce((a, b) => a + b);
+  const row = (x0, rw, y, h, up) => { let x = x0; ws.forEach(w => { const tw = rw * w / sum; teeth.push({x:x + 2, y, w:tw - 4, h, up}); x += tw; }); };
+  row(10, W - 20, H * .2, H * .32, true);
+  row(10 + (W - 20) * .06, (W - 20) * .88, H * .54, H * .25, false);
+  const TIPS = [
+    [0, 'Drag your finger across the teeth.', 'Notice where the plaque hides: right along the gumline.'],
+    [.3, 'Keep going!', 'Angle your brush 45° toward the gums. That\'s where plaque builds up first.'],
+    [.7, 'Almost there.', 'Brush for 2 full minutes, twice a day. Most people stop well short of that.'],
+    [.96, 'Sparkling clean!', 'Plaque you miss can harden into tartar in a few days, and only a professional cleaning removes tartar. That\'s why checkups matter.'],
+  ];
+  let total = 1, last = null, done = false, ticks = 0;
+  function base() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#4a2530'; ctx.beginPath(); ctx.roundRect(0, 0, W, H, 28); ctx.fill();
+    ctx.fillStyle = col('--gum');
+    ctx.beginPath(); ctx.roundRect(0, 0, W, H * .24, [28, 28, 12, 12]); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(0, H * .76, W, H * .24, [12, 12, 28, 28]); ctx.fill();
+    teeth.forEach(t => { ctx.fillStyle = col('--enamel'); ctx.strokeStyle = col('--tooth-line'); ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(t.x, t.y, t.w, t.h, t.up ? [3, 3, 12, 12] : [12, 12, 3, 3]); ctx.fill(); ctx.stroke(); });
+  }
+  const draw = () => { base(); ctx.drawImage(plaque, 0, 0, W, H); };
+  function count() { const d = pctx.getImageData(0, 0, plaque.width, plaque.height).data; let n = 0; for (let i = 3; i < d.length; i += 16) if (d[i] > 40) n++; return n; }
+  function update(f) {
+    f = Math.max(0, Math.min(1, f));
+    if (f >= .96 && !done) { done = true; f = 1; pctx.clearRect(0, 0, W, H); draw(); }
+    const pct = Math.round(f * 100);
+    $('#brushBar', v).style.width = pct + '%'; $('#brushPct', v).textContent = pct + '%';
+    const tip = [...TIPS].reverse().find(t => f >= t[0]);
+    $('#brushMsg', v).innerHTML = `<b>${tip[1]}</b><p class="small muted" style="margin-top:4px">${tip[2]}</p>`;
+  }
+  function seed() {
+    done = false;
+    pctx.globalCompositeOperation = 'source-over'; pctx.clearRect(0, 0, W, H);
+    pctx.save(); pctx.beginPath(); teeth.forEach(t => pctx.roundRect(t.x, t.y, t.w, t.h, 8)); pctx.clip();
+    teeth.forEach(t => {
+      const gum = t.up ? t.y : t.y + t.h, dir = t.up ? 1 : -1;
+      pctx.fillStyle = 'rgba(214,186,84,.95)';
+      pctx.fillRect(t.x, t.up ? t.y : t.y + t.h * .72, t.w, t.h * .28);
+      for (let i = 0; i < 7; i++) {
+        const r = 4 + Math.random() * 9;
+        pctx.beginPath(); pctx.ellipse(t.x + Math.random() * t.w, gum + dir * Math.random() * t.h * .75, r, r * .8, 0, 0, 7);
+        pctx.fillStyle = `rgba(${200 + Math.random() * 30 | 0},${168 + Math.random() * 30 | 0},${70 + Math.random() * 30 | 0},.92)`; pctx.fill();
+      }
+    });
+    pctx.restore(); total = count() || 1; update(0); draw();
+  }
+  const pt = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height]; };
+  function scrub(p) {
+    pctx.globalCompositeOperation = 'destination-out'; pctx.lineCap = 'round'; pctx.lineWidth = 26;
+    pctx.beginPath(); pctx.moveTo(last[0], last[1]); pctx.lineTo(p[0], p[1]); pctx.stroke();
+    last = p; draw();
+    if (++ticks % 6 === 0 && !done) update(1 - count() / total);
+  }
+  cv.addEventListener('pointerdown', e => { cv.setPointerCapture(e.pointerId); last = pt(e); scrub(last); });
+  cv.addEventListener('pointermove', e => { if (last) scrub(pt(e)); });
+  const end = () => { if (!last) return; last = null; if (!done) update(1 - count() / total); };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  $('#brushReset', v).onclick = seed;
+  seed();
+};
+
+/* Sugar Clock: each sugar hit starts an acid attack of about 20 minutes */
+let sugarN = 5, sugarSlow = false;
+function sugarOut() {
+  const dur = sugarSlow ? 60 : 20, mins = Math.min(sugarN * dur, 960);
+  const blocks = Array.from({length:sugarN}, (_, i) => { const c = (i + .5) / sugarN * 960; return `<i style="left:${(Math.max(0, c - dur / 2) / 960 * 100).toFixed(2)}%;width:${(dur / 960 * 100).toFixed(2)}%"></i>`; }).join('');
+  const [ok, head, tip] = sugarN <= 3 ? [true, 'Your teeth get time to recover.', 'Between attacks, saliva neutralizes acid and helps repair early enamel damage.']
+    : sugarN <= 6 ? [false, 'That\'s a lot of attacks.', 'Have sweets with meals instead of between them, and rinse with water after.']
+    : [false, 'Your teeth barely get a break.', 'Swap sips for water between meals, and chew sugar-free gum to boost saliva.'];
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return `<span class="eyebrow">Your day, 7 AM to 11 PM</span><div class="daybar">${blocks}</div>
+  <div class="dayticks"><span>7a</span><span>11a</span><span>3p</span><span>7p</span><span>11p</span></div>
+  <p style="font-size:18px"><b>${h ? h + ' hr ' : ''}${m || !h ? m + ' min' : ''}</b> of acid attacks a day</p>
+  <p class="small"><b style="color:var(--${ok ? 'good' : 'warn'})">${head}</b> ${tip}</p>
+  <p class="small muted">Each time you eat or sip something sugary, mouth bacteria make acid that attacks enamel for about 20 minutes. Sipping slowly keeps the attack going the whole time.</p>`;
+}
+TOOL_UI.sugar = () => `<div class="card section"><div class="sugar-head"><b id="sugarCount" style="font-family:var(--f-display);font-size:44px;line-height:1;font-variant-numeric:tabular-nums">${sugarN}</b><span>sugary snacks or drinks a day</span></div>
+  <input type="range" id="sugarRange" class="range" min="0" max="12" value="${sugarN}" aria-label="Sugary snacks or drinks per day">
+  <div class="toggle-row" style="border:0;padding:0"><div class="txt"><b>I sip slowly</b><span>Like a sweet coffee or a soda over an hour</span></div><button class="switch" role="switch" id="sugarSlow" aria-checked="${sugarSlow}" aria-label="I sip slowly"></button></div></div>
+  <div class="card section" id="sugarOut" aria-live="polite">${sugarOut()}</div>`;
+TOOL_AFTER.sugar = v => {
+  const upd = () => { $('#sugarCount', v).textContent = sugarN; $('#sugarOut', v).innerHTML = sugarOut(); };
+  $('#sugarRange', v).addEventListener('input', e => { sugarN = +e.target.value; upd(); });
+  $('#sugarSlow', v).onclick = e => { sugarSlow = !sugarSlow; e.currentTarget.setAttribute('aria-checked', sugarSlow); upd(); };
+};
+
 /* ---------- Ask AI ---------- */
 const chat = { turns:[], busy:false, ctl:null };
-const RULES = `You are "ASAP AI", the friendly virtual dental guide inside the ASAP Dental Care patient app. ASAP Dental Care is a dental office in Jacksonville, Florida and the Official Dentist of the Jacksonville Jaguars. It has an in-house dental lab (crowns, bridges, dentures made on site) and a KaVo OP 3D X-ray. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions, dentures, implants, whitening, same-day emergency care, 3D X-rays.
+const RULES = () => `You are "ASAP AI", the friendly virtual dental guide inside the ASAP Dental Care patient app.
 
-Many people using this app feel anxious about the dentist. Be warm, calm, encouraging and plain-spoken. Keep answers short: under 110 words, short paragraphs, or up to 4 bullet lines starting with "- ". No headings. You may use **bold** sparingly.
+About ASAP Dental Care: a Jacksonville, Florida dental practice whose mission is "improving lives with same-day dental care". It started in 2011 as an emergency dental practice and is now full-service for the whole family, with offices across North Florida: 103rd St (Westside, open 7 days: Mon-Sat 8 AM-7 PM, Sun 10 AM-6 PM, (904) 777-4622), Atlantic Blvd, Bonneval Rd, Dunn Ave, San Jose Blvd, Orange Park, Lake City and Crescent City. It is the Official Dental Partner of the Jacksonville Jaguars. Walk-ins are welcome and urgent cases are prioritized. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions and oral surgery, wisdom teeth, dentures and partials (made in its own dental lab), implants, whitening, veneers, gum care, same-day emergency care and 3D X-rays (KaVo OP 3D). Sedation: nitrous oxide, oral sedation and IV sedation. Insurance: files most PPO claims for patients; financing through CareCredit, Cherry, Sunbit and LendingClub; annual membership plan for patients without insurance. The practice has performed over 229,000 procedures since 2011. The dentists include Dr. Nicholas Letteri, Dr. Shbeb, Dr. Yevah Cueto (general dentist) and Dr. Gregory Sabino; don't invent details about them beyond their names.
 
-You are not a dentist and cannot examine, diagnose or prescribe. Give general education, explain what to expect, and when someone needs an exam, suggest booking in the app's Book tab. If someone mentions facial swelling, fever with tooth pain, a knocked-out tooth, heavy bleeding that won't stop, or trouble breathing or swallowing, tell them clearly to call the office right away, and to call 911 or go to the ER for trouble breathing or swallowing. Never quote prices, insurance coverage or appointment availability; say the front desk can confirm. The dentists are Dr. Nicholas Letteri, Dr. Shbeb, Dr. Yevah Cueto (general dentist) and Dr. Gregory Sabino, plus one more doctor; don't invent details about them beyond their names.`;
+Many people using this app feel anxious about the dentist. Be warm, calm, encouraging and plain-spoken, like a top-tier dental team that genuinely cares. Keep answers short: under 110 words, short paragraphs, or up to 4 bullet lines starting with "- ". No headings. You may use **bold** sparingly. The patient's preferred office is: ${myOffice().name}.
+
+You are not a dentist and cannot examine, diagnose or prescribe. Give general education, explain what to expect, and when someone needs an exam, suggest booking in the app's Book tab. If someone mentions facial swelling, fever with tooth pain, a knocked-out tooth, heavy bleeding that won't stop, or trouble breathing or swallowing, tell them clearly to call the office right away, and to call 911 or go to the ER for trouble breathing or swallowing. Never quote prices, exact insurance coverage or appointment availability; say the front desk can confirm.`;
 const SUGGEST = ['Does a filling hurt?','My tooth is sensitive to cold','How can I feel less nervous?','What happens at my first visit?','Is the 3D X-ray safe?'];
 const RED = /swell|swollen|fever|knock(ed)?[- ]?out|can'?t (breathe|swallow)|trouble (breathing|swallowing)|bleeding (won|that won|a lot)|abscess/i;
 const CANNED = [
@@ -942,13 +1240,13 @@ function fmtAI(t) {
   flush(); if (inList) html += '</ul>';
   return html;
 }
-const emergencyCard = `<div class="alert"><b>This could need care today.</b>Call ASAP Dental Care now at ${OFFICE_PHONE}. If you have trouble breathing or swallowing, call 911.</div>`;
+const emergencyCard = () => `<div class="alert"><b>This could need care today.</b>Call ASAP Dental Care now at ${officePhone()}. If you have trouble breathing or swallowing, call 911.</div>`;
 ROUTES.ask = topic => `
   <div class="ai-head"><span class="ai-face">${icon('tooth')}</span><div style="flex:1"><h2 style="font-family:var(--f-display);font-size:24px;text-transform:uppercase;line-height:1">ASAP AI</h2><span class="small muted">Your dental guide, any time of day</span></div></div>
   <p class="disclaimer">ASAP AI answers general questions. It isn't a dentist and can't diagnose you. For emergencies call the office or 911.</p>
   <div class="msgs" id="msgs" aria-live="polite">
     <div class="msg ai"><p>Hi ${esc(first())}! Ask me anything about your teeth, a treatment, or what to expect. No question is too small.</p></div>
-    ${chat.turns.map(t => t.role === 'user' ? `<div class="msg me">${esc(t.content)}</div>` : `<div class="msg ai">${fmtAI(t.content)}</div>${t.alert ? emergencyCard : ''}`).join('')}
+    ${chat.turns.map(t => t.role === 'user' ? `<div class="msg me">${esc(t.content)}</div>` : `<div class="msg ai">${fmtAI(t.content)}</div>${t.alert ? emergencyCard() : ''}`).join('')}
   </div>
   <div class="composer">
     <div class="chips" id="sugg">${SUGGEST.map(s => `<button class="chip">${s}</button>`).join('')}</div>
@@ -973,7 +1271,7 @@ ROUTES.ask.after = v => {
       chat.ctl = new AbortController();
       const turns = chat.turns.slice(-12).map(({role, content}) => ({role, content}));
       try {
-        const r = await sample([{role:'user', content:RULES}, ...turns], {cache:false, modelTier:'quick', signal:chat.ctl.signal,
+        const r = await sample([{role:'user', content:RULES()}, ...turns], {cache:false, modelTier:'quick', signal:chat.ctl.signal,
           onText: ({text:t}) => { bubble.classList.remove('thinking'); bubble.innerHTML = fmtAI(t); v.scrollTop = v.scrollHeight; }});
         text = r.text;
       } catch (e) { text = e.text || fallback(q); }
@@ -983,7 +1281,7 @@ ROUTES.ask.after = v => {
     }
     bubble.classList.remove('thinking'); bubble.innerHTML = fmtAI(text);
     chat.turns.push({role:'assistant', content:text, alert});
-    if (alert) bubble.insertAdjacentHTML('afterend', emergencyCard);
+    if (alert) bubble.insertAdjacentHTML('afterend', emergencyCard());
     chat.busy = false; v.scrollTop = v.scrollHeight;
   }
   if (current.arg) { /* topic prefilled from a lesson */ box.focus(); }
@@ -1002,6 +1300,14 @@ ROUTES.comfort = () => `
     <button class="btn" id="breathBtn">${icon('wind')} Start breathing</button>
   </div>
   <div class="signal"><span class="hand">Left<br>hand</span><div><b>Your stop signal</b><p class="small" style="opacity:.85">Raise your left hand anytime and we pause. No explaining needed.</p></div></div>
+  <div class="card section"><span class="eyebrow">Sedation options</span>
+    <p class="small">For bigger nerves or bigger procedures, just ask. We'll talk through what fits you.</p>
+    <ul class="checks">
+      <li><span class="dot">${icon('wind')}</span><span><b>Nitrous oxide.</b> "Laughing gas" through a small nose mask. You stay awake and relaxed, and it wears off within minutes.</span></li>
+      <li><span class="dot">${icon('drop')}</span><span><b>Oral sedation.</b> A pill before your visit to take the edge off. Plan on a ride home.</span></li>
+      <li><span class="dot">${icon('heart')}</span><span><b>IV sedation.</b> Deeper relaxation for longer procedures like implants or wisdom teeth, with a ride home.</span></li>
+    </ul>
+  </div>
   <div class="section"><div class="section-head"><span class="eyebrow">Take a look around</span><button class="link" data-go="videos">Watch the tour</button></div>
     <div class="tour">${TOUR.map(([src,t,d]) => `<figure><img src="${src}" alt="${t}" loading="lazy"><figcaption><b>${t}</b><span>${d}</span></figcaption></figure>`).join('')}</div>
   </div>
@@ -1047,6 +1353,60 @@ ROUTES.plan.after = v => {
   $('#sharePlan', v).onclick = () => { toast('Comfort plan shared with your care team'); back(); };
 };
 
+/* ---------- Why ASAP, offices ---------- */
+ROUTES.why = () => `${topbar('Why ASAP')}
+  <div class="section"><span class="eyebrow">Our mission</span><h2 class="mission">Improving lives with same-day dental care</h2>
+  <p>ASAP started as an emergency dental practice so people with toothaches, broken teeth and other urgent problems could be seen fast. That's where the name comes from. Since 2011 we've grown into a full-service team for the whole family across North Florida, and we still see urgent problems the same day whenever we can.</p></div>
+  <div class="statgrid">
+    <div class="stat"><small>Procedures</small><b>229,000+</b></div>
+    <div class="stat"><small>Implants placed</small><b>11,750+</b></div>
+    <div class="stat"><small>Dentures made</small><b>19,000+</b></div>
+    <div class="stat"><small>Years of experience</small><b>167+</b><span class="small muted">combined</span></div>
+  </div>
+  <p class="small muted">Practice totals since 2011, as of April 2026.</p>
+  <div class="card section"><span class="eyebrow">What you can count on</span>
+    <ul class="checks">
+      ${[['Same-day and walk-in care','Urgent problems go to the front of the line.'],
+         ['Open 7 days','Our 103rd St office sees patients every day of the week.'],
+         ['Specialists under one roof','Implants, oral surgery, root canals, gum care and cosmetic work, without sending you across town.'],
+         ['Our own dental lab','Dentures, partials and crowns made by our own technicians.'],
+         ['Sedation options','Nitrous oxide, oral sedation and IV sedation for anxious patients and bigger procedures.'],
+         ['Second- and third-generation dentists','Experience that\'s been passed down.'],
+         ['3D imaging','Our KaVo OP 3D scanner helps us plan precisely.']].map(([b, d]) => `<li><span class="dot">${icon('check')}</span><span><b>${b}.</b> ${d}</span></li>`).join('')}
+    </ul>
+  </div>
+  <button class="jags" id="whyJags" style="min-height:150px"><span class="in"><img src="img/jaguars-head.png" alt=""><span><b>Official Dental Partner of the Jacksonville Jaguars</b><span>And proud to serve our neighbors off the field too.</span></span></span></button>
+  <div class="card section"><span class="eyebrow">Loved by Jacksonville</span>
+    <div style="display:flex;align-items:center;gap:10px"><b style="font-family:var(--f-display);font-size:40px;line-height:1">4.7+</b><div><div class="stars">${STAR.repeat(5)}</div><span class="small muted">on Google, from thousands of patients</span></div></div>
+    <a class="btn line block" href="${GOOGLE_REVIEW_URL}" target="_blank" rel="noopener">Read our Google reviews</a>
+  </div>
+  <div class="card section" id="insurance"><span class="eyebrow">Insurance & financing</span>
+    <ul class="checks">
+      <li><span class="dot">${icon('shield')}</span><span><b>Insurance.</b> We file most PPO claims for you and can check your benefits before treatment.</span></li>
+      <li><span class="dot">${icon('cal')}</span><span><b>Monthly payments.</b> Financing through CareCredit, Cherry, Sunbit and LendingClub. Sunbit covers treatment from $60 to $20,000.</span></li>
+      <li><span class="dot">${icon('smile')}</span><span><b>No insurance?</b> Ask about our annual membership plan.</span></li>
+    </ul>
+  </div>
+  <button class="btn block" data-go="locations">Find an office</button>`;
+ROUTES.why.tab = 'home';
+ROUTES.why.after = v => { $('#whyJags', v).onclick = openCommunity; };
+
+ROUTES.locations = () => `${topbar('Our offices')}
+  <p class="muted">Across Jacksonville and North Florida. Walk-ins are welcome, and urgent problems go first.</p>
+  ${LOCATIONS.map(l => `<div class="card loc">
+    <div class="row"><b>${l.name}</b>${l.tag ? `<span class="pill gold">${l.tag}</span>` : ''}</div>
+    <span class="small muted">${l.addr}</span>
+    ${l.phone ? `<span class="small">${icon('phone', 'ico sm')} <b>${l.phone}</b>${l.hours ? ' · ' + l.hours : ''}</span>` : '<span class="small muted">Phone and hours coming soon</span>'}
+    <div class="row"><a class="link" href="https://www.google.com/maps/search/${encodeURIComponent('ASAP Dental Care ' + l.addr)}" target="_blank" rel="noopener">Directions</a>
+    ${myOffice().id === l.id ? '<span class="pill">My office</span>' : `<button class="link" data-office="${l.id}">Make this my office</button>`}</div>
+  </div>`).join('')}`;
+ROUTES.locations.tab = 'home';
+ROUTES.locations.after = v => v.addEventListener('click', e => {
+  const b = e.target.closest('[data-office]'); if (!b) return;
+  S.user.office = b.dataset.office; save(); toast('Saved as your office');
+  const st = v.scrollTop; render(); $('.view').scrollTop = st;
+});
+
 /* ---------- Profile, notifications, review ---------- */
 ROUTES.profile = () => {
   const a = nextAppt(), past = S.appts.filter(x => x.at <= Date.now());
@@ -1065,7 +1425,9 @@ ROUTES.profile = () => {
     <button class="btn block" id="revBtn2">${icon('star')} Leave us a Google review</button>
   </div>
   <div class="card list">
-    <div class="item"><span class="dot">${icon('phone')}</span><div class="txt"><b>Call the office</b><span>${OFFICE_PHONE}</span></div></div>
+    <div class="item"><span class="dot">${icon('home')}</span><div class="txt"><b>My office</b><span>${esc(myOffice().name)}</span></div><button class="link" data-go="locations">Change</button></div>
+    <div class="item"><span class="dot">${icon('phone')}</span><div class="txt"><b>Call the office</b><span>${officePhone()}</span></div></div>
+    <div class="item"><span class="dot">${icon('shield')}</span><div class="txt"><b>Insurance & financing</b><span>PPO claims, CareCredit, Sunbit and more</span></div><button class="link" data-go="why">View</button></div>
     <div class="item"><span class="dot">${icon('heart')}</span><div class="txt"><b>Comfort plan</b><span>${Object.values(S.comfort).filter(Boolean).length} preferences</span></div><button class="link" data-go="plan">Edit</button></div>
   </div>
   <button class="btn line block" id="signOut">Sign out (restart demo)</button>`;
@@ -1108,7 +1470,7 @@ function openReview() {
 }
 
 /* ---------- Boot ---------- */
-function restart() { S = fresh(); draft = {name:'', phone:'', email:'', dob:'', feel:null}; chat.turns = []; resetBk(); save(); stack = []; current = null; go('welcome', null, {tab:true}); }
+function restart() { S = fresh(); draft = {name:'', phone:'', email:'', dob:'', feel:null, office:'103rd'}; chat.turns = []; resetBk(); save(); stack = []; current = null; go('welcome', null, {tab:true}); }
 $('#resetDemo').onclick = restart;
 const clock = () => $('#clock').textContent = new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}).replace(/\s?[AP]M/, '');
 clock(); setInterval(clock, 30000);
