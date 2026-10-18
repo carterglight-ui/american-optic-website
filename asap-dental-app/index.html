@@ -81,7 +81,6 @@ p{margin:0}
 .views{flex:1;min-height:0;position:relative}
 .view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:4px 20px 28px;display:flex;flex-direction:column;gap:18px;-webkit-overflow-scrolling:touch}
 .view>*{flex-shrink:0}
-.view.anim{animation:in .28s ease}
 @keyframes in{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.view.anim{animation:none}}
 
@@ -391,6 +390,39 @@ svg .lbl.sm{font-size:10px;letter-spacing:.02em}
 .loc .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .field select{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;width:100%}
 .seg{grid-template-columns:repeat(3,1fr)!important}
+
+/* Motion */
+.btn,.chip,.reason,.slot,.day,.svc,.seg button,.comfort-card,.trust,.drpick button,.feel button,.quiz button,.video,.jags,.doc,.quick button,.tabbar button,.iconbtn,.avatar,.link,.switch{transition:transform .14s ease,background-color .2s,border-color .2s,box-shadow .2s,color .2s}
+.btn,.chip,.reason,.slot,.day,.svc,.seg button,.comfort-card,.trust,.drpick button,.feel button,.quiz button,.video,.jags{position:relative;overflow:hidden}
+button:active:not(:disabled),a.btn:active{transform:scale(.96)}
+.svc:active,.jags:active,.trust:active,.comfort-card:active{transform:scale(.98)}
+.svc:hover,.reason:hover,.video:hover .thumb{box-shadow:0 2px 4px rgba(19,48,74,.08),0 10px 26px rgba(19,48,74,.14)}
+.ripple{position:absolute;border-radius:50%;background:currentColor;opacity:.2;transform:scale(0);animation:ripple .55s ease-out forwards;pointer-events:none}
+@keyframes ripple{to{transform:scale(1);opacity:0}}
+.view.anim-up{animation:inUp .3s ease}
+.view.anim-fwd{animation:inFwd .3s cubic-bezier(.2,.8,.3,1)}
+.view.anim-back{animation:inBack .3s cubic-bezier(.2,.8,.3,1)}
+@keyframes inUp{from{opacity:.3;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes inFwd{from{opacity:.3;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes inBack{from{opacity:.3;transform:translateX(-26px)}to{opacity:1;transform:none}}
+.tabbar button.bump .ico{animation:tabpop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tabpop{0%{transform:scale(1)}40%{transform:scale(1.28) translateY(-3px)}100%{transform:scale(1)}}
+.success .tick{animation:popin .55s cubic-bezier(.2,1.5,.4,1)}
+.success .tick .ico{stroke-dasharray:30;stroke-dashoffset:30;animation:draw .45s .25s ease forwards}
+@keyframes popin{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.quiz button.right{animation:pulse .4s ease}
+.quiz button.wrong{animation:shake .35s ease}
+@keyframes pulse{50%{transform:scale(1.03)}}
+@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.bigstars button.on svg{animation:pulse .3s ease}
+.toast{animation:toastIn .25s ease}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.arch .t.sel rect{animation:selPulse .5s ease}
+@keyframes selPulse{0%{stroke-width:6;stroke:var(--gold)}100%{stroke-width:1.2}}
+.burst{position:absolute;inset:0;pointer-events:none;z-index:45;overflow:hidden}
+.burst i{position:absolute;width:8px;height:8px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -545,11 +577,17 @@ const VIDEOS = [
 ];
 
 const DOCTORS = [
-  {id:'letteri', name:'Dr. Nicholas Letteri', short:'Dr. Letteri', role:'Dentist', img:'img/dr-letteri.jpg'},
-  {id:'shbeb', name:'Dr. Shbeb, DDS', short:'Dr. Shbeb', role:'Dentist', img:'img/dr-shbeb.jpg'},
+  {id:'letteri', name:'Dr. Nicholas Letteri, DMD', short:'Dr. Letteri', role:'Dentist', img:'img/dr-letteri.jpg',
+   bio:'A Tampa native, Dr. Letteri earned a Doctor of Dental Medicine from LECOM School of Dental Medicine in Bradenton, Florida, and practiced in the Tampa Bay area for five years before moving to Jacksonville.',
+   facts:['DMD, LECOM School of Dental Medicine', 'Member, American Dental Association', 'Member, Florida Dental Association', 'Member, Northeast District Dental Association']},
+  {id:'shbeb', name:'Dr. Shbeb, DDS', short:'Dr. Shbeb', role:'Dentist', img:'img/dr-shbeb.jpg',
+   bio:'Dr. Shbeb brings more than 10 years of experience in general dentistry and oral surgery.',
+   facts:['Doctor of Dental Surgery (DDS)', 'General dentistry and oral surgery']},
   {id:'dr3', name:'Doctor (name needed)', short:'Doctor', role:'Dentist', img:'img/dr-3.jpg'},
-  {id:'cueto', name:'Dr. Yevah Cueto, DMD', short:'Dr. Cueto', role:'General Dentist', img:'img/dr-cueto.jpg'},
-  {id:'sabino', name:'Dr. Gregory Sabino', short:'Dr. Sabino', role:'Dentist', img:'img/dr-sabino.jpg'},
+  {id:'cueto', name:'Dr. Yevah Cueto, DMD', short:'Dr. Cueto', role:'General Dentist', img:'img/dr-cueto.jpg',
+   bio:'A Jacksonville native, Dr. Cueto studied nutritional and food science at the University of Florida before earning a Doctor of Dental Medicine from LECOM School of Dental Medicine.',
+   facts:['DMD, LECOM School of Dental Medicine', 'B.S. in Nutritional and Food Science, University of Florida']},
+  {id:'sabino', name:'Dr. Gregory Sabino, DDS', short:'Dr. Sabino', role:'Dentist', img:'img/dr-sabino.jpg'},
 ];
 const docRow = () => `<div class="docrow">${DOCTORS.map(d => `<button class="doc" data-doc="${d.id}"><img src="${d.img}" alt="${d.name}" loading="lazy"><b>${d.short}</b><span>${d.role}</span></button>`).join('')}</div>`;
 
@@ -611,34 +649,70 @@ const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch
 
 /* ---------- Router ---------- */
 const viewsEl = $('#views'), tabbar = $('#tabbar'), screen = $('#screen');
-let current = null, stack = [];
+let current = null, stack = [], navAnim = 'up', lastTab = null;
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ROUTES = {};
 function go(name, arg, opts = {}) {
   if (name === 'book' && bk.step === 3) resetBk();
   if (!opts.replace && current && !opts.tab) stack.push(current);
   if (opts.tab) stack = [];
+  navAnim = opts.tab ? 'up' : 'fwd';
   current = {name, arg};
   render();
 }
-function back() { current = stack.pop() || {name:'home'}; render(); }
+function back() { current = stack.pop() || {name:'home'}; navAnim = 'back'; render(); }
 function render() {
   const {name, arg} = current;
   const html = ROUTES[name](arg);
-  viewsEl.innerHTML = `<section class="view anim ${ROUTES[name].cls || ''}" id="v-${name}">${html}</section>`;
+  viewsEl.innerHTML = `<section class="view ${navAnim ? 'anim-' + navAnim : ''} ${ROUTES[name].cls || ''}" id="v-${name}">${html}</section>`;
+  navAnim = null;
   const v = viewsEl.firstElementChild;
   ROUTES[name].after?.(v, arg);
   const tab = ROUTES[name].tab;
   tabbar.hidden = !!ROUTES[name].noTabs;
-  tabbar.querySelectorAll('button').forEach(b => b.toggleAttribute('aria-current', false) || (b.dataset.tab === tab && b.setAttribute('aria-current','page')));
+  tabbar.querySelectorAll('button').forEach(b => {
+    b.toggleAttribute('aria-current', false) || (b.dataset.tab === tab && b.setAttribute('aria-current','page'));
+    if (b.dataset.tab === tab && tab !== lastTab) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
+  });
+  lastTab = tab;
 }
-tabbar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(b.dataset.tab, null, {tab:true}); });
+const later = fn => REDUCE ? fn() : setTimeout(fn, 120);
+tabbar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) later(() => go(b.dataset.tab, null, {tab:true})); });
 viewsEl.addEventListener('click', e => {
   const t = e.target.closest('[data-go]');
-  if (t) { e.preventDefault(); go(t.dataset.go, t.dataset.arg); return; }
+  if (t) { e.preventDefault(); later(() => go(t.dataset.go, t.dataset.arg)); return; }
   const d = e.target.closest('[data-doc]');
   if (d) { openDoctor(d.dataset.doc); return; }
   if (e.target.closest('[data-back]')) back();
 });
+
+
+/* ---------- Motion helpers ---------- */
+const RIPPLE = '.btn,.chip,.reason,.slot,.day,.svc,.seg button,.comfort-card,.trust,.drpick button,.feel button,.quiz button,.video,.jags';
+screen.addEventListener('pointerdown', e => {
+  const el = e.target.closest(RIPPLE);
+  if (!el || REDUCE || el.disabled) return;
+  const r = el.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.2, sp = document.createElement('span');
+  sp.className = 'ripple';
+  sp.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left - d / 2}px;top:${e.clientY - r.top - d / 2}px`;
+  el.append(sp); setTimeout(() => sp.remove(), 600);
+});
+function burst(target) {
+  if (REDUCE || !target) return;
+  const sr = screen.getBoundingClientRect(), tr = target.getBoundingClientRect();
+  const x = tr.left - sr.left + tr.width / 2, y = tr.top - sr.top + tr.height / 2;
+  const wrap = document.createElement('div'); wrap.className = 'burst'; screen.append(wrap);
+  const css = getComputedStyle(document.documentElement), cols = ['--brand', '--gold', '--script', '--teal'].map(k => css.getPropertyValue(k).trim());
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('i'), a = Math.random() * Math.PI * 2, dist = 50 + Math.random() * 70;
+    p.style.cssText = `left:${x}px;top:${y}px;background:${cols[i % 4]}`;
+    wrap.append(p);
+    p.animate([{transform:'translate(-50%,-50%) scale(1) rotate(0)', opacity:1},
+               {transform:`translate(${Math.cos(a) * dist - 4}px,${Math.sin(a) * dist + 20}px) scale(.6) rotate(${Math.random() * 360}deg)`, opacity:0}],
+              {duration:700 + Math.random() * 300, easing:'cubic-bezier(.2,.7,.4,1)', fill:'forwards'});
+  }
+  setTimeout(() => wrap.remove(), 1100);
+}
 
 /* ---------- Helpers ---------- */
 const first = () => (S.user?.name || 'Friend').split(' ')[0];
@@ -803,7 +877,8 @@ function openDoctor(id) {
   const d = DOCTORS.find(x => x.id === id);
   sheet(`<img class="doc-hero" src="${d.img}" alt="${d.name}">
     <div style="text-align:center"><h3 style="font-family:var(--f-display);font-size:28px;text-transform:uppercase;line-height:1.05">${d.name}</h3><span class="muted">${d.role} · ASAP Dental Care</span></div>
-    <p class="placeholder">Bio coming soon: where they trained, what they love about dentistry, and a fun fact or two.</p>
+    ${d.bio ? `<p>${d.bio}</p>` : '<p class="placeholder">Bio coming soon.</p>'}
+    ${d.facts ? `<ul class="checks">${d.facts.map(f => `<li><span class="dot">${icon('check')}</span><span>${f}</span></li>`).join('')}</ul>` : ''}
     <button class="btn block" id="bookDoc">Book with ${d.short}</button>
     <button class="link" data-close style="align-self:center">Close</button>`, (sh, close) => {
     $('#bookDoc', sh).onclick = () => { close(); resetBk(); bk.doc = id; go('book', null, {tab:true}); };
@@ -866,7 +941,7 @@ ROUTES.book = () => {
 ROUTES.book.tab = 'book';
 ROUTES.book.after = v => {
   const tb = $('.topbar [data-back]', v);
-  if (tb) { tb.removeAttribute('data-back'); tb.onclick = () => { bk.step--; render(); }; }
+  if (tb) { tb.removeAttribute('data-back'); tb.onclick = () => { bk.step--; navAnim = 'back'; render(); }; }
   const pick = v.querySelector('.drpick [aria-pressed="true"]');
   if (pick) { const row = pick.parentElement; row.scrollLeft = pick.offsetLeft - row.offsetLeft - 20; }
   v.addEventListener('click', e => {
@@ -875,7 +950,7 @@ ROUTES.book.after = v => {
     const d = e.target.closest('[data-d]'); if (d) { bk.day = +d.dataset.d; bk.time = null; const sl = v.querySelector('.days').scrollLeft; render(); $('.days').scrollLeft = sl; }
     const t = e.target.closest('[data-t]'); if (t && !t.disabled) { bk.time = t.dataset.t; const sl = v.querySelector('.days').scrollLeft, st = v.scrollTop; render(); $('.days').scrollLeft = sl; $('.view').scrollTop = st; }
   });
-  $('#bkNext', v)?.addEventListener('click', () => { bk.step++; render(); });
+  $('#bkNext', v)?.addEventListener('click', () => { bk.step++; navAnim = 'fwd'; render(); });
   $('#bk-note', v)?.addEventListener('input', e => bk.note = e.target.value);
   $('#bkHome', v)?.addEventListener('click', () => { resetBk(); go('home', null, {tab:true}); });
   $('#bkConfirm', v)?.addEventListener('click', () => {
@@ -885,7 +960,7 @@ ROUTES.book.after = v => {
     S.appts = S.appts.filter(a => a.at < Date.now()); // one upcoming visit in the demo
     const doc = bkDoc()?.short;
     S.appts.push({at:+at, reason, note:bk.note, doc}); save();
-    bk.step = 3; render();
+    bk.step = 3; navAnim = 'up'; render(); setTimeout(() => burst($('.success .tick')), 250);
     setTimeout(() => notify({t:'Appointment confirmed', d:`${reason}${doc ? ' with ' + doc : ''}, ${fmtDay(+at)} at ${bk.time}. Reply C to confirm or R to reschedule.`, ico:'cal'}), 1800);
   });
 };
@@ -972,7 +1047,7 @@ ROUTES.service.after = (v, id) => {
     if (ok) {
       v.querySelectorAll('#quiz button').forEach(x => x.disabled = true);
       $('#fb', v).innerHTML = `<span style="color:var(--good)">Correct, star earned!</span> ${s.quiz.why}`;
-      S.quiz[id] = true; save();
+      S.quiz[id] = true; save(); burst(b);
       if (Object.keys(S.quiz).length === SERVICES.length) setTimeout(() => notify({t:'Smile School graduate!', d:'You finished every lesson. Show the front desk for a high five.', ico:'star'}), 600);
     } else { b.disabled = true; $('#fb', v).innerHTML = '<span style="color:var(--warn)">Not quite. Try another.</span>'; }
   });
@@ -1148,7 +1223,7 @@ TOOL_AFTER.brush = v => {
   function count() { const d = pctx.getImageData(0, 0, plaque.width, plaque.height).data; let n = 0; for (let i = 3; i < d.length; i += 16) if (d[i] > 40) n++; return n; }
   function update(f) {
     f = Math.max(0, Math.min(1, f));
-    if (f >= .96 && !done) { done = true; f = 1; pctx.clearRect(0, 0, W, H); draw(); }
+    if (f >= .96 && !done) { done = true; f = 1; pctx.clearRect(0, 0, W, H); draw(); burst(cv); }
     const pct = Math.round(f * 100);
     $('#brushBar', v).style.width = pct + '%'; $('#brushPct', v).textContent = pct + '%';
     const tip = [...TIPS].reverse().find(t => f >= t[0]);
@@ -1214,7 +1289,7 @@ TOOL_AFTER.sugar = v => {
 const chat = { turns:[], busy:false, ctl:null };
 const RULES = () => `You are "ASAP AI", the friendly virtual dental guide inside the ASAP Dental Care patient app.
 
-About ASAP Dental Care: a Jacksonville, Florida dental practice whose mission is "improving lives with same-day dental care". It started in 2011 as an emergency dental practice and is now full-service for the whole family, with offices across North Florida: 103rd St (Westside, open 7 days: Mon-Sat 8 AM-7 PM, Sun 10 AM-6 PM, (904) 777-4622), Atlantic Blvd, Bonneval Rd, Dunn Ave, San Jose Blvd, Orange Park, Lake City and Crescent City. It is the Official Dental Partner of the Jacksonville Jaguars. Walk-ins are welcome and urgent cases are prioritized. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions and oral surgery, wisdom teeth, dentures and partials (made in its own dental lab), implants, whitening, veneers, gum care, same-day emergency care and 3D X-rays (KaVo OP 3D). Sedation: nitrous oxide, oral sedation and IV sedation. Insurance: files most PPO claims for patients; financing through CareCredit, Cherry, Sunbit and LendingClub; annual membership plan for patients without insurance. The practice has performed over 229,000 procedures since 2011. The dentists include Dr. Nicholas Letteri, Dr. Shbeb, Dr. Yevah Cueto (general dentist) and Dr. Gregory Sabino; don't invent details about them beyond their names.
+About ASAP Dental Care: a Jacksonville, Florida dental practice whose mission is "improving lives with same-day dental care". It started in 2011 as an emergency dental practice and is now full-service for the whole family, with offices across North Florida: 103rd St (Westside, open 7 days: Mon-Sat 8 AM-7 PM, Sun 10 AM-6 PM, (904) 777-4622), Atlantic Blvd, Bonneval Rd, Dunn Ave, San Jose Blvd, Orange Park, Lake City and Crescent City. It is the Official Dental Partner of the Jacksonville Jaguars. Walk-ins are welcome and urgent cases are prioritized. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions and oral surgery, wisdom teeth, dentures and partials (made in its own dental lab), implants, whitening, veneers, gum care, same-day emergency care and 3D X-rays (KaVo OP 3D). Sedation: nitrous oxide, oral sedation and IV sedation. Insurance: files most PPO claims for patients; financing through CareCredit, Cherry, Sunbit and LendingClub; annual membership plan for patients without insurance. The practice has performed over 229,000 procedures since 2011. The dentists include Dr. Nicholas Letteri, DMD (Tampa native, DMD from LECOM School of Dental Medicine); Dr. Shbeb, DDS (10+ years in general dentistry and oral surgery); Dr. Yevah Cueto, DMD (general dentist, Jacksonville native, University of Florida and LECOM graduate); and Dr. Gregory Sabino, DDS. Don't invent any other details about them.
 
 Many people using this app feel anxious about the dentist. Be warm, calm, encouraging and plain-spoken, like a top-tier dental team that genuinely cares. Keep answers short: under 110 words, short paragraphs, or up to 4 bullet lines starting with "- ". No headings. You may use **bold** sparingly. The patient's preferred office is: ${myOffice().name}.
 
@@ -1464,7 +1539,7 @@ function openReview() {
       <button class="btn line block" id="rvSend">Send private note</button>
     </div>
     <button class="link" data-close style="align-self:center">Maybe later</button>`, (sh, close) => {
-    $('#bs', sh).onclick = e => { const b = e.target.closest('button'); if (!b) return; const n = +b.dataset.s; sh.querySelectorAll('#bs button').forEach(x => x.classList.toggle('on', +x.dataset.s <= n)); $('#revNext', sh).hidden = false; };
+    $('#bs', sh).onclick = e => { const b = e.target.closest('button'); if (!b) return; const n = +b.dataset.s; sh.querySelectorAll('#bs button').forEach(x => x.classList.toggle('on', +x.dataset.s <= n)); $('#revNext', sh).hidden = false; if (n === 5) burst(b); };
     $('#rvSend', sh).onclick = () => { close(); toast('Thanks! Your note went to the office manager.'); };
   });
 }
