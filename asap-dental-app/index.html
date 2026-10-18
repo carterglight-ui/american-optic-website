@@ -150,7 +150,7 @@ p{margin:0}
 .comfort-card b{display:block;font-size:16px}
 .fact{display:flex;flex-direction:column;gap:8px}
 .fact .flip{font-size:13px;font-weight:800;color:var(--brand);background:none;border:0;padding:0;align-self:flex-start}
-.jags{border-radius:22px;overflow:hidden;position:relative;min-height:190px;display:flex;align-items:flex-end;background:#0a2d38 url(img/jaxson-car.jpg) center 35%/cover;color:#fff}
+.jags{border:0;padding:0;width:100%;text-align:left;border-radius:22px;overflow:hidden;position:relative;min-height:190px;display:flex;align-items:flex-end;background:#0a2d38 url(img/jaxson-car.jpg) center 35%/cover;color:#fff}
 .jags::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,40,50,0) 25%,rgba(0,40,50,.92) 100%)}
 .jags .in{position:relative;padding:16px;display:flex;gap:12px;align-items:center}
 .jags img{width:54px;flex:none}
@@ -287,9 +287,23 @@ p{margin:0}
 .tour figcaption b{display:block;font-size:14px}
 .tour figcaption span{font-size:12px;color:var(--muted)}
 .team-photo{width:100%;border-radius:18px;display:block}
-.docs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.doc{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12px}
-.doc .ph{width:64px;height:64px;border-radius:50%;background:var(--brand-soft);border:2px dashed var(--wainscot);display:grid;place-items:center;color:var(--wainscot)}
+.docrow{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:4px 20px 8px;scrollbar-width:none}
+.docrow::-webkit-scrollbar{display:none}
+.doc{flex:none;width:88px;background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12px;line-height:1.2}
+.doc img{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid var(--card);box-shadow:var(--shadow);display:block}
+.doc b{font-size:13px}
+.doc span{color:var(--muted)}
+.doc-hero{width:150px;height:150px;border-radius:50%;object-fit:cover;align-self:center;border:4px solid var(--card);box-shadow:var(--shadow)}
+.placeholder{border:1.5px dashed var(--wainscot);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--muted)}
+.drpick{display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px;scrollbar-width:none}
+.drpick::-webkit-scrollbar{display:none}
+.drpick button{flex:none;display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:4px 14px 4px 4px;font-weight:700;font-size:13px}
+.drpick img,.drpick .any{width:32px;height:32px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand)}
+.drpick .any .ico{width:18px;height:18px}
+.drpick button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft)}
+.community{display:flex;flex-direction:column;gap:12px}
+.community img{width:100%;border-radius:16px;display:block;aspect-ratio:3/2;object-fit:cover}
+.small-market{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:30px;line-height:.95;letter-spacing:.01em}
 .signal{display:flex;gap:14px;align-items:center;background:var(--ink);color:var(--surface);border-radius:20px;padding:16px}
 .signal .hand{width:52px;height:52px;border-radius:50%;background:var(--gold);color:#13304A;display:grid;place-items:center;flex:none;font-family:var(--f-display);font-weight:800;font-size:13px;line-height:1;text-align:center;text-transform:uppercase}
 
@@ -378,7 +392,7 @@ p{margin:0}
       <li>Try the breathing exercise and office tour</li>
       <li>Leave a Google review from the profile tab</li>
     </ul>
-    <p class="note">Doctor photos, video links, phone number and the Google review link are placeholders until you send them.</p>
+    <p class="note">Doctor bios, one doctor's name, video links, phone number and the Google review link are placeholders until you send them.</p>
     <button class="reset" id="resetDemo" type="button">Restart demo from sign-up</button>
   </aside>
 
@@ -481,6 +495,15 @@ const VIDEOS = [
   {t:'Jaxson visits ASAP', d:'The Jaguars\' mascot stops by', img:'img/jaxson-stadium.jpg', tag:'Jaguars'},
 ];
 
+const DOCTORS = [
+  {id:'letteri', name:'Dr. Nicholas Letteri', short:'Dr. Letteri', role:'Dentist', img:'img/dr-letteri.jpg'},
+  {id:'shbeb', name:'Dr. Shbeb, DDS', short:'Dr. Shbeb', role:'Dentist', img:'img/dr-shbeb.jpg'},
+  {id:'dr3', name:'Doctor (name needed)', short:'Doctor', role:'Dentist', img:'img/dr-3.jpg'},
+  {id:'cueto', name:'Dr. Yevah Cueto, DMD', short:'Dr. Cueto', role:'General Dentist', img:'img/dr-cueto.jpg'},
+  {id:'sabino', name:'Dr. Gregory Sabino', short:'Dr. Sabino', role:'Dentist', img:'img/dr-sabino.jpg'},
+];
+const docRow = () => `<div class="docrow">${DOCTORS.map(d => `<button class="doc" data-doc="${d.id}"><img src="${d.img}" alt="${d.name}" loading="lazy"><b>${d.short}</b><span>${d.role}</span></button>`).join('')}</div>`;
+
 const TOUR = [
   ['img/welcome-wall.jpg','The front desk','This wall greets you when you walk in.'],
   ['img/waiting-room.jpg','The waiting room','Comfy chairs, Wi-Fi and a TV.'],
@@ -550,6 +573,8 @@ tabbar.addEventListener('click', e => { const b = e.target.closest('button'); if
 viewsEl.addEventListener('click', e => {
   const t = e.target.closest('[data-go]');
   if (t) { e.preventDefault(); go(t.dataset.go, t.dataset.arg); return; }
+  const d = e.target.closest('[data-doc]');
+  if (d) { openDoctor(d.dataset.doc); return; }
   if (e.target.closest('[data-back]')) back();
 });
 
@@ -652,7 +677,7 @@ ROUTES.home = () => {
   <div class="appt">
     <span class="eyebrow" style="color:inherit;opacity:.8">Your next visit</span>
     <div class="when">${fmtDay(a.at)}</div>
-    <div>${fmtTime(a.at)} · ${esc(a.reason)}</div>
+    <div>${fmtTime(a.at)} · ${esc(a.reason)}${a.doc ? ` with ${esc(a.doc)}` : ''}</div>
     <div class="countdown">${icon('clock')} ${hrs < 48 ? `In about ${hrs} hours` : `In ${Math.round(hrs/24)} days`} · reminders on</div>
     <div class="row"><button class="btn solid" data-go="prep">Get ready</button><button class="btn" data-go="book">Reschedule</button></div>
   </div>` : `
@@ -669,6 +694,10 @@ ROUTES.home = () => {
     <button data-go="emergency"><span class="q" style="color:var(--warn)">${icon('bolt')}</span>Emergency</button>
   </div>
   ${nervous ? `<button class="comfort-card" data-go="comfort"><span class="bubble">${icon('heart')}</span><span><b>Feeling nervous? You're not alone.</b><span class="small muted">Breathing exercise, office tour and your comfort plan.</span></span></button>` : ''}
+  <div class="section">
+    <div class="section-head"><span class="eyebrow">Meet your doctors</span><button class="link" data-go="comfort">Meet the team</button></div>
+    ${docRow()}
+  </div>
   <div class="card fact">
     <span class="eyebrow">Tooth fact of the day</span>
     <b>${FACTS[factIdx][0]}</b>
@@ -678,9 +707,9 @@ ROUTES.home = () => {
     <div class="section-head"><span class="eyebrow">Smile School</span><button class="link" data-go="learn">See all</button></div>
     <div class="progress"><div class="meter"><i style="width:${learned/SERVICES.length*100}%"></i></div><span class="small"><b>${learned}</b>/${SERVICES.length} lessons</span></div>
   </div>
-  <div class="jags">
-    <div class="in"><img src="img/jaguars-head.png" alt=""><div><b>The Official Dentist of the Jacksonville Jaguars</b><span>Duuuval smiles start here.</span></div></div>
-  </div>
+  <button class="jags" id="jagsBtn">
+    <span class="in"><img src="img/jaguars-head.png" alt=""><span><b>The Official Dentist of the Jacksonville Jaguars</b><span>Duuuval smiles start here. Tap to see us in the community.</span></span></span>
+  </button>
   <div class="card review-card">
     <div style="flex:1"><b>Had a great visit?</b><p class="small muted">A quick Google review helps other nervous patients find us.</p><div class="stars" style="margin-top:6px">${STAR.repeat(5)}</div></div>
     <button class="btn ghost" id="revBtn">Review</button>
@@ -691,11 +720,30 @@ ROUTES.home.after = v => {
   $('#openFact', v)?.addEventListener('click', () => { factOpen = true; render(); });
   $('#nextFact', v)?.addEventListener('click', () => { factIdx = (factIdx + 1) % FACTS.length; factOpen = false; render(); });
   $('#revBtn', v).onclick = openReview;
+  $('#jagsBtn', v).onclick = () => sheet(`<div class="community">
+      <img src="img/small-market.jpg" alt="ASAP team shirt reading Just a Small Market Dental Team">
+      <span class="eyebrow">ASAP × Jacksonville Jaguars</span>
+      <h3 class="small-market">Just a small market dental team</h3>
+      <p>As the Official Dentist of the Jacksonville Jaguars, our team shows up for Jacksonville on game day and every other day, like volunteering to sort food for neighbors in need.</p>
+      <img src="img/community.jpg" alt="ASAP team member volunteering at a food drive">
+      <button class="btn block" data-close>Go Jags!</button></div>`);
 };
+
+function openDoctor(id) {
+  const d = DOCTORS.find(x => x.id === id);
+  sheet(`<img class="doc-hero" src="${d.img}" alt="${d.name}">
+    <div style="text-align:center"><h3 style="font-family:var(--f-display);font-size:28px;text-transform:uppercase;line-height:1.05">${d.name}</h3><span class="muted">${d.role} · ASAP Dental Care</span></div>
+    <p class="placeholder">Bio coming soon: where they trained, what they love about dentistry, and a fun fact or two.</p>
+    <button class="btn block" id="bookDoc">Book with ${d.short}</button>
+    <button class="link" data-close style="align-self:center">Close</button>`, (sh, close) => {
+    $('#bookDoc', sh).onclick = () => { close(); resetBk(); bk.doc = id; go('book', null, {tab:true}); };
+  });
+}
 
 /* ---------- Book ---------- */
 let bk;
-const resetBk = () => bk = {step:0, reason:null, day:null, time:null, note:''};
+const resetBk = () => bk = {step:0, reason:null, day:null, time:null, note:'', doc:'any'};
+const bkDoc = () => DOCTORS.find(d => d.id === bk.doc);
 resetBk();
 function days() {
   const out = [], d = new Date(); d.setHours(0,0,0,0);
@@ -714,6 +762,8 @@ ROUTES.book = () => {
     ${bk.reason === 'emergency' ? `<div class="alert"><b>In pain right now?</b>Call us at <b style="color:inherit">${OFFICE_PHONE}</b> so we can fit you in today. You can still request a time below.</div>` : ''}
     <button class="btn block" id="bkNext" ${bk.reason ? '' : 'disabled'}>Choose a time</button>`;
   if (step === 1) body = `
+    <div class="section"><b style="font-size:18px">Who would you like to see?</b>
+    <div class="drpick"><button data-dr="any" aria-pressed="${bk.doc==='any'}"><span class="any">${icon('smile')}</span>First available</button>${DOCTORS.map(d => `<button data-dr="${d.id}" aria-pressed="${bk.doc===d.id}"><img src="${d.img}" alt="">${d.short}</button>`).join('')}</div></div>
     <div class="section"><b style="font-size:18px">Pick a day</b>
     <div class="days">${days().map(d => `<button class="day" data-d="${+d}" aria-pressed="${bk.day===+d}"><small>${d.toLocaleDateString('en-US',{weekday:'short'})}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-US',{month:'short'})}</small></button>`).join('')}</div></div>
     ${bk.day ? `<div class="section"><b style="font-size:18px">Pick a time</b><div class="slots">${SLOTS.map((s,i) => { const h = +s.split(':')[0]; const label = s + (h >= 8 && h < 12 ? ' AM' : ' PM'); return `<button class="slot" data-t="${label}" aria-pressed="${bk.time===label}" ${taken(bk.day,i)?'disabled':''}>${label}</button>`; }).join('')}</div></div>` : '<p class="muted">Choose a day to see open times.</p>'}
@@ -721,6 +771,7 @@ ROUTES.book = () => {
   if (step === 2) body = `
     <div class="card summary">
       <div class="r"><span>Visit</span><b>${r[1]}</b></div>
+      <div class="r"><span>Doctor</span><b>${bkDoc()?.name || 'First available'}</b></div>
       <div class="r"><span>When</span><b>${fmtDay(bk.day)}, ${bk.time}</b></div>
       <div class="r"><span>Where</span><b>ASAP Dental Care, Jacksonville</b></div>
     </div>
@@ -734,7 +785,7 @@ ROUTES.book = () => {
     <div class="section success" style="flex:1">
       <div class="tick">${icon('check')}</div>
       <h2 style="font-family:var(--f-display);font-size:32px;text-transform:uppercase">You're booked!</h2>
-      <p class="muted">${r[1]}<br><b style="color:var(--ink)">${fmtDay(bk.day)} at ${bk.time}</b></p>
+      <p class="muted">${r[1]}${bkDoc() ? ' with ' + bkDoc().short : ''}<br><b style="color:var(--ink)">${fmtDay(bk.day)} at ${bk.time}</b></p>
       <p class="small muted">We'll remind you a week before, the day before and two hours before. Watch the top of the screen.</p>
       <button class="btn block" data-go="prep">See how to get ready</button>
       <button class="btn block line" id="bkHome">Back to home</button>
@@ -746,8 +797,11 @@ ROUTES.book.tab = 'book';
 ROUTES.book.after = v => {
   const tb = $('.topbar [data-back]', v);
   if (tb) { tb.removeAttribute('data-back'); tb.onclick = () => { bk.step--; render(); }; }
+  const pick = v.querySelector('.drpick [aria-pressed="true"]');
+  if (pick) { const row = pick.parentElement; row.scrollLeft = pick.offsetLeft - row.offsetLeft - 20; }
   v.addEventListener('click', e => {
     const r = e.target.closest('[data-r]'); if (r) { bk.reason = r.dataset.r; render(); }
+    const dr = e.target.closest('[data-dr]'); if (dr) { bk.doc = dr.dataset.dr; const sl = v.querySelector('.drpick').scrollLeft, dl = v.querySelector('.days').scrollLeft; render(); $('.drpick').scrollLeft = sl; $('.days').scrollLeft = dl; }
     const d = e.target.closest('[data-d]'); if (d) { bk.day = +d.dataset.d; bk.time = null; const sl = v.querySelector('.days').scrollLeft; render(); $('.days').scrollLeft = sl; }
     const t = e.target.closest('[data-t]'); if (t && !t.disabled) { bk.time = t.dataset.t; const sl = v.querySelector('.days').scrollLeft, st = v.scrollTop; render(); $('.days').scrollLeft = sl; $('.view').scrollTop = st; }
   });
@@ -759,9 +813,10 @@ ROUTES.book.after = v => {
     const at = new Date(bk.day); at.setHours(h, m);
     const reason = REASONS.find(x => x[0] === bk.reason)[1];
     S.appts = S.appts.filter(a => a.at < Date.now()); // one upcoming visit in the demo
-    S.appts.push({at:+at, reason, note:bk.note}); save();
+    const doc = bkDoc()?.short;
+    S.appts.push({at:+at, reason, note:bk.note, doc}); save();
     bk.step = 3; render();
-    setTimeout(() => notify({t:'Appointment confirmed', d:`${reason}, ${fmtDay(+at)} at ${bk.time}. Reply C to confirm or R to reschedule.`, ico:'cal'}), 1800);
+    setTimeout(() => notify({t:'Appointment confirmed', d:`${reason}${doc ? ' with ' + doc : ''}, ${fmtDay(+at)} at ${bk.time}. Reply C to confirm or R to reschedule.`, ico:'cal'}), 1800);
   });
 };
 
@@ -865,7 +920,7 @@ const RULES = `You are "ASAP AI", the friendly virtual dental guide inside the A
 
 Many people using this app feel anxious about the dentist. Be warm, calm, encouraging and plain-spoken. Keep answers short: under 110 words, short paragraphs, or up to 4 bullet lines starting with "- ". No headings. You may use **bold** sparingly.
 
-You are not a dentist and cannot examine, diagnose or prescribe. Give general education, explain what to expect, and when someone needs an exam, suggest booking in the app's Book tab. If someone mentions facial swelling, fever with tooth pain, a knocked-out tooth, heavy bleeding that won't stop, or trouble breathing or swallowing, tell them clearly to call the office right away, and to call 911 or go to the ER for trouble breathing or swallowing. Never quote prices, insurance coverage or appointment availability; say the front desk can confirm. Don't make up doctor names.`;
+You are not a dentist and cannot examine, diagnose or prescribe. Give general education, explain what to expect, and when someone needs an exam, suggest booking in the app's Book tab. If someone mentions facial swelling, fever with tooth pain, a knocked-out tooth, heavy bleeding that won't stop, or trouble breathing or swallowing, tell them clearly to call the office right away, and to call 911 or go to the ER for trouble breathing or swallowing. Never quote prices, insurance coverage or appointment availability; say the front desk can confirm. The dentists are Dr. Nicholas Letteri, Dr. Shbeb, Dr. Yevah Cueto (general dentist) and Dr. Gregory Sabino, plus one more doctor; don't invent details about them beyond their names.`;
 const SUGGEST = ['Does a filling hurt?','My tooth is sensitive to cold','How can I feel less nervous?','What happens at my first visit?','Is the 3D X-ray safe?'];
 const RED = /swell|swollen|fever|knock(ed)?[- ]?out|can'?t (breathe|swallow)|trouble (breathing|swallowing)|bleeding (won|that won|a lot)|abscess/i;
 const CANNED = [
@@ -950,10 +1005,13 @@ ROUTES.comfort = () => `
   <div class="section"><div class="section-head"><span class="eyebrow">Take a look around</span><button class="link" data-go="videos">Watch the tour</button></div>
     <div class="tour">${TOUR.map(([src,t,d]) => `<figure><img src="${src}" alt="${t}" loading="lazy"><figcaption><b>${t}</b><span>${d}</span></figcaption></figure>`).join('')}</div>
   </div>
-  <div class="section"><span class="eyebrow">Meet your team</span>
+  <div class="section"><span class="eyebrow">Meet your doctors</span>
+    <p class="small muted">Tap a doctor to say hi before your visit.</p>
+    ${docRow()}
+  </div>
+  <div class="section"><span class="eyebrow">And the whole crew</span>
     <img class="team-photo" src="img/team.jpg" alt="The ASAP Dental Care team in front of the Welcomes You wall">
-    <p class="small muted">These are the friendly faces you'll see. Doctor profiles are coming soon.</p>
-    <div class="docs">${['Doctor','Doctor','Doctor'].map(() => `<div class="doc"><span class="ph">${icon('user')}</span><b>Photo coming</b><span class="muted">Dentist</span></div>`).join('')}</div>
+    <p class="small muted">These are the friendly faces who'll greet you, clean your teeth and cheer you on.</p>
   </div>
   <button class="comfort-card" data-go="plan"><span class="bubble">${icon('shield')}</span><span><b>Your comfort plan</b><span class="small muted">${Object.values(S.comfort).filter(Boolean).length} preferences shared with your care team</span></span></button>`;
 ROUTES.comfort.tab = 'comfort';
