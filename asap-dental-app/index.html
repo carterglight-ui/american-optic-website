@@ -464,27 +464,36 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
 .burst{position:absolute;inset:0;pointer-events:none;z-index:45;overflow:hidden}
 .burst i{position:absolute;width:7px;height:7px;border-radius:50%}
 
-/* Launch screen: the tooth draws itself, a sparkle pops, the wordmark rises, then the app drifts in */
-.splash{position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer;
-  background:radial-gradient(120% 75% at 50% 38%,var(--card-solid) 0%,var(--surface) 55%,color-mix(in srgb,var(--brand) 9%,var(--surface)) 100%)}
-.splash-mark{position:relative;width:120px;height:120px;display:grid;place-items:center}
-.splash-mark::before{content:"";position:absolute;inset:-34px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--brand) 16%,transparent),transparent);opacity:0;animation:fadeUp 1.2s .3s var(--ease) forwards,halo 3.2s 1.5s ease-in-out infinite}
-.splash-tooth{width:120px;height:120px;overflow:visible;position:relative}
-.splash-tooth .draw{fill:transparent;stroke:var(--brand);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:drawTooth 1.5s .25s cubic-bezier(.65,0,.35,1) forwards,fillTooth .9s 1.5s var(--ease) forwards}
-.splash-tooth .spark{fill:var(--brand);transform-box:fill-box;transform-origin:center;transform:scale(0) rotate(-90deg);animation:sparkIn .8s 1.35s var(--spring) forwards,twinkle 2.4s 2.2s ease-in-out infinite}
-.splash-logo{width:150px;height:auto;opacity:0;transform:translateY(12px);animation:fadeUp .9s 1.15s var(--ease) forwards}
-.splash-tag{font-size:11px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);opacity:0;transform:translateY(8px);animation:fadeUp .9s 1.45s var(--ease) forwards}
-.splash-bar{width:110px;height:2px;border-radius:1px;background:var(--line);overflow:hidden;margin-top:10px;opacity:0;animation:fadeUp .5s .5s var(--ease) forwards}
-.splash-bar i{display:block;height:100%;background:var(--brand);transform-origin:left;transform:scaleX(0);animation:load 2.3s .5s cubic-bezier(.65,0,.35,1) forwards}
+/* Launch screen: the logo builds itself, tooth first, then "ASAP", then "Dental Care" */
+.splash{position:absolute;inset:0;z-index:60;display:grid;place-items:center;cursor:pointer;
+  background:radial-gradient(120% 75% at 50% 45%,var(--card-solid) 0%,var(--surface) 58%,color-mix(in srgb,var(--brand) 8%,var(--surface)) 100%)}
+.splash-logo{position:relative;width:230px;aspect-ratio:700/428;max-width:70%}
+.splash-logo::before{content:"";position:absolute;inset:-30% -20%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--brand) 12%,transparent),transparent);opacity:0;animation:fadeIn 1.4s .2s var(--ease) forwards}
+.splash-logo img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.splash-logo .l-tooth{opacity:0;transform:translateY(10px) scale(.88);filter:blur(8px);animation:toothIn 1.2s .25s var(--ease) forwards}
+.splash-logo .l-asap{opacity:0;clip-path:inset(0 100% 0 0);transform:translateY(4px);animation:wordIn 1s 1.15s cubic-bezier(.65,0,.35,1) forwards}
+.splash-logo .l-dental{opacity:0;clip-path:inset(0 100% 0 0);transform:translateY(4px);animation:wordIn 1s 1.55s cubic-bezier(.65,0,.35,1) forwards}
 .splash.out{animation:splashOut .8s var(--ease) forwards;pointer-events:none}
-@keyframes drawTooth{to{stroke-dashoffset:0}}
-@keyframes fillTooth{to{fill:color-mix(in srgb,var(--brand) 7%,transparent)}}
-@keyframes sparkIn{to{transform:scale(1) rotate(0)}}
-@keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.72) rotate(20deg)}}
-@keyframes halo{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-@keyframes fadeUp{to{opacity:1;transform:none}}
-@keyframes load{to{transform:scaleX(1)}}
+@keyframes toothIn{to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes wordIn{to{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
+@keyframes fadeIn{to{opacity:1}}
 @keyframes splashOut{to{opacity:0;transform:scale(1.05);filter:blur(6px)}}
+
+/* "Ask anything" bubble with Dr. Cueto's photo */
+.ask-fab{position:absolute;right:16px;bottom:92px;z-index:15;display:flex;align-items:center;gap:0;border:0;padding:0;background:none;cursor:pointer}
+.ask-fab .fab-label{background:var(--card-solid);color:var(--ink);font-weight:650;font-size:13.5px;padding:9px 16px 9px 14px;border-radius:999px 0 0 999px;margin-right:-10px;box-shadow:var(--shadow);white-space:nowrap}
+.ask-fab .fab-photo{position:relative;width:58px;height:58px;border-radius:50%;flex:none;box-shadow:0 10px 26px rgba(20,50,74,.22);border:3px solid var(--card-solid);background:var(--card-solid)}
+.ask-fab .fab-photo img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.ask-fab .fab-photo::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid color-mix(in srgb,var(--brand) 45%,transparent);animation:ring 3s 1.2s ease-out infinite;opacity:0}
+.ask-fab .online{position:absolute;right:1px;bottom:2px;width:13px;height:13px;border-radius:50%;background:#3FB97A;border:2.5px solid var(--card-solid)}
+.ask-fab.pop .fab-photo{animation:fabIn .7s var(--spring) both}
+.ask-fab.pop .fab-label{animation:labelIn .6s .35s var(--spring) both;transform-origin:right center}
+.ask-fab:active .fab-photo{transform:scale(.92);transition:transform .1s}
+.ask-fab .fab-photo{transition:transform .5s var(--spring)}
+@keyframes fabIn{from{opacity:0;transform:translateY(24px) scale(.5)}to{opacity:1;transform:none}}
+@keyframes labelIn{from{opacity:0;transform:translateX(16px) scaleX(.6)}to{opacity:1;transform:none}}
+@keyframes ring{0%{opacity:.8;transform:scale(.92)}70%,100%{opacity:0;transform:scale(1.3)}}
+@media (max-width:760px){.ask-fab{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
 .views,.tabbar{transition:opacity .9s var(--ease),transform 1s var(--ease)}
 .screen.booting .views,.screen.booting .tabbar{opacity:0;transform:scale(.97)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
@@ -558,16 +567,16 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
         <button data-tab="comfort"><svg class="ico"><use href="#i-wind"/></svg>Calm</button>
         <span class="tab-dot" id="tabDot" aria-hidden="true"></span>
       </nav>
+      <button class="ask-fab" id="askFab" hidden aria-label="Ask anything: open the AI dental assistant">
+        <span class="fab-label">Ask anything!</span>
+        <span class="fab-photo"><img src="img/dr-cueto.jpg" alt=""><i class="online"></i></span>
+      </button>
       <div class="splash" id="splash" aria-hidden="true">
-        <div class="splash-mark">
-          <svg class="splash-tooth" viewBox="0 0 130 130">
-            <path class="draw" pathLength="1" d="M20 38 C14 14 42 8 60 18 C78 8 106 14 100 38 C100 60 94 70 92 86 C90 105 86 116 80 116 C74 116 74 96 70 84 C67 76 53 76 50 84 C46 96 46 116 40 116 C34 116 30 105 28 86 C26 70 20 60 20 38 Z"/>
-            <path class="spark" d="M114 2 C115 11 118 14 127 15 C118 16 115 19 114 28 C113 19 110 16 101 15 C110 14 113 11 114 2 Z"/>
-          </svg>
+        <div class="splash-logo">
+          <img class="l-tooth" src="img/logo-tooth.png" alt="">
+          <img class="l-asap" src="img/logo-asap.png" alt="">
+          <img class="l-dental" src="img/logo-dental.png" alt="">
         </div>
-        <img class="splash-logo" src="img/asap-logo.png" alt="">
-        <p class="splash-tag">Your moment of calm</p>
-        <div class="splash-bar"><i></i></div>
       </div>
     </div>
   </div>
@@ -752,7 +761,7 @@ const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch
 
 /* ---------- Router ---------- */
 const viewsEl = $('#views'), tabbar = $('#tabbar'), screen = $('#screen');
-let current = null, stack = [], navAnim = 'up', lastTab = null;
+let current = null, stack = [], navAnim = 'up', lastTab = null, booting = true;
 const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ROUTES = {};
 function go(name, arg, opts = {}) {
@@ -781,8 +790,16 @@ function render() {
   dot.hidden = !act;
   if (act) dot.style.transform = `translateX(${act.offsetLeft + act.offsetWidth / 2 - 2.5}px)`;
   lastTab = tab;
+  updateFab();
 }
 const later = fn => REDUCE ? fn() : setTimeout(fn, 120);
+function updateFab() {
+  const fab = $('#askFab'), r = ROUTES[current.name];
+  const show = !booting && !r.noTabs && r.tab !== 'ask';
+  if (show && fab.hidden) { fab.hidden = false; fab.classList.remove('pop'); void fab.offsetWidth; fab.classList.add('pop'); }
+  else if (!show) fab.hidden = true;
+}
+$('#askFab').addEventListener('click', () => later(() => go('ask', null, {tab:true})));
 tabbar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) later(() => go(b.dataset.tab, null, {tab:true})); });
 viewsEl.addEventListener('click', e => {
   const t = e.target.closest('[data-go]');
@@ -1445,7 +1462,7 @@ function fmtAI(t) {
 const emergencyCard = () => `<div class="alert"><b>This could need care today.</b>Call ASAP Dental Care now at ${officePhone()}. If you have trouble breathing or swallowing, call 911.</div>`;
 ROUTES.ask = topic => `
   <div class="ai-head"><span class="ai-face">${icon('tooth')}</span><div style="flex:1"><h2 style="font-family:var(--f-display);font-size:24px;text-transform:uppercase;line-height:1">ASAP AI</h2><span class="small muted">Your dental guide, any time of day</span></div></div>
-  <p class="disclaimer">ASAP AI answers general questions. It isn't a dentist and can't diagnose you. For emergencies call the office or 911.</p>
+  <p class="disclaimer">You're chatting with ASAP's AI assistant, not a dentist. It answers general questions and can't diagnose you. For emergencies call the office or 911.</p>
   <div class="msgs" id="msgs" aria-live="polite">
     <div class="msg ai"><p>Hi ${esc(first())}! Ask me anything about your teeth, a treatment, or what to expect. No question is too small.</p></div>
     ${chat.turns.map(t => t.role === 'user' ? `<div class="msg me">${esc(t.content)}</div>` : `<div class="msg ai">${fmtAI(t.content)}</div>${t.alert ? emergencyCard() : ''}`).join('')}
@@ -1685,9 +1702,10 @@ go(S.user ? 'home' : 'welcome', null, {tab:true});
     if (done) return; done = true;
     splash.classList.add('out'); screen.classList.remove('booting');
     setTimeout(() => splash.remove(), 850);
+    setTimeout(() => { booting = false; updateFab(); }, REDUCE ? 0 : 700);
   };
   splash.addEventListener('click', finish);           // tap to skip
-  setTimeout(finish, REDUCE ? 500 : 3200);
+  setTimeout(finish, REDUCE ? 500 : 3100);
 })();
 })();
 </script>
