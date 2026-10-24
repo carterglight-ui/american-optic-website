@@ -464,18 +464,18 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
 .burst{position:absolute;inset:0;pointer-events:none;z-index:45;overflow:hidden}
 .burst i{position:absolute;width:7px;height:7px;border-radius:50%}
 
-/* Launch screen: the logo builds itself, tooth first, then "ASAP", then "Dental Care" */
+/* Launch screen: a tooth outline draws itself, then the ASAP lettering settles centered on top */
 .splash{position:absolute;inset:0;z-index:60;display:grid;place-items:center;cursor:pointer;
   background:radial-gradient(120% 75% at 50% 45%,var(--card-solid) 0%,var(--surface) 58%,color-mix(in srgb,var(--brand) 8%,var(--surface)) 100%)}
-.splash-logo{position:relative;width:230px;aspect-ratio:700/428;max-width:70%}
-.splash-logo::before{content:"";position:absolute;inset:-30% -20%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--brand) 12%,transparent),transparent);opacity:0;animation:fadeIn 1.4s .2s var(--ease) forwards}
-.splash-logo img{position:absolute;inset:0;width:100%;height:100%;display:block}
-.splash-logo .l-tooth{opacity:0;transform:translateY(10px) scale(.88);filter:blur(8px);animation:toothIn 1.2s .25s var(--ease) forwards}
-.splash-logo .l-asap{opacity:0;clip-path:inset(0 100% 0 0);transform:translateY(4px);animation:wordIn 1s 1.15s cubic-bezier(.65,0,.35,1) forwards}
-.splash-logo .l-dental{opacity:0;clip-path:inset(0 100% 0 0);transform:translateY(4px);animation:wordIn 1s 1.55s cubic-bezier(.65,0,.35,1) forwards}
+.splash-logo{position:relative;width:240px;height:220px;display:grid;place-items:center}
+.splash-logo::before{content:"";position:absolute;inset:-20%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--brand) 12%,transparent),transparent);opacity:0;animation:fadeIn 1.4s .2s var(--ease) forwards}
+.splash-tooth{position:absolute;left:50%;top:0;width:200px;height:200px;transform:translateX(-50%);overflow:visible}
+.splash-tooth path{fill:transparent;stroke:var(--brand);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:drawTooth 1.6s .25s cubic-bezier(.65,0,.35,1) forwards,fillTooth 1s 1.6s var(--ease) forwards}
+.splash-word{position:absolute;left:50%;top:92px;width:224px;height:auto;transform:translate(-50%,10px);opacity:0;filter:blur(6px);animation:wordUp 1s 1.2s var(--ease) forwards}
 .splash.out{animation:splashOut .8s var(--ease) forwards;pointer-events:none}
-@keyframes toothIn{to{opacity:1;transform:none;filter:blur(0)}}
-@keyframes wordIn{to{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
+@keyframes drawTooth{to{stroke-dashoffset:0}}
+@keyframes fillTooth{to{fill:color-mix(in srgb,var(--brand) 6%,transparent)}}
+@keyframes wordUp{to{opacity:1;transform:translate(-50%,0);filter:blur(0)}}
 @keyframes fadeIn{to{opacity:1}}
 @keyframes splashOut{to{opacity:0;transform:scale(1.05);filter:blur(6px)}}
 
@@ -564,7 +564,7 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
         <button data-tab="book"><svg class="ico"><use href="#i-cal"/></svg>Book</button>
         <button data-tab="ask"><svg class="ico"><use href="#i-chat"/></svg>Ask AI</button>
         <button data-tab="learn"><svg class="ico"><use href="#i-book"/></svg>Learn</button>
-        <button data-tab="comfort"><svg class="ico"><use href="#i-wind"/></svg>Calm</button>
+        <button data-tab="profile"><svg class="ico"><use href="#i-user"/></svg>You</button>
         <span class="tab-dot" id="tabDot" aria-hidden="true"></span>
       </nav>
       <button class="ask-fab" id="askFab" hidden aria-label="Ask anything: open the AI dental assistant">
@@ -573,10 +573,12 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
       </button>
       <div class="splash" id="splash" aria-hidden="true">
         <div class="splash-logo">
-          <img class="l-tooth" src="img/logo-tooth.png" alt="">
-          <img class="l-asap" src="img/logo-asap.png" alt="">
-          <img class="l-dental" src="img/logo-dental.png" alt="">
+          <svg class="splash-tooth" viewBox="0 0 120 120" aria-hidden="true">
+            <path pathLength="1" d="M14 34 C8 10 38 4 60 15 C82 4 112 10 106 34 C104 56 98 66 95 82 C92 101 88 114 81 114 C74 114 74 94 70 82 C67 74 53 74 50 82 C46 94 46 114 39 114 C32 114 28 101 25 82 C22 66 16 56 14 34 Z"/>
+          </svg>
+          <img class="splash-word" src="img/word-asap.png" alt="">
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -687,6 +689,9 @@ const UNMATCHED_LINKS = [
 const SERVICE_VIDEOS = {cleaning:['deep'], rootcanal:['rootcanal'], extractions:['wisdom'], dentures:['partial', 'over', 'fixed'], implants:['immediate', 'ahmed', 'fixed'], whitening:['whitening']};
 
 const DOCTORS = [
+  {id:'cueto', name:'Dr. Yevah Cueto, DMD', short:'Dr. Cueto', role:'General Dentist', img:'img/dr-cueto.jpg',
+   bio:'A Jacksonville native, Dr. Cueto studied nutritional and food science at the University of Florida before earning a Doctor of Dental Medicine from LECOM School of Dental Medicine.',
+   facts:['DMD, LECOM School of Dental Medicine', 'B.S. in Nutritional and Food Science, University of Florida']},
   {id:'letteri', name:'Dr. Nicholas Letteri, DMD', short:'Dr. Letteri', role:'Dentist', img:'img/dr-letteri.jpg',
    bio:'A Tampa native, Dr. Letteri earned a Doctor of Dental Medicine from LECOM School of Dental Medicine in Bradenton, Florida, and practiced in the Tampa Bay area for five years before moving to Jacksonville.',
    facts:['DMD, LECOM School of Dental Medicine', 'Member, American Dental Association', 'Member, Florida Dental Association', 'Member, Northeast District Dental Association']},
@@ -696,9 +701,6 @@ const DOCTORS = [
   {id:'ahmed', name:'Dr. Nadeem Ahmed, DMD', short:'Dr. Ahmed', role:'Dentist', img:'img/dr-3.jpg',
    bio:'Dr. Ahmed earned a Doctor of Dental Medicine from the University of Florida College of Dentistry and completed additional training at the Las Vegas Institute for Advanced Dental Studies.',
    facts:['DMD, University of Florida College of Dentistry', 'Advanced training, Las Vegas Institute for Advanced Dental Studies', 'Member, American Dental Association']},
-  {id:'cueto', name:'Dr. Yevah Cueto, DMD', short:'Dr. Cueto', role:'General Dentist', img:'img/dr-cueto.jpg',
-   bio:'A Jacksonville native, Dr. Cueto studied nutritional and food science at the University of Florida before earning a Doctor of Dental Medicine from LECOM School of Dental Medicine.',
-   facts:['DMD, LECOM School of Dental Medicine', 'B.S. in Nutritional and Food Science, University of Florida']},
   {id:'sabino', name:'Dr. Gregory Sabino, DDS', short:'Dr. Sabino', role:'Dentist', img:'img/dr-sabino.jpg'},
 ];
 const docRow = () => `<div class="docrow">${DOCTORS.map(d => `<button class="doc" data-doc="${d.id}"><img src="${d.img}" alt="${d.name}" loading="lazy"><b>${d.short}</b><span>${d.role}</span></button>`).join('')}</div>`;
@@ -806,6 +808,7 @@ viewsEl.addEventListener('click', e => {
   if (t) { e.preventDefault(); later(() => go(t.dataset.go, t.dataset.arg)); return; }
   const d = e.target.closest('[data-doc]');
   if (d) { openDoctor(d.dataset.doc); return; }
+  if (e.target.closest('[data-breathe]')) { openBreathe(); return; }
   const vid = e.target.closest('[data-vid]');
   if (vid) { openVideo(vid.dataset.vid); return; }
   if (e.target.closest('[data-back]')) back();
@@ -962,14 +965,14 @@ ROUTES.home = () => {
   <div class="qa-row">
     <button class="qa" data-go="ask"><span class="pebble">${icon('chat')}</span>Ask ASAP AI<small>Guidance, not diagnosis</small></button>
     <button class="qa" data-go="learn"><span class="pebble">${icon('tooth')}</span>Explore care<small>Lessons and tools</small></button>
-    <button class="qa" data-go="comfort"><span class="pebble">${icon('wind')}</span>Calm corner<small>Breathe and settle in</small></button>
+    <button class="qa" data-breathe><span class="pebble">${icon('wind')}</span>Breathe<small>A one-minute reset</small></button>
   </div>
   <div class="section">
     <h2 class="calm-title">Breathe. You're in good hands.</h2>
     <button class="link" data-go="videos" style="align-self:flex-start">Watch and learn →</button>
   </div>
   ${featureCard()}
-  ${nervous ? `<button class="comfort-card" data-go="comfort"><span class="bubble">${icon('heart')}</span><span><b>Feeling nervous? You're not alone.</b><span class="small muted">A breathing exercise, an office tour and your comfort plan.</span></span></button>` : ''}
+  ${nervous ? `<button class="comfort-card" data-go="comfort"><span class="bubble">${icon('heart')}</span><span><b>Feeling nervous? You're not alone.</b><span class="small muted">Your stop signal, sedation options and a look around the office.</span></span></button>` : ''}
   <div class="section">
     <div class="section-head"><span class="eyebrow">Meet your doctors</span><button class="link" data-go="comfort">Meet the team</button></div>
     ${docRow()}
@@ -1118,7 +1121,7 @@ ROUTES.prep = () => { const a = nextAppt(); return `
   <div class="card section"><span class="eyebrow">Bring with you</span>
     <div class="list">${['Photo ID','Insurance card','List of medications','Headphones, if music helps you relax'].map(t => `<div class="item"><span class="dot">${icon('check')}</span><div class="txt"><b>${t}</b></div></div>`).join('')}</div>
   </div>
-  <button class="btn block ghost" data-go="comfort">Open the Calm corner</button>`; };
+  <button class="btn block ghost" data-go="comfort">See your comfort options</button>`; };
 ROUTES.prep.tab = 'home';
 
 /* ---------- Learn ---------- */
@@ -1510,14 +1513,9 @@ const samplePromise = (async () => { try { return await window.claude?.use?.('sa
 /* ---------- Comfort ---------- */
 let breathing = null;
 ROUTES.comfort = () => `
-  ${topbar('Calm corner', {backBtn:false})}
-  <p>Dental nerves are really common. Here are a few ways to feel ready before you come in.</p>
-  <div class="card breathe">
-    <span class="eyebrow">Box breathing · 1 minute</span>
-    <div class="orb-wrap"><div class="orb-ring"></div><div class="orb" id="orb"></div></div>
-    <div class="orb-label" id="orbLabel">Ready when you are</div>
-    <button class="btn" id="breathBtn">${icon('wind')} Start breathing</button>
-  </div>
+  ${topbar('Before your visit')}
+  <p>A few things that help people feel at ease before they come in.</p>
+  <button class="comfort-card" data-breathe><span class="bubble">${icon('wind')}</span><span><b>Take a one-minute breather</b><span class="small muted">A guided box-breathing exercise</span></span></button>
   <div class="signal"><span class="hand">Left<br>hand</span><div><b>Your stop signal</b><p class="small" style="opacity:.85">Raise your left hand anytime and we pause. No explaining needed.</p></div></div>
   <div class="card section"><span class="eyebrow">Sedation options</span>
     <p class="small">For bigger nerves or bigger procedures, just ask. We'll talk through what fits you.</p>
@@ -1540,34 +1538,41 @@ ROUTES.comfort = () => `
     <p class="small muted">These are the friendly faces who'll greet you, clean your teeth and cheer you on.</p>
   </div>
   <button class="comfort-card" data-go="plan"><span class="bubble">${icon('shield')}</span><span><b>Your comfort plan</b><span class="small muted">${Object.values(S.comfort).filter(Boolean).length} preferences shared with your care team</span></span></button>`;
-ROUTES.comfort.tab = 'comfort';
-ROUTES.comfort.after = v => {
-  const orb = $('#orb', v), label = $('#orbLabel', v), btn = $('#breathBtn', v);
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const phases = [['Breathe in', 1.9], ['Hold', 1.9], ['Breathe out', 1], ['Hold', 1]];
-  btn.onclick = () => {
-    if (breathing) { stopBreath(); return; }
-    let i = 0, cycles = 0, n = 4;
-    btn.innerHTML = icon('x') + ' Stop';
-    const tick = () => {
-      if (!document.contains(orb)) return stopBreath();
-      const [txt, scale] = phases[i];
-      label.textContent = txt; orb.textContent = n;
-      if (n === 4 && !reduce) orb.style.transform = `scale(${scale})`;
-      n--;
-      if (n === 0) { n = 4; i = (i + 1) % 4; if (i === 0 && ++cycles === 4) { stopBreath(); label.textContent = 'Nice work. Feel a little calmer?'; } }
+ROUTES.comfort.tab = 'home';
+function openBreathe() {
+  sheet(`<div class="breathe">
+      <span class="eyebrow">Box breathing · 1 minute</span>
+      <div class="orb-wrap"><div class="orb-ring"></div><div class="orb" id="orb"></div></div>
+      <div class="orb-label" id="orbLabel">Ready when you are</div>
+      <button class="btn" id="breathBtn">${icon('wind')} Start breathing</button>
+      <button class="link" data-close>Close</button>
+    </div>`, sh => {
+    const orb = $('#orb', sh), label = $('#orbLabel', sh), btn = $('#breathBtn', sh);
+    const phases = [['Breathe in', 1.9], ['Hold', 1.9], ['Breathe out', 1], ['Hold', 1]];
+    btn.onclick = () => {
+      if (breathing) { stopBreath(); return; }
+      let i = 0, cycles = 0, n = 4;
+      btn.innerHTML = icon('x') + ' Stop';
+      const tick = () => {
+        if (!document.contains(orb)) return stopBreath();
+        const [txt, scale] = phases[i];
+        label.textContent = txt; orb.textContent = n;
+        if (n === 4 && !REDUCE) orb.style.transform = `scale(${scale})`;
+        n--;
+        if (n === 0) { n = 4; i = (i + 1) % 4; if (i === 0 && ++cycles === 4) { stopBreath(); label.textContent = 'Nice work. Feel a little calmer?'; } }
+      };
+      tick(); breathing = setInterval(tick, 1000);
     };
-    tick(); breathing = setInterval(tick, 1000);
-  };
-  function stopBreath() { clearInterval(breathing); breathing = null; if (document.contains(btn)) { btn.innerHTML = icon('wind') + ' Start again'; orb.style.transform = ''; orb.textContent = ''; label.textContent = 'Ready when you are'; } }
-};
+    function stopBreath() { clearInterval(breathing); breathing = null; if (document.contains(btn)) { btn.innerHTML = icon('wind') + ' Start again'; orb.style.transform = ''; orb.textContent = ''; label.textContent = 'Ready when you are'; } }
+  });
+}
 
 ROUTES.plan = () => `
   ${topbar('Comfort plan')}
   <p class="muted">Pick what helps. Your hygienist and doctor see this before your visit, so you don't have to ask.</p>
   <div class="card">${COMFORT_OPTS.map(([k,t,d]) => `<div class="toggle-row"><div class="txt"><b>${t}</b><span>${d}</span></div><button class="switch" role="switch" data-k="${k}" aria-checked="${!!S.comfort[k]}" aria-label="${t}"></button></div>`).join('')}</div>
   <button class="btn block" id="sharePlan">Save and share with my team</button>`;
-ROUTES.plan.tab = 'comfort';
+ROUTES.plan.tab = 'profile';
 ROUTES.plan.after = v => {
   v.querySelectorAll('.switch').forEach(s => s.onclick = () => { const k = s.dataset.k; S.comfort[k] = !S.comfort[k]; s.setAttribute('aria-checked', S.comfort[k]); save(); });
   $('#sharePlan', v).onclick = () => { toast('Comfort plan shared with your care team'); back(); };
@@ -1631,7 +1636,7 @@ ROUTES.locations.after = v => v.addEventListener('click', e => {
 ROUTES.profile = () => {
   const a = nextAppt(), past = S.appts.filter(x => x.at <= Date.now());
   const R = [['week','1 week before'],['day','1 day before'],['hours','2 hours before'],['sms','Text messages too'],['recall','Cleaning due reminders','Every 6 months'],['news','Office news & Jaguars events','Occasional updates']];
-  return `${topbar('Profile')}
+  return `${topbar('You', {backBtn:false})}
   <div class="me-head"><span class="avatar">${esc(initials())}</span><div><h2 style="font-size:20px">${esc(S.user?.name || '')}</h2><span class="small muted">${esc(S.user?.email || 'Patient')}</span></div></div>
   <div class="section"><span class="eyebrow">Appointments</span>
     <div class="card list">${a ? `<div class="item"><span class="dot">${icon('cal')}</span><div class="txt"><b>${esc(a.reason)}</b><span>${fmtDay(a.at)}, ${fmtTime(a.at)}</span></div><span class="pill">Upcoming</span></div>` : `<div class="item"><span class="dot">${icon('cal')}</span><div class="txt"><b>No upcoming visits</b><span>Book one from the Book tab</span></div></div>`}
@@ -1652,7 +1657,7 @@ ROUTES.profile = () => {
   </div>
   <button class="btn line block" id="signOut">Sign out (restart demo)</button>`;
 };
-ROUTES.profile.tab = 'home';
+ROUTES.profile.tab = 'profile';
 ROUTES.profile.after = v => {
   v.querySelectorAll('.switch').forEach(s => s.onclick = () => { const k = s.dataset.k; S.reminders[k] = !S.reminders[k]; s.setAttribute('aria-checked', S.reminders[k]); save(); });
   $('#testRem', v).onclick = () => {
@@ -1705,7 +1710,7 @@ go(S.user ? 'home' : 'welcome', null, {tab:true});
     setTimeout(() => { booting = false; updateFab(); }, REDUCE ? 0 : 700);
   };
   splash.addEventListener('click', finish);           // tap to skip
-  setTimeout(finish, REDUCE ? 500 : 3100);
+  setTimeout(finish, REDUCE ? 500 : 3000);
 })();
 })();
 </script>
