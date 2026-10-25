@@ -496,6 +496,17 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
 @media (max-width:760px){.ask-fab{bottom:calc(84px + env(safe-area-inset-bottom,0px))}}
 .views,.tabbar{transition:opacity .9s var(--ease),transform 1s var(--ease)}
 .screen.booting .views,.screen.booting .tabbar{opacity:0;transform:scale(.97)}
+
+/* Assistant answers: action chips, follow-ups, typing dots */
+.msg-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip.act{display:inline-flex;align-items:center;gap:6px;background:var(--brand-soft);border-color:transparent;color:var(--brand);font-size:12.5px;padding:7px 12px;text-decoration:none}
+.msg-follow{display:flex;flex-direction:column;align-items:flex-start;gap:6px;max-width:92%;animation:inUp .5s var(--ease)}
+.msg-follow .chip{font-size:12.5px;padding:7px 12px;text-align:left}
+.msg.typing{display:flex;gap:5px;align-items:center;padding:15px 16px}
+.msg.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.4;animation:dot 1.1s ease-in-out infinite}
+.msg.typing i:nth-child(2){animation-delay:.15s}.msg.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,60%,100%{transform:none;opacity:.35}30%{transform:translateY(-4px);opacity:.9}}
+.pro{display:flex;gap:12px;align-items:center;border-radius:22px;padding:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 12%,var(--card-solid)),var(--card-solid));border:1px solid var(--glow);box-shadow:var(--shadow)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 .urgent-row{color:inherit}
@@ -547,7 +558,7 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
       <li>Book a visit and watch a reminder arrive</li>
       <li>Read Smile School cards, flip the myths, take the quizzes</li>
       <li>Play with the tools: tap a tooth, grow a cavity, brush away plaque</li>
-      <li>Ask the AI dental guide anything</li>
+      <li>Ask the built-in assistant (no AI, no cost per question)</li>
       <li>Try the breathing exercise and office tour</li>
       <li>Leave a Google review from the profile tab</li>
     </ul>
@@ -562,12 +573,12 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
       <nav class="tabbar" id="tabbar" aria-label="App sections">
         <button data-tab="home"><svg class="ico"><use href="#i-home"/></svg>Home</button>
         <button data-tab="book"><svg class="ico"><use href="#i-cal"/></svg>Book</button>
-        <button data-tab="ask"><svg class="ico"><use href="#i-chat"/></svg>Ask AI</button>
+        <button data-tab="ask"><svg class="ico"><use href="#i-chat"/></svg>Ask</button>
         <button data-tab="learn"><svg class="ico"><use href="#i-book"/></svg>Learn</button>
         <button data-tab="profile"><svg class="ico"><use href="#i-user"/></svg>You</button>
         <span class="tab-dot" id="tabDot" aria-hidden="true"></span>
       </nav>
-      <button class="ask-fab" id="askFab" hidden aria-label="Ask anything: open the AI dental assistant">
+      <button class="ask-fab" id="askFab" hidden aria-label="Ask anything: open the ASAP Assistant">
         <span class="fab-label">Ask anything!</span>
         <span class="fab-photo"><img src="img/dr-cueto.jpg" alt=""><i class="online"></i></span>
       </button>
@@ -963,7 +974,7 @@ ROUTES.home = () => {
   </div>
   <button class="btn block big" data-go="book">${a ? 'Book another visit' : 'Book a visit'}${icon('arrow')}</button>
   <div class="qa-row">
-    <button class="qa" data-go="ask"><span class="pebble">${icon('chat')}</span>Ask ASAP AI<small>Guidance, not diagnosis</small></button>
+    <button class="qa" data-go="ask"><span class="pebble">${icon('chat')}</span>Ask anything<small>Answers any time</small></button>
     <button class="qa" data-go="learn"><span class="pebble">${icon('tooth')}</span>Explore care<small>Lessons and tools</small></button>
     <button class="qa" data-breathe><span class="pebble">${icon('wind')}</span>Breathe<small>A one-minute reset</small></button>
   </div>
@@ -1181,7 +1192,7 @@ ROUTES.service = id => {
     <div class="quiz" id="quiz">${s.quiz.a.map((a,i) => `<button data-i="${i}" class="${q ? (i===s.quiz.c ? 'right' : '') : ''}" ${q ? 'disabled' : ''}>${a}</button>`).join('')}<p class="fb" id="fb">${q ? `<span style="color:var(--good)">Star earned.</span> ${s.quiz.why}` : ''}</p></div>
   </div>
   ${SERVICE_VIDEOS[id] ? `<div class="section"><span class="eyebrow">Watch</span>${SERVICE_VIDEOS[id].map(v => videoCard(videoById(v))).join('')}</div>` : ''}
-  <div style="display:flex;gap:10px"><button class="btn" style="flex:1" id="bookThis">Book this</button><button class="btn ghost" style="flex:1" data-go="ask" data-arg="${s.name}">Ask AI about it</button></div>`;
+  <div style="display:flex;gap:10px"><button class="btn" style="flex:1" id="bookThis">Book this</button><button class="btn ghost" style="flex:1" data-go="ask" data-arg="${s.id}">Ask about it</button></div>`;
 };
 ROUTES.service.tab = 'learn';
 ROUTES.service.after = (v, id) => {
@@ -1432,26 +1443,267 @@ TOOL_AFTER.sugar = v => {
   $('#sugarSlow', v).onclick = e => { sugarSlow = !sugarSlow; e.currentTarget.setAttribute('aria-checked', sugarSlow); upd(); };
 };
 
-/* ---------- Ask AI ---------- */
-const chat = { turns:[], busy:false, ctl:null };
-const RULES = () => `You are "ASAP AI", the friendly virtual dental guide inside the ASAP Dental Care patient app.
-
-About ASAP Dental Care: a Jacksonville, Florida dental practice whose mission is "improving lives with same-day dental care". It started in 2011 as an emergency dental practice and is now full-service for the whole family, with offices across North Florida: 103rd St (Westside, open 7 days: Mon-Sat 8 AM-7 PM, Sun 10 AM-6 PM, (904) 777-4622), Atlantic Blvd, Bonneval Rd, Dunn Ave, San Jose Blvd, Orange Park, Lake City and Crescent City. It is the Official Dental Partner of the Jacksonville Jaguars. Walk-ins are welcome and urgent cases are prioritized. Services: cleanings and checkups, fillings, crowns and bridges, root canals, extractions and oral surgery, wisdom teeth, dentures and partials (made in its own dental lab), implants, whitening, veneers, gum care, same-day emergency care and 3D X-rays (KaVo OP 3D). Sedation: nitrous oxide, oral sedation and IV sedation. Insurance: files most PPO claims for patients; financing through CareCredit, Cherry, Sunbit and LendingClub; annual membership plan for patients without insurance. The practice has performed over 229,000 procedures since 2011. The dentists include Dr. Nicholas Letteri, DMD (Tampa native, DMD from LECOM School of Dental Medicine); Dr. Shbeb, DDS (10+ years in general dentistry and oral surgery); Dr. Yevah Cueto, DMD (general dentist, Jacksonville native, University of Florida and LECOM graduate); Dr. Nadeem Ahmed, DMD (University of Florida College of Dentistry, advanced training at the Las Vegas Institute for Advanced Dental Studies); and Dr. Gregory Sabino, DDS. Don't invent any other details about them.
-
-Many people using this app feel anxious about the dentist. Be warm, calm, encouraging and plain-spoken, like a top-tier dental team that genuinely cares. Keep answers short: under 110 words, short paragraphs, or up to 4 bullet lines starting with "- ". No headings. You may use **bold** sparingly. The patient's preferred office is: ${myOffice().name}.
-
-You are not a dentist and cannot examine, diagnose or prescribe. Give general education, explain what to expect, and when someone needs an exam, suggest booking in the app's Book tab. If someone mentions facial swelling, fever with tooth pain, a knocked-out tooth, heavy bleeding that won't stop, or trouble breathing or swallowing, tell them clearly to call the office right away, and to call 911 or go to the ER for trouble breathing or swallowing. Never quote prices, exact insurance coverage or appointment availability; say the front desk can confirm.`;
-const SUGGEST = ['Does a filling hurt?','My tooth is sensitive to cold','How can I feel less nervous?','What happens at my first visit?','Is the 3D X-ray safe?'];
-const RED = /swell|swollen|fever|knock(ed)?[- ]?out|can'?t (breathe|swallow)|trouble (breathing|swallowing)|bleeding (won|that won|a lot)|abscess/i;
-const CANNED = [
-  [/hurt|pain|numb/i, 'Most treatments here start with numbing, so what you feel is pressure, not pain. If anything feels sharp, raise your left hand and your team will stop right away.\n\nIf you\'re hurting right now, book a visit in the Book tab, or call the office for an emergency spot.'],
-  [/nervous|anxious|scared|afraid|anxiety/i, 'You\'re in good company. Lots of our patients feel the same way. A few things that help:\n- Try the breathing exercise in the Comfort tab\n- Set up your comfort plan so the team knows what you need\n- Bring headphones\n- Agree on a stop signal (raise your left hand)'],
-  [/cold|sensitive|sensitivity/i, 'Sensitivity to cold is common. It can come from worn enamel, gum recession, a cavity or a cracked filling.\n- Try a sensitivity toothpaste for 2 weeks\n- Use a soft brush and gentle pressure\n\nIf it lasts longer or is getting worse, book a checkup so the doctor can find the cause.'],
-  [/first visit|new patient|what happens/i, 'Your first visit is mostly getting to know you:\n- Check in and a quick health review\n- X-rays (they take seconds)\n- A cleaning if there\'s time\n- The doctor\'s exam and a plan, explained in plain English'],
-  [/x-?ray|radiation|3d/i, 'Our 3D X-ray is an open machine with no tunnel. You stand still and bite a guide for a few seconds. Digital dental X-rays use very low doses. Tell the team if you\'re pregnant or might be.'],
+/* ---------- Ask: built-in assistant ----------
+   Answers come from a catalog written for ASAP. No AI service, no cost per question.
+   Each entry: q (how it shows as a suggestion), k (words and phrases that point to it),
+   a (answer; "- " lines become bullets), act (buttons under the answer), f (follow-up entry ids). */
+const chat = { turns:[], busy:false };
+const CALL = () => `Call ${myOffice().name.split(' · ')[0]} at **${officePhone()}**.`;
+const KB_GROUPS = [
+['Your visit', [
+  {id:'first-visit', q:'What happens at my first visit?', k:['first visit','new patient','first time','first appointment','what happens','what to expect','expect'],
+   a:`Your first visit is mostly getting to know you:\n- Check in and a quick health history\n- X-rays (they take seconds)\n- A cleaning if there's time\n- The doctor's exam, and a plan explained in plain English\n\nNo surprises: we'll tell you what we see and what your options are before anything happens.`,
+   act:[['go','prep','How to get ready'],['book']], f:['bring','nervous']},
+  {id:'visit-length', q:'How long does a visit take?', k:['how long','long does','length','minutes','hours does','time does it take','take long'],
+   a:`Most checkups and cleanings take 45 to 60 minutes. A first visit can run a little longer because we take X-rays and go over your health history. Treatments vary, and each lesson in Smile School lists the usual time in the chair.`,
+   act:[['go','learn','Browse lessons']], f:['first-visit']},
+  {id:'bring', q:'What should I bring?', k:['bring','id','insurance card','paperwork','forms','documents'],
+   a:`Please bring:\n- A photo ID\n- Your insurance card, if you have one\n- A list of your medications\n- Headphones, if music helps you relax`,
+   act:[['go','prep','Get ready for your visit']], f:['insurance']},
+  {id:'walk-in', q:'Do you take walk-ins?', k:['walk in','walk ins','walkin','same day','today','no appointment','come in now','asap','right away','soon as possible'],
+   a:`Yes. Walk-ins are welcome, and urgent problems like pain or a broken tooth go to the front of the line. If you can, call ahead so we can get ready for you. ${'${CALL}'}`,
+   act:[['call'],['book']], f:['hours','toothache']},
+  {id:'hours', q:'What are your hours?', k:['hours','open','close','closing','weekend','saturday','sunday','evening','tonight'],
+   a:() => `${myOffice().name}: ${myOffice().hours || 'please call for current hours'}.\n\nOur 103rd St office is open 7 days a week: Mon–Sat 8 AM–7 PM and Sun 10 AM–6 PM. Holiday hours can change, so it's always good to call ahead.`,
+   act:[['go','locations','All offices'],['call']], f:['walk-in','locations']},
+  {id:'locations', q:'Where are your offices?', k:['where','location','locations','address','directions','office near','closest','near me'],
+   a:`We have offices across Jacksonville and North Florida, including 103rd St, Atlantic Blvd, Bonneval Rd, Dunn Ave and San Jose Blvd, plus Orange Park, Lake City and Crescent City. You can see addresses, phone numbers and directions on the offices page, and pick your home office there.`,
+   act:[['go','locations','See our offices']], f:['hours']},
+  {id:'book-how', q:'How do I book or reschedule?', k:['book','schedule','appointment','reschedule','change my appointment','make an appointment','set up'],
+   a:`Tap **Book** at the bottom of the screen. Pick what you need, choose a doctor or first available, then a day and time. It takes about 30 seconds. To change a visit, tap Reschedule on your home screen, or call the office.`,
+   act:[['book']], f:['cancel','walk-in']},
+  {id:'cancel', q:'What if I need to cancel or I\'m running late?', k:['cancel','late','running late','miss','missed','can t make it','cant make it'],
+   a:() => `Life happens. Just let us know as early as you can so we can help another patient or find you a new time. ${CALL()}`,
+   act:[['call']], f:['book-how']},
+  {id:'family', q:'Do you see kids and families?', k:['kids','child','children','son','daughter','family','teen','baby','toddler'],
+   a:`We care for the whole family. For young children, please call first so we can match you with the right doctor and time. A child's first dental visit is recommended by their first birthday, or when the first tooth comes in.`,
+   act:[['call'],['book']], f:['first-visit']},
+]],
+['Cost & insurance', [
+  {id:'insurance', q:'Do you take my insurance?', k:['insurance','ppo','hmo','medicaid','medicare','coverage','covered','delta','cigna','aetna','metlife','guardian','humana','united','benefits','in network','out of network'],
+   a:() => `We file most PPO insurance claims for you, and we're happy to check your benefits before treatment so there are no surprises. Plans vary a lot, so the front desk can confirm exactly what yours covers. ${CALL()}`,
+   act:[['call'],['go','why','Insurance & financing']], f:['cost','financing','no-insurance']},
+  {id:'cost', q:'How much will it cost?', k:['cost','price','how much','expensive','afford','fee','charge','estimate','pricing','quote'],
+   a:`Every mouth is different, so we give you a clear estimate after your exam, before any treatment starts. You'll always know the cost first. If you have insurance, we'll check your benefits. If cost is a worry, ask about monthly payment plans.`,
+   act:[['go','why','Insurance & financing'],['book']], f:['financing','insurance','no-insurance']},
+  {id:'financing', q:'Do you offer payment plans?', k:['payment plan','payment plans','financing','finance','monthly','carecredit','care credit','cherry','sunbit','lendingclub','pay over time','credit'],
+   a:`Yes. We offer monthly payments through CareCredit, Cherry, Sunbit and LendingClub. Sunbit covers treatment from $60 to $20,000. The front desk can help you apply in a few minutes.`,
+   act:[['go','why','Insurance & financing'],['call']], f:['cost']},
+  {id:'no-insurance', q:'I don\'t have insurance. What are my options?', k:['no insurance','dont have insurance','without insurance','uninsured','membership','plan without'],
+   a:`You can still get great care. Ask about our annual membership plan, an alternative to insurance for preventive care. Monthly payment options are available for bigger treatments too.`,
+   act:[['go','why','Insurance & financing'],['call']], f:['financing','cost']},
+]],
+['Feeling nervous', [
+  {id:'nervous', q:'How can I feel less nervous?', k:['nervous','anxious','anxiety','scared','afraid','fear','phobia','panic','worried','terrified','stress','dread'],
+   a:`You're in good company. Lots of our patients feel the same way. A few things that help:\n- Try the one-minute breathing exercise\n- Set up your comfort plan so the team knows what you need\n- Bring headphones and your favorite playlist\n- Use the stop signal: raise your left hand anytime and we pause`,
+   act:[['breathe'],['go','plan','Set up my comfort plan']], f:['sedation','stop-signal','embarrassed']},
+  {id:'sedation', q:'What sedation options do you have?', k:['sedation','sedated','sedate','put me to sleep','asleep','knock me out','iv','sleep dentistry','relax me'],
+   a:`We offer three levels:\n- **Nitrous oxide** (laughing gas): you stay awake and relaxed, and it wears off within minutes\n- **Oral sedation**: a pill before your visit to take the edge off\n- **IV sedation**: deeper relaxation for longer procedures like implants or wisdom teeth\n\nThe doctor will help you pick what fits you and your treatment.`,
+   act:[['video','sedation'],['go','comfort','Comfort options']], f:['laughing-gas','ride']},
+  {id:'laughing-gas', q:'Is laughing gas safe?', k:['laughing gas','nitrous','gas'],
+   a:`Nitrous oxide has been used in dentistry for a long time. You breathe it through a small nose mask, you stay awake and can talk, and you just feel calm and a little floaty. It wears off within minutes after the mask comes off, and many people can drive themselves home.`,
+   act:[['video','sedation']], f:['sedation']},
+  {id:'ride', q:'Do I need a ride after sedation?', k:['ride','drive home','driver','drive myself','someone to drive'],
+   a:`For oral or IV sedation, yes. Please plan on a ride home and take it easy the rest of the day. With laughing gas alone, many people can drive themselves once it wears off. The team will tell you for sure before your visit.`,
+   act:[], f:['sedation']},
+  {id:'stop-signal', q:'Can I take breaks during treatment?', k:['break','breaks','stop','pause','stop signal','control'],
+   a:`Absolutely. Raise your left hand anytime and we'll pause. No explaining needed. You can also add "Let me take breaks" to your comfort plan so your team knows ahead of time.`,
+   act:[['go','plan','My comfort plan']], f:['nervous']},
+  {id:'gag', q:'I have a strong gag reflex. Can you help?', k:['gag','gagging','gag reflex','throw up','vomit'],
+   a:`Yes, and you're not alone. Let your team know so they can help:\n- Breathe slowly through your nose\n- Ask for breaks, and use your stop signal\n- Smaller X-ray sensors and numbing gel can help\n- Sedation is an option for some people`,
+   act:[['go','plan','Add to my comfort plan']], f:['sedation']},
+  {id:'embarrassed', q:'It\'s been years since I saw a dentist.', k:['years','long time','embarrassed','ashamed','haven t been','havent been','avoided','neglected','bad teeth','judge','judged'],
+   a:`No judgment here, ever. We see people every day who haven't been in years, and we're just glad you're here. We'll start with a gentle exam, show you what we see, and make a plan at a pace that works for you.`,
+   act:[['book']], f:['first-visit','nervous']},
+]],
+['Symptoms', [
+  {id:'toothache', q:'I have a toothache. What should I do?', k:['toothache','tooth ache','tooth hurts','teeth hurt','killing me','throbbing','aching','ache'], w:['hurt','hurts','hurting','pain','painful','sore'],
+   a:() => `We're sorry you're hurting. We see urgent problems the same day whenever we can. ${CALL()}\n\nUntil then:\n- Rinse with warm salt water\n- An over-the-counter pain reliever can help, as directed on the label\n- A cold compress on your cheek can ease soreness\n\nIf you have swelling in your face, a fever, or trouble swallowing or breathing, get care right away.`,
+   act:[['call'],['book']], f:['swelling','sensitivity']},
+  {id:'swelling', q:'My face or gums are swollen.', k:['swelling','swollen','swell','abscess','infection','pus','fever','puffy'],
+   a:() => `Swelling can mean an infection that needs care soon. ${CALL()} If the swelling is spreading, or you have a fever or trouble swallowing or breathing, call 911 or go to the ER.`,
+   act:[['call']], f:['toothache'], urgent:true},
+  {id:'knocked-out', q:'My tooth got knocked out!', k:['knocked out','knocked','tooth fell out','tooth came out','lost a tooth','avulsed'],
+   a:() => `Act fast. A knocked-out tooth can often be saved within about an hour:\n- Pick it up by the top (the crown), not the root\n- If it's dirty, rinse it gently. Don't scrub\n- Keep it in milk, or tucked in your cheek\n- ${CALL()}`,
+   act:[['call']], f:['broken'], urgent:true},
+  {id:'broken', q:'I chipped or broke a tooth.', k:['chipped','chip','broke','broken','cracked','crack','fractured','snapped'],
+   a:() => `Save any pieces if you can, rinse with warm water, and cover sharp edges with sugar-free gum or dental wax. Small chips can often be smoothed or bonded in one visit. Bigger breaks may need a crown. ${CALL()}`,
+   act:[['call'],['lesson','crowns','Read: Crowns']], f:['toothache']},
+  {id:'lost-filling', q:'My filling or crown fell out.', k:['filling fell','filling fell out','crown fell','lost filling','lost crown','lost my crown','lost my filling','crown came off','came off','fell off','loose crown','cap fell'], w:['fell','fell out'],
+   a:() => `Keep the crown if you have it, and avoid chewing on that side. Dental cement from a pharmacy can hold a crown temporarily. Don't use super glue. We can usually fix this quickly. ${CALL()}`,
+   act:[['call'],['book']], f:['sensitivity']},
+  {id:'sensitivity', q:'My tooth is sensitive to cold or hot.', k:['sensitive','sensitivity','cold','hot','ice','zing','sharp pain when'],
+   a:`Sensitivity is common. It can come from worn enamel, gums pulling back, a cavity or a cracked filling.\n- Try a sensitivity toothpaste for 2 weeks\n- Use a soft brush and gentle pressure\n\nIf it lingers, gets worse, or hurts on its own, book a checkup so the doctor can find the cause.`,
+   act:[['book'],['tool','cavity','How deep is a cavity?']], f:['toothache','fillings']},
+  {id:'bleeding-gums', q:'Why do my gums bleed?', k:['bleed','bleeding','gums bleed','bleeding gums','blood','pink in the sink','gum disease','gingivitis','periodontal'],
+   a:`Bleeding gums usually mean they're inflamed from plaque along the gumline. Keep brushing and flossing gently every day. It usually improves in 1 to 2 weeks. If it doesn't, or your gums are pulling back, a deep cleaning may help.`,
+   act:[['lesson','cleaning','Read: Cleanings'],['video','deep']], f:['deep-cleaning','flossing']},
+  {id:'bad-breath', q:'How do I fix bad breath?', k:['bad breath','breath','halitosis','smell','smells'],
+   a:`Most bad breath starts in the mouth:\n- Brush twice a day, and brush your tongue too\n- Floss daily to clear food between teeth\n- Drink water, and avoid tobacco\n\nIf it sticks around, a cleaning and checkup can rule out gum disease or a cavity.`,
+   act:[['book']], f:['bleeding-gums']},
+  {id:'jaw', q:'My jaw hurts or clicks.', k:['jaw','tmj','tmd','click','clicking','popping','lockjaw','jaw pain'],
+   a:`Jaw soreness or clicking can come from clenching, grinding or the jaw joint itself. Soft foods, a warm compress and resting your jaw can help for now. If it keeps up or limits how wide you can open, book a visit so the doctor can take a look.`,
+   act:[['book']], f:['grinding']},
+  {id:'grinding', q:'I grind my teeth at night.', k:['grind','grinding','clench','clenching','bruxism','night guard','mouth guard','nightguard'],
+   a:`Grinding can wear teeth down and make your jaw sore. A custom night guard protects your teeth while you sleep. The doctor can check for wear and fit one for you.`,
+   act:[['book']], f:['jaw']},
+  {id:'wisdom-pain', q:'My wisdom tooth hurts.', k:['wisdom tooth hurts','wisdom teeth hurt','wisdom tooth pain','wisdom pain','coming in','back tooth','third molar'], w:['wisdom','hurts','pain','sore'],
+   a:() => `Wisdom teeth often hurt when there isn't room for them to come in, or when the gum over them gets irritated. Rinse with warm salt water and keep the area clean. If you have swelling or trouble opening your mouth, call us soon. ${CALL()}`,
+   act:[['video','wisdom'],['book']], f:['extraction','dry-socket']},
+  {id:'mouth-sore', q:'I have a sore in my mouth.', k:['sore','canker','ulcer','blister','spot','white patch','lump','bump'],
+   a:`Most mouth sores, like canker sores, heal on their own in 1 to 2 weeks. Avoid spicy or acidic foods while they heal. If a sore lasts longer than 2 weeks, keeps coming back, or you notice a lump or patch, book a visit so we can check it.`,
+   act:[['book']], f:[]},
+]],
+['Treatments', [
+  {id:'cleaning', q:'How often do I need a cleaning?', k:['cleaning','cleanings','checkup','check up','hygienist'],
+   a:`Most people do best with a cleaning and checkup every 6 months. It catches small problems while they're still small and easy to fix. Some people with gum disease need cleanings more often.`,
+   act:[['lesson','cleaning','Read: Cleanings'],['book']], f:['deep-cleaning','first-visit']},
+  {id:'deep-cleaning', q:'What is a deep cleaning?', k:['deep cleaning','scaling','root planing','srp'],
+   a:`A deep cleaning (scaling and root planing) cleans below the gumline, where tartar and bacteria hide when gums are inflamed. We numb the area so you're comfortable. It helps your gums heal and tighten back around your teeth.`,
+   act:[['video','deep'],['lesson','cleaning','Read: Cleanings']], f:['bleeding-gums']},
+  {id:'fillings', q:'Does a filling hurt?', k:['filling','fillings','filled','cavity','cavities','decay','hole in my tooth'],
+   a:`We numb the area first, so you feel pressure and vibration, not pain. Most people say the numbing pinch is the worst part, and it lasts a second. Fillings are tooth-colored and usually done in one visit.`,
+   act:[['lesson','fillings','Read: Fillings'],['tool','cavity','See how cavities grow']], f:['after-filling','sensitivity']},
+  {id:'crowns', q:'What is a crown?', k:['crown','crowns','cap','caps'],
+   a:`A crown is a custom cap that covers and protects a weak or cracked tooth. It usually takes two visits: one to shape the tooth and take an impression, and one to place your finished crown. Ours are made in our own dental lab.`,
+   act:[['lesson','crowns','Read: Crowns & Bridges']], f:['bridges','broken']},
+  {id:'bridges', q:'What is a bridge?', k:['bridge','bridges','gap','missing tooth','missing teeth'],
+   a:`A bridge fills the gap from a missing tooth. A false tooth is held in place by crowns on the teeth beside it. Implants are another option for replacing a tooth, and the doctor can walk you through both.`,
+   act:[['lesson','crowns','Read: Crowns & Bridges'],['lesson','implants','Read: Implants']], f:['implants']},
+  {id:'rootcanal', q:'Do root canals hurt?', k:['root canal','root canals','rootcanal','nerve','endodontic'],
+   a:`For most people it feels about like a filling. The toothache that brings you in is usually much worse than the treatment, and the treatment is what relieves it. A root canal saves your natural tooth, and a crown usually protects it afterward.`,
+   act:[['video','rootcanal'],['lesson','rootcanal','Read: Root Canals']], f:['after-rootcanal']},
+  {id:'extraction', q:'What happens when a tooth is pulled?', k:['extraction','extract','pulled','pull','pull a tooth','remove a tooth','removed','take out'],
+   a:`We numb the area so you feel pressure, not sharp pain. The tooth is gently loosened and removed, then we place gauze and go over aftercare. Mild soreness for a few days is normal. We'll also talk about options to replace the tooth if needed.`,
+   act:[['lesson','extractions','Read: Extractions'],['video','wisdom']], f:['after-extraction','implants']},
+  {id:'wisdom', q:'Do I need my wisdom teeth out?', k:['wisdom teeth','wisdom tooth','wisdom teeth removal','remove wisdom','wisdom teeth out','pull wisdom','impacted','asleep'],
+   a:`Not always. If they come in straight and you can keep them clean, they can stay. Many mouths don't have room, though, and that can cause pain, crowding or infection. A 3D X-ray shows exactly where they sit. Our oral surgery team removes them, with sedation options.`,
+   act:[['video','wisdom'],['book']], f:['sedation','after-extraction']},
+  {id:'implants', q:'What is a dental implant?', k:['implant','implants','replace a tooth','tooth replacement','screw','post'],
+   a:`An implant is a small post placed in the jaw that acts like a tooth root. Once it heals, a custom crown goes on top. It looks, feels and works like a natural tooth, and it doesn't rely on the teeth next to it.`,
+   act:[['video','immediate'],['lesson','implants','Read: Implants']], f:['same-day-implant','bridges']},
+  {id:'same-day-implant', q:'Can I get an implant the same day?', k:['same day implant','immediate implant','same day','immediate','teeth in a day'],
+   a:`Sometimes. With an immediate implant, the post can be placed right after a tooth is removed. Whether it's right for you depends on your bone and gums, which the doctor checks with a 3D X-ray.`,
+   act:[['video','immediate'],['video','ahmed']], f:['implants']},
+  {id:'dentures', q:'What kind of dentures do you offer?', k:['denture','dentures','false teeth','full set','plate'],
+   a:`We offer full dentures, partial dentures, overdentures that snap onto implants, and fixed dentures that stay in. Ours are made and adjusted by our own lab team, which helps with fit and quick fixes.`,
+   act:[['lesson','dentures','Read: Dentures'],['video','fixed']], f:['partials','implant-dentures','denture-care']},
+  {id:'partials', q:'What is a partial denture?', k:['partial','partials','partial denture'],
+   a:`A partial denture fills gaps when you still have some of your natural teeth. It clips onto the teeth you have and comes out for cleaning.`,
+   act:[['video','partial']], f:['dentures']},
+  {id:'implant-dentures', q:'Can dentures snap in or stay in place?', k:['snap','snap in','snap on','overdenture','overdentures','fixed denture','fixed dentures','permanent dentures','loose dentures','stay in place','loose','slip','slipping','falls out'], w:['denture','dentures'],
+   a:`Yes. Overdentures snap onto a few implants so they don't slip, and you can still take them out to clean. Fixed dentures are anchored on implants and stay in all the time. The doctor can help you decide which fits you best.`,
+   act:[['video','over'],['video','fixed']], f:['dentures','implants']},
+  {id:'whitening', q:'How does teeth whitening work?', k:['whiten','whitening','white','bleach','brighter','stains','yellow'],
+   a:`Professional whitening safely lifts stains from coffee, tea and time, with stronger and more even results than store-bought strips. Some people feel mild sensitivity for a day or two. We check that your teeth are healthy enough to whiten first.`,
+   act:[['video','whitening'],['lesson','whitening','Read: Whitening']], f:['after-whitening','veneers']},
+  {id:'veneers', q:'What are veneers?', k:['veneer','veneers','smile makeover','cosmetic'],
+   a:`Veneers are thin, custom shells bonded to the front of your teeth to change their color, shape or size. They're a popular way to refresh a smile. A cosmetic consult is the best place to start.`,
+   act:[['book']], f:['whitening']},
+  {id:'xray', q:'Are dental X-rays safe?', k:['xray','x ray','xrays','x rays','radiation','3d','scan','ct','cbct'],
+   a:`Modern digital dental X-rays use very low doses. Our 3D scanner is an open machine with no tunnel: you stand still and bite a guide for a few seconds. Let the team know if you're pregnant or might be.`,
+   act:[['lesson','xray','Read: 3D X-Rays']], f:['pregnant']},
+  {id:'pregnant', q:'Can I see the dentist while pregnant?', k:['pregnant','pregnancy','expecting','breastfeeding','nursing'],
+   a:`Yes. Checkups and cleanings are an important part of a healthy pregnancy, since pregnancy can make gums more sensitive. Just let us know you're pregnant so we can plan X-rays and treatment around it.`,
+   act:[['book']], f:['xray','bleeding-gums']},
+]],
+['Aftercare', [
+  {id:'after-extraction', q:'How do I care for my mouth after an extraction?', k:['after extraction','after my tooth','after pulling','healing','gauze','socket','after surgery'],
+   a:`For the first few days:\n- Bite gently on gauze to stop bleeding\n- Skip straws, smoking and spitting hard. They can pull out the healing clot\n- Eat soft foods and chew on the other side\n- Rinse gently with warm salt water after the first day`,
+   act:[['lesson','extractions','Read: Extractions']], f:['dry-socket']},
+  {id:'dry-socket', q:'What is dry socket?', k:['dry socket','socket pain','clot'],
+   a:() => `Dry socket happens when the blood clot in an extraction site comes out too early, leaving the bone exposed. It usually causes throbbing pain a few days after the extraction. If that happens, call us and we can soothe it quickly. ${CALL()}`,
+   act:[['call']], f:['after-extraction']},
+  {id:'after-filling', q:'When can I eat after a filling?', k:['eat after','after filling','after a filling','numb','numbness','still numb','when can i eat'],
+   a:`Wait until the numbness wears off, usually a few hours, so you don't bite your cheek or tongue. Tooth-colored fillings are hard before you leave, so you can chew normally after that. A little sensitivity for a few days is normal.`,
+   act:[], f:['fillings','sensitivity']},
+  {id:'after-rootcanal', q:'What should I expect after a root canal?', k:['after root canal','after my root canal','after the root canal'],
+   a:`The tooth may feel tender for a few days, and over-the-counter pain relief usually helps. Avoid chewing hard foods on that side until your crown is placed, since the tooth is more fragile until then.`,
+   act:[['lesson','rootcanal','Read: Root Canals']], f:['crowns']},
+  {id:'after-whitening', q:'What should I avoid after whitening?', k:['after whitening','after bleaching','keep white','stay white'],
+   a:`For a couple of days, go easy on coffee, tea, red wine and other staining foods. Some sensitivity is normal and fades within a day or two. Brushing and regular cleanings help keep your smile bright.`,
+   act:[], f:['whitening']},
+  {id:'denture-care', q:'How do I take care of dentures?', k:['denture care','clean dentures','clean my dentures','soak','denture cleaning'],
+   a:`- Rinse them after eating\n- Brush them daily with a soft brush and denture cleaner, not regular toothpaste\n- Soak them overnight so they keep their shape\n- Bring them in if they rub or feel loose. Quick adjustments help a lot`,
+   act:[['lesson','dentures','Read: Dentures']], f:['dentures']},
+]],
+['Home care', [
+  {id:'brushing', q:'How should I brush my teeth?', k:['brush','brushing','toothbrush','how to brush','technique'],
+   a:`Brush twice a day for 2 full minutes with a soft brush and fluoride toothpaste. Angle the bristles 45° toward the gumline and use gentle circles. Don't forget your tongue. Replace your brush every 3 to 4 months.`,
+   act:[['tool','brush','Play: Brush the Plaque']], f:['flossing','electric']},
+  {id:'flossing', q:'Do I really need to floss?', k:['floss','flossing','water flosser','waterpik','between teeth'],
+   a:`Yes. Flossing cleans between teeth, where your brush can't reach and where many cavities and gum problems start. Once a day is enough. A water flosser or floss picks work well too, if they make it easier to stick with.`,
+   act:[], f:['bleeding-gums','brushing']},
+  {id:'electric', q:'Is an electric toothbrush better?', k:['electric','electric toothbrush','sonic','oral b','sonicare','manual'],
+   a:`Both work well when you brush for 2 minutes with good technique. Many people find an electric brush makes it easier, especially ones with a built-in timer. The best brush is the one you'll use twice a day.`,
+   act:[], f:['brushing']},
+  {id:'mouthwash', q:'Should I use mouthwash?', k:['mouthwash','mouth wash','rinse','listerine'],
+   a:`Mouthwash can freshen breath and help a bit with plaque, but it doesn't replace brushing and flossing. A fluoride rinse can help if you get a lot of cavities. Ask your hygienist which one fits you.`,
+   act:[], f:['brushing','fluoride']},
+  {id:'fluoride', q:'Is fluoride good for my teeth?', k:['fluoride','toothpaste'],
+   a:`Yes. Fluoride strengthens enamel and helps repair the earliest signs of decay. A fluoride toothpaste twice a day is the simplest way to protect your teeth.`,
+   act:[], f:['brushing']},
+  {id:'sugar', q:'How does sugar and soda affect my teeth?', k:['sugar','soda','after soda','candy','sweets','juice','coffee','energy drink','diet','snack','snacking'],
+   a:`It's less about how much sugar and more about how often. Each sugary snack or sip feeds bacteria that make acid for about 20 minutes. Have sweets with meals, sip water between, and wait about 30 minutes after soda before you brush.`,
+   act:[['tool','sugar','Play: Sugar Clock']], f:['brushing']},
+  {id:'smoking', q:'How does smoking or vaping affect my teeth?', k:['smoke','smoking','vape','vaping','cigarette','tobacco','nicotine','dip','chew'],
+   a:`Smoking and vaping raise your risk of gum disease, stains, bad breath and slower healing after treatment. They also make some procedures, like implants, less likely to succeed. We're happy to help, without judgment, whenever you're ready to cut back.`,
+   act:[['book']], f:['bleeding-gums']},
+]],
+['About ASAP', [
+  {id:'doctors', q:'Who are the dentists?', k:['who will see me','who are the doctors','who are the dentists','your dentists','your doctors','team','staff'], w:['dentist','dentists','doctor','doctors','dr'],
+   a:`Our doctors include Dr. Yevah Cueto, Dr. Nicholas Letteri, Dr. Shbeb, Dr. Nadeem Ahmed and Dr. Gregory Sabino. You can meet them, read their backgrounds, and book with a specific doctor.`,
+   act:[['go','comfort','Meet the team'],['book']], f:['why-asap']},
+  {id:'why-asap', q:'Why should I choose ASAP?', k:['why asap','why should','experience','reviews','good dentist','best','trust','rating'],
+   a:`ASAP started in 2011 as an emergency practice, so seeing you quickly is in our DNA. Since then, we've done over 229,000 procedures. We have specialists under one roof, our own dental lab, sedation options and a 7-day office. Patients rate us 4.7+ stars on Google.`,
+   act:[['go','why','Why ASAP']], f:['doctors','jaguars']},
+  {id:'jaguars', q:'Are you really the Jaguars\' dentist?', k:['jaguars','jags','nfl','football','duval'],
+   a:`Yes! ASAP Dental Care is the Official Dentist of the Jacksonville Jaguars, and our team shows up for Jacksonville on and off the field.`,
+   act:[['go','why','Why ASAP']], f:['why-asap']},
+  {id:'lab', q:'Do you have your own dental lab?', k:['lab','laboratory','technician','made in house','in house'],
+   a:`Yes. Our own lab technicians make dentures, partials and crowns. Having the lab in-house makes fittings and adjustments faster.`,
+   act:[['lesson','dentures','Read: Dentures']], f:['dentures','crowns']},
+  {id:'human', q:'Can I talk to a real person?', k:['real person','human','talk to someone','speak to','call','phone','contact','receptionist','front desk','dentist now'],
+   a:() => `Of course. ${CALL()} Our team is happy to help.\n\nThis assistant answers common questions with answers written by our team. 24/7 chat with a dentist is coming soon with ASAP Pro.`,
+   act:[['call']], f:['hours']},
+  {id:'about-bot', q:'Who am I talking to?', k:['who are you','are you real','robot','bot','ai','computer','assistant'],
+   a:`I'm the ASAP Assistant. I answer common questions with answers written by the ASAP Dental Care team. I'm not a dentist and can't diagnose anything. For anything about your own mouth, a quick exam is the best next step.`,
+   act:[['book']], f:['human']},
+]],
 ];
-const fallback = q => (CANNED.find(([r]) => r.test(q)) || [0, 'Good question! I can share general info about treatments, what to expect, and how to feel more comfortable. For anything specific to your mouth, the best next step is a quick exam. You can book one in the Book tab.'])[1];
-function fmtAI(t) {
+const KB = KB_GROUPS.flatMap(([, list]) => list);
+const kbById = id => KB.find(x => x.id === id);
+const SMALLTALK = [
+  [/^(hi|hey|hello|yo|good (morning|afternoon|evening))\b/, () => `Hi ${first()}! What can I help you with? You can type a question or tap one below.`],
+  [/\b(thank|thanks|thx|appreciate)\b/, () => `You're so welcome. Anything else I can help with?`],
+  [/^(ok|okay|cool|great|got it|sounds good)\b/, () => `Great! I'm here whenever you have another question.`],
+];
+const SUGGEST = ['first-visit', 'nervous', 'insurance', 'toothache', 'fillings', 'sedation', 'whitening', 'implants'];
+const RED = /swell|swollen|fever|knock(ed)?[- ]?out|can'?t (breathe|swallow)|trouble (breathing|swallowing)|bleeding (won|that won|a lot)|abscess|pus/i;
+
+// Scoring: phrases count most, then whole words, then word stems ("implants" finds "implant"); each word counts once.
+function normQ(t) { return ' ' + t.toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim() + ' '; }
+function matchKB(text) {
+  const n = normQ(text), words = n.trim().split(' ');
+  const hit = (k, used) => {
+    if (k.includes(' ')) return n.includes(' ' + k + ' ') || n.includes(' ' + k) ? 'phrase' : null;
+    let i = words.indexOf(k);
+    if (i >= 0 && !used.has(i)) { used.add(i); return 'word'; }
+    if (k.length >= 4) { i = words.findIndex((w, j) => !used.has(j) && w.length >= 4 && (w.startsWith(k) || k.startsWith(w))); if (i >= 0) { used.add(i); return 'stem'; } }
+    return null;
+  };
+  let best = null, bestScore = 0;
+  for (const e of KB) {
+    const used = new Set(); let sc = 0;
+    for (const k of e.k) { const h = hit(k, used); sc += h === 'phrase' ? 3 + k.split(' ').length * .5 : h === 'word' ? 2 : h === 'stem' ? 1.4 : 0; }
+    for (const k of e.w || []) { const h = hit(k, used); sc += h === 'phrase' ? 1.5 : h ? .8 : 0; }   // weak hints: generic words like "pain"
+    if (normQ(e.q) === n) sc += 10;
+    if (e.urgent && sc >= 2) sc += 2;
+    if (sc > bestScore) { best = e; bestScore = sc; }
+  }
+  return bestScore >= .8 ? best : null;
+}
+function fmtAns(t) {
   const lines = esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').split('\n');
   let html = '', inList = false, para = [];
   const flush = () => { if (para.length) { html += `<p>${para.join(' ')}</p>`; para = []; } };
@@ -1462,53 +1714,78 @@ function fmtAI(t) {
   flush(); if (inList) html += '</ul>';
   return html;
 }
+const answerText = e => (typeof e.a === 'function' ? e.a() : e.a).replace('${CALL}', CALL());
+function actionsHTML(acts) {
+  const b = acts.map(([kind, x, label]) => {
+    if (kind === 'book') return `<button class="chip act" data-go="book">${icon('cal', 'ico sm')} Book a visit</button>`;
+    if (kind === 'call') return `<a class="chip act" href="tel:${officePhone().replace(/\D/g, '')}">${icon('phone', 'ico sm')} ${officePhone()}</a>`;
+    if (kind === 'breathe') return `<button class="chip act" data-breathe>${icon('wind', 'ico sm')} Breathe with me</button>`;
+    if (kind === 'video') return `<button class="chip act" data-vid="${x}">${icon('play', 'ico sm')} Watch: ${videoById(x).t}</button>`;
+    if (kind === 'lesson') return `<button class="chip act" data-go="service" data-arg="${x}">${icon('book', 'ico sm')} ${label}</button>`;
+    if (kind === 'tool') return `<button class="chip act" data-go="tool" data-arg="${x}">${icon('spark', 'ico sm')} ${label}</button>`;
+    return `<button class="chip act" data-go="${x}">${icon('next', 'ico sm')} ${label}</button>`;
+  }).join('');
+  return b ? `<div class="msg-acts">${b}</div>` : '';
+}
+const followHTML = ids => ids.length ? `<div class="msg-follow"><span class="small muted">People also ask</span>${ids.map(id => `<button class="chip" data-ask="${id}">${kbById(id).q}</button>`).join('')}</div>` : '';
+const FALLBACK = () => `I don't have a great answer for that one yet, but our team does. ${CALL()}\n\nYou can also browse all the questions I can answer, or book a visit so the doctor can take a look.`;
+function botHTML(t) {
+  if (t.kb) { const e = kbById(t.kb); return `<div class="msg ai">${fmtAns(answerText(e))}${actionsHTML(e.act)}</div>${t.alert ? emergencyCard() : ''}${followHTML(e.f.slice(0, 3))}`; }
+  return `<div class="msg ai">${fmtAns(t.text)}${t.fallback ? `<div class="msg-acts"><button class="chip act" data-browse>${icon('book', 'ico sm')} Browse questions</button><button class="chip act" data-go="book">${icon('cal', 'ico sm')} Book a visit</button></div>` : ''}</div>${t.alert ? emergencyCard() : ''}`;
+}
 const emergencyCard = () => `<div class="alert"><b>This could need care today.</b>Call ASAP Dental Care now at ${officePhone()}. If you have trouble breathing or swallowing, call 911.</div>`;
-ROUTES.ask = topic => `
-  <div class="ai-head"><span class="ai-face">${icon('tooth')}</span><div style="flex:1"><h2 style="font-family:var(--f-display);font-size:24px;text-transform:uppercase;line-height:1">ASAP AI</h2><span class="small muted">Your dental guide, any time of day</span></div></div>
-  <p class="disclaimer">You're chatting with ASAP's AI assistant, not a dentist. It answers general questions and can't diagnose you. For emergencies call the office or 911.</p>
+function openBrowse(onPick) {
+  sheet(`<h3 style="font-size:22px">Questions I can answer</h3>
+    <p class="small muted">Answers written by the ASAP Dental Care team.</p>
+    ${KB_GROUPS.map(([g, list]) => `<div class="section"><span class="eyebrow">${g}</span><div class="chips">${list.map(e => `<button class="chip" data-pick="${e.id}">${e.q}</button>`).join('')}</div></div>`).join('')}
+    <button class="btn line block" data-close>Close</button>`, (sh, close) => {
+    sh.addEventListener('click', e => { const b = e.target.closest('[data-pick]'); if (b) { close(); onPick(b.dataset.pick); } });
+  });
+}
+const LESSON_Q = {cleaning:'cleaning', fillings:'fillings', crowns:'crowns', rootcanal:'rootcanal', extractions:'extraction', dentures:'dentures', implants:'implants', whitening:'whitening', emergency:'toothache', xray:'xray'};
+ROUTES.ask = () => `
+  <div class="ai-head"><span class="ai-face"><img src="img/dr-cueto.jpg" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover"></span><div style="flex:1"><h2 style="font-size:22px;line-height:1.1">Ask anything</h2><span class="small muted">The ASAP Assistant · answers any time of day</span></div></div>
+  <p class="disclaimer">Answers are written by the ASAP Dental Care team. This assistant can't diagnose you. For emergencies, call the office or 911.</p>
   <div class="msgs" id="msgs" aria-live="polite">
-    <div class="msg ai"><p>Hi ${esc(first())}! Ask me anything about your teeth, a treatment, or what to expect. No question is too small.</p></div>
-    ${chat.turns.map(t => t.role === 'user' ? `<div class="msg me">${esc(t.content)}</div>` : `<div class="msg ai">${fmtAI(t.content)}</div>${t.alert ? emergencyCard() : ''}`).join('')}
+    <div class="msg ai"><p>Hi ${esc(first())}! Ask me anything about your teeth, a treatment, costs, or what to expect. No question is too small.</p></div>
+    ${chat.turns.map(t => t.role === 'user' ? `<div class="msg me">${esc(t.content)}</div>` : botHTML(t)).join('')}
   </div>
   <div class="composer">
-    <div class="chips" id="sugg">${SUGGEST.map(s => `<button class="chip">${s}</button>`).join('')}</div>
-    <form id="askForm"><input id="askIn" placeholder="Type your question…" autocomplete="off" value="${topic ? esc('Tell me about ' + topic.toLowerCase()) : ''}" aria-label="Your question"><button class="send" aria-label="Send">${icon('send')}</button></form>
+    <div class="chips" id="sugg">${SUGGEST.map(id => `<button class="chip" data-ask="${id}">${kbById(id).q}</button>`).join('')}<button class="chip" data-browse>${icon('book', 'ico sm')} All questions</button></div>
+    <form id="askForm"><input id="askIn" placeholder="Type your question…" autocomplete="off" aria-label="Your question"><button class="send" aria-label="Send">${icon('send')}</button></form>
   </div>`;
 ROUTES.ask.cls = 'chat'; ROUTES.ask.tab = 'ask';
-ROUTES.ask.after = v => {
+ROUTES.ask.after = (v, arg) => {
   const box = $('#askIn', v), msgs = $('#msgs', v);
   v.scrollTop = v.scrollHeight;
-  $('#sugg', v).onclick = e => { const b = e.target.closest('button'); if (b) send(b.textContent); };
+  v.addEventListener('click', e => {
+    const a = e.target.closest('[data-ask]'); if (a) { send(kbById(a.dataset.ask).q, a.dataset.ask); return; }
+    if (e.target.closest('[data-browse]')) openBrowse(id => send(kbById(id).q, id));
+  });
   $('#askForm', v).onsubmit = e => { e.preventDefault(); send(box.value); };
-  async function send(q) {
+  async function send(q, forcedId) {
     q = q.trim(); if (!q || chat.busy) return;
     box.value = ''; chat.busy = true;
     chat.turns.push({role:'user', content:q});
-    msgs.insertAdjacentHTML('beforeend', `<div class="msg me">${esc(q)}</div><div class="msg ai thinking">Thinking…</div>`);
-    const bubble = msgs.lastElementChild; v.scrollTop = v.scrollHeight;
-    const alert = RED.test(q);
-    let text = '';
-    const sample = await samplePromise;
-    if (sample) {
-      chat.ctl = new AbortController();
-      const turns = chat.turns.slice(-12).map(({role, content}) => ({role, content}));
-      try {
-        const r = await sample([{role:'user', content:RULES()}, ...turns], {cache:false, modelTier:'quick', signal:chat.ctl.signal,
-          onText: ({text:t}) => { bubble.classList.remove('thinking'); bubble.innerHTML = fmtAI(t); v.scrollTop = v.scrollHeight; }});
-        text = r.text;
-      } catch (e) { text = e.text || fallback(q); }
-    } else {
-      await new Promise(r => setTimeout(r, 700));
-      text = fallback(q);
-    }
-    bubble.classList.remove('thinking'); bubble.innerHTML = fmtAI(text);
-    chat.turns.push({role:'assistant', content:text, alert});
-    if (alert) bubble.insertAdjacentHTML('afterend', emergencyCard());
-    chat.busy = false; v.scrollTop = v.scrollHeight;
+    msgs.insertAdjacentHTML('beforeend', `<div class="msg me">${esc(q)}</div><div class="msg ai typing" aria-label="Typing"><i></i><i></i><i></i></div>`);
+    const dots = msgs.lastElementChild; v.scrollTo({top:v.scrollHeight, behavior:REDUCE ? 'auto' : 'smooth'});
+    const alert = RED.test(q), n = normQ(q);
+    const e = forcedId ? kbById(forcedId) : matchKB(q);
+    const small = !e && SMALLTALK.find(([r]) => r.test(n.trim()));
+    const turn = e ? {role:'bot', kb:e.id, alert: alert || !!e.urgent}
+      : small ? {role:'bot', text:small[1]()}
+      : {role:'bot', text:FALLBACK(), fallback:true, alert};
+    await new Promise(r => setTimeout(r, REDUCE ? 0 : 650 + Math.random() * 350));
+    // type the answer out, then swap in the formatted version with its buttons
+    const plain = e ? answerText(e) : turn.text, step = Math.max(2, Math.ceil(plain.length / 55));
+    dots.classList.remove('typing'); dots.textContent = '';
+    if (!REDUCE) for (let i = 0; i < plain.length; i += step) { dots.textContent = plain.slice(0, i).replace(/\*\*/g, ''); await new Promise(r => setTimeout(r, 14)); }
+    dots.outerHTML = botHTML(turn);
+    chat.turns.push(turn);
+    chat.busy = false; v.scrollTo({top:v.scrollHeight, behavior:REDUCE ? 'auto' : 'smooth'});
   }
-  if (current.arg) { /* topic prefilled from a lesson */ box.focus(); }
+  if (arg && LESSON_Q[arg] && !chat.turns.some(t => t.kb === LESSON_Q[arg])) send(kbById(LESSON_Q[arg]).q, LESSON_Q[arg]);
 };
-const samplePromise = (async () => { try { return await window.claude?.use?.('sample') ?? null; } catch { return null; } })();
 
 /* ---------- Comfort ---------- */
 let breathing = null;
@@ -1652,6 +1929,7 @@ ROUTES.profile = () => {
   <div class="card list">
     <div class="item"><span class="dot">${icon('home')}</span><div class="txt"><b>My office</b><span>${esc(myOffice().name)}</span></div><button class="link" data-go="locations">Change</button></div>
     <div class="item"><span class="dot">${icon('phone')}</span><div class="txt"><b>Call the office</b><span>${officePhone()}</span></div></div>
+    <div class="item"><span class="dot">${icon('chat')}</span><div class="txt"><b>ASAP Pro</b><span>Coming soon: 24/7 chat with a dentist</span></div><span class="pill gold">Soon</span></div>
     <div class="item"><span class="dot">${icon('shield')}</span><div class="txt"><b>Insurance & financing</b><span>PPO claims, CareCredit, Sunbit and more</span></div><button class="link" data-go="why">View</button></div>
     <div class="item"><span class="dot">${icon('heart')}</span><div class="txt"><b>Comfort plan</b><span>${Object.values(S.comfort).filter(Boolean).length} preferences</span></div><button class="link" data-go="plan">Edit</button></div>
   </div>
