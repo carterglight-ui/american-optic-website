@@ -464,20 +464,50 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
 .burst{position:absolute;inset:0;pointer-events:none;z-index:45;overflow:hidden}
 .burst i{position:absolute;width:7px;height:7px;border-radius:50%}
 
-/* Launch screen: a tooth outline draws itself, then the ASAP lettering settles centered on top */
-.splash{position:absolute;inset:0;z-index:60;display:grid;place-items:center;cursor:pointer;
-  background:radial-gradient(120% 75% at 50% 45%,var(--card-solid) 0%,var(--surface) 58%,color-mix(in srgb,var(--brand) 8%,var(--surface)) 100%)}
-.splash-logo{position:relative;width:240px;height:220px;display:grid;place-items:center}
-.splash-logo::before{content:"";position:absolute;inset:-20%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--brand) 12%,transparent),transparent);opacity:0;animation:fadeIn 1.4s .2s var(--ease) forwards}
-.splash-tooth{position:absolute;left:50%;top:0;width:200px;height:200px;transform:translateX(-50%);overflow:visible}
-.splash-tooth path{fill:transparent;stroke:var(--brand);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:drawTooth 1.6s .25s cubic-bezier(.65,0,.35,1) forwards,fillTooth 1s 1.6s var(--ease) forwards}
-.splash-word{position:absolute;left:50%;top:92px;width:224px;height:auto;transform:translate(-50%,10px);opacity:0;filter:blur(6px);animation:wordUp 1s 1.2s var(--ease) forwards}
-.splash.out{animation:splashOut .8s var(--ease) forwards;pointer-events:none}
+/* Launch screen: a dark scanner wakes up (grid, spinning rings, a glowing tooth traced in light),
+   then light floods out from the center and the full-color logo settles on white */
+.splash{position:absolute;inset:0;z-index:60;overflow:hidden;cursor:pointer;background:radial-gradient(90% 60% at 50% 45%,#0f2c3b 0%,#081923 55%,#040d13 100%);
+  --cy:#7fd6ff;font-family:var(--f-body)}
+.sp-grid{position:absolute;left:-50%;right:-50%;bottom:-10%;height:70%;opacity:0;transform:perspective(420px) rotateX(64deg);transform-origin:50% 100%;
+  background-image:linear-gradient(rgba(127,214,255,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(127,214,255,.22) 1px,transparent 1px);background-size:44px 44px;
+  -webkit-mask-image:radial-gradient(70% 90% at 50% 100%,#000 25%,transparent 75%);mask-image:radial-gradient(70% 90% at 50% 100%,#000 25%,transparent 75%);
+  animation:spIn .9s .1s ease-out forwards,gridMove 3s linear infinite}
+@keyframes gridMove{to{background-position:0 44px,0 0}}
+.sp-dust{position:absolute;inset:0;opacity:0;animation:spIn 1.2s .3s ease-out forwards}
+.sp-dust i{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--cy);box-shadow:0 0 6px var(--cy);animation:floatUp linear infinite}
+@keyframes floatUp{from{transform:translateY(20px);opacity:0}20%{opacity:.9}to{transform:translateY(-120px);opacity:0}}
+.sp-hud{position:absolute;left:50%;top:44%;width:300px;height:300px;transform:translate(-50%,-50%)}
+.sp-hud svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.sp-ring{fill:none;stroke:var(--cy);transform-origin:150px 150px;opacity:0}
+.r1{stroke-width:1;stroke-dasharray:2 6;animation:ringIn .8s .15s var(--ease) forwards,spin 14s linear infinite}
+.r2{stroke-width:2;stroke-dasharray:120 40 30 40;animation:ringIn .8s .3s var(--ease) forwards,spin 6s linear infinite reverse}
+.r3{stroke-width:1.2;stroke-dasharray:300 600;animation:ringIn .8s .45s var(--ease) forwards,spin 3.2s cubic-bezier(.6,0,.4,1) infinite}
+.r4{stroke-width:.8;opacity:0;animation:ringIn .8s .2s var(--ease) forwards}
+@keyframes ringIn{from{opacity:0;transform:scale(.6) rotate(-40deg)}to{opacity:.85;transform:none}}
+@keyframes spin{to{rotate:360deg}}
+.sp-tooth{fill:none;stroke:#bfeaff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;
+  filter:drop-shadow(0 0 4px var(--cy)) drop-shadow(0 0 14px rgba(127,214,255,.7));animation:drawTooth 1.1s .35s cubic-bezier(.65,0,.35,1) forwards}
+.sp-scan{fill:url(#spScan);opacity:0;animation:scan 1.1s .45s cubic-bezier(.6,0,.4,1) forwards}
+@keyframes scan{0%{opacity:0;transform:translateY(-60px)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(60px)}}
+.sp-read{position:absolute;left:50%;top:calc(44% + 168px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;
+  font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.32em;color:rgba(191,234,255,.75);opacity:0;animation:spIn .5s .5s forwards}
+.sp-read b{font-size:22px;letter-spacing:.08em;color:#e6f7ff;font-variant-numeric:tabular-nums;text-shadow:0 0 12px var(--cy)}
+.sp-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,#fff 0%,#f4f9fb 45%,#e7f0f4 100%);clip-path:circle(0% at 50% 44%);animation:iris .9s 1.45s cubic-bezier(.7,0,.2,1) forwards}
+@keyframes iris{0%{clip-path:circle(0% at 50% 44%)}100%{clip-path:circle(150% at 50% 44%)}}
+.sp-flash::before{content:"";position:absolute;left:50%;top:44%;width:10px;height:10px;margin:-5px;border-radius:50%;box-shadow:0 0 120px 70px #fff;opacity:0;animation:pop .7s 1.35s ease-out forwards}
+@keyframes pop{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+.sp-logo{position:absolute;left:50%;top:44%;width:230px;max-width:66%;transform:translate(-50%,-50%) scale(.86);opacity:0;filter:blur(10px);animation:logoIn 1s 1.85s cubic-bezier(.2,.9,.25,1) forwards}
+.sp-logo img{display:block;width:100%;height:auto}
+.sp-logo::after{content:"";position:absolute;inset:-10% -20%;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.85) 50%,transparent 65%);background-size:250% 100%;background-position:130% 0;
+  -webkit-mask:url(img/asap-logo.png) center/contain no-repeat;mask:url(img/asap-logo.png) center/contain no-repeat;animation:sheenLogo 1.1s 2.35s ease-in-out forwards}
+@keyframes logoIn{to{opacity:1;filter:blur(0);transform:translate(-50%,-50%) scale(1)}}
+@keyframes sheenLogo{to{background-position:-60% 0}}
+.sp-tag{position:absolute;left:0;right:0;top:calc(44% + 92px);text-align:center;font-size:11px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);opacity:0;transform:translateY(8px);animation:fadeUp .8s 2.3s var(--ease) forwards}
+@keyframes spIn{to{opacity:1}}
 @keyframes drawTooth{to{stroke-dashoffset:0}}
-@keyframes fillTooth{to{fill:color-mix(in srgb,var(--brand) 6%,transparent)}}
-@keyframes wordUp{to{opacity:1;transform:translate(-50%,0);filter:blur(0)}}
-@keyframes fadeIn{to{opacity:1}}
-@keyframes splashOut{to{opacity:0;transform:scale(1.05);filter:blur(6px)}}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+.splash.out{animation:splashOut .8s var(--ease) forwards;pointer-events:none}
+@keyframes splashOut{to{opacity:0;transform:scale(1.04);filter:blur(6px)}}
 
 /* "Ask anything" bubble with Dr. Cueto's photo */
 .ask-fab{position:absolute;right:16px;bottom:92px;z-index:15;display:flex;align-items:center;gap:0;border:0;padding:0;background:none;cursor:pointer}
@@ -507,6 +537,119 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
 .msg.typing i:nth-child(2){animation-delay:.15s}.msg.typing i:nth-child(3){animation-delay:.3s}
 @keyframes dot{0%,60%,100%{transform:none;opacity:.35}30%{transform:translateY(-4px);opacity:.9}}
 .pro{display:flex;gap:12px;align-items:center;border-radius:22px;padding:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 12%,var(--card-solid)),var(--card-solid));border:1px solid var(--glow);box-shadow:var(--shadow)}
+
+/* ===== Polish: one light source from above. Surfaces catch a highlight on top, carry a soft
+   layered shadow below, and buttons read as solid, pressable objects. ===== */
+:root{
+  --card-top:rgba(255,255,255,.97);
+  --hi:inset 0 1px 0 rgba(255,255,255,.95);
+  --lift:0 1px 1px rgba(20,50,74,.04),0 4px 10px -2px rgba(20,50,74,.06),0 18px 36px -14px rgba(20,50,74,.2);
+  --press:inset 0 2px 6px rgba(20,50,74,.12);
+  --brand-hi:color-mix(in srgb,var(--brand) 78%,#fff);
+  --brand-lo:color-mix(in srgb,var(--brand) 82%,#06202c);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--card-top:rgba(44,70,86,.9);--hi:inset 0 1px 0 rgba(255,255,255,.08);--lift:0 1px 1px rgba(0,0,0,.3),0 6px 14px -4px rgba(0,0,0,.35),0 20px 40px -16px rgba(0,0,0,.6);--press:inset 0 2px 6px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--card-top:rgba(44,70,86,.9);--hi:inset 0 1px 0 rgba(255,255,255,.08);--lift:0 1px 1px rgba(0,0,0,.3),0 6px 14px -4px rgba(0,0,0,.35),0 20px 40px -16px rgba(0,0,0,.6);--press:inset 0 2px 6px rgba(0,0,0,.4)}
+
+/* light falls from the top of the screen */
+.screen{background:radial-gradient(130% 55% at 50% -8%,var(--card-solid) 0%,var(--surface) 62%)}
+
+/* surfaces */
+.card,.svc,.stat,.feature,.trust,.comfort-card,.signal,.seg,.urgent-row,.pro,.list .item .dot,.reason,.day,.slot,.quiz button,.feel button,.drpick button{
+  background-image:linear-gradient(180deg,var(--card-top),var(--card) 70%)}
+.card,.svc,.stat,.feature,.trust,.comfort-card,.signal,.seg,.urgent-row,.pro{box-shadow:var(--lift),var(--hi);border-color:transparent}
+.reason,.day,.slot,.quiz button,.feel button,.drpick button,.chip{box-shadow:0 1px 2px rgba(20,50,74,.05),0 6px 14px -8px rgba(20,50,74,.18),var(--hi)}
+.svc .art,.feature .art,.video .thumb{box-shadow:inset 0 -14px 24px -18px rgba(20,50,74,.18)}
+
+/* primary buttons: lit from above, a soft colored glow below, pressed = sinks in */
+.btn{background:linear-gradient(180deg,var(--brand-hi) 0%,var(--brand) 52%,var(--brand-lo) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 0 -2px 5px rgba(0,0,0,.14),0 2px 4px rgba(20,50,74,.12),0 14px 26px -10px color-mix(in srgb,var(--brand) 70%,transparent);
+  text-shadow:0 1px 1px rgba(0,0,0,.14);letter-spacing:.005em}
+.btn:active:not(:disabled){box-shadow:inset 0 2px 7px rgba(0,0,0,.25),0 1px 2px rgba(20,50,74,.1)}
+.btn.ghost{background:linear-gradient(180deg,color-mix(in srgb,var(--brand-soft) 60%,#fff),var(--brand-soft));box-shadow:var(--hi),0 6px 14px -8px rgba(20,50,74,.2);text-shadow:none}
+.btn.line{background:linear-gradient(180deg,var(--card-top),var(--card));box-shadow:var(--hi),0 1px 2px rgba(20,50,74,.06),0 10px 20px -12px rgba(20,50,74,.25);text-shadow:none}
+.btn.big{position:relative}
+.btn.big::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.22) 45%,transparent 60%);background-size:250% 100%;animation:sheen 5s 2s ease-in-out infinite;pointer-events:none}
+@keyframes sheen{0%,70%{background-position:130% 0}100%{background-position:-60% 0}}
+.chip[aria-pressed="true"],.day[aria-pressed="true"],.slot[aria-pressed="true"],.seg .seg-pill{background:linear-gradient(180deg,var(--brand-hi),var(--brand) 55%,var(--brand-lo));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 16px -8px color-mix(in srgb,var(--brand) 75%,transparent)}
+.chip.act{background:linear-gradient(180deg,color-mix(in srgb,var(--brand-soft) 50%,#fff),var(--brand-soft));box-shadow:var(--hi)}
+
+/* round "pebble" controls: a small highlight top-left, like a polished stone */
+.qa .pebble,.iconbtn,.avatar,.ai-face,.comfort-card .bubble,.signal .hand,.checks .dot,.list .dot,.timeline .n{
+  background:radial-gradient(circle at 32% 26%,#fff 0%,var(--card-solid) 46%,color-mix(in srgb,var(--brand) 7%,var(--card-solid)) 100%);
+  box-shadow:0 10px 22px -8px rgba(43,111,142,.3),0 2px 4px rgba(20,50,74,.08),inset 0 1px 0 #fff,inset 0 -3px 6px rgba(43,111,142,.08)}
+.qa .pebble{box-shadow:0 14px 28px -10px rgba(43,111,142,.38),0 3px 6px rgba(20,50,74,.08),inset 0 1px 0 #fff,inset 0 -4px 8px rgba(43,111,142,.1)}
+.qa:active .pebble{box-shadow:inset 0 3px 8px rgba(43,111,142,.2),0 2px 6px rgba(20,50,74,.08)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) :is(.qa .pebble,.iconbtn,.avatar,.ai-face,.comfort-card .bubble,.signal .hand,.checks .dot,.list .dot,.timeline .n){background:radial-gradient(circle at 32% 26%,#3a5a6c,var(--card-solid) 60%);box-shadow:0 10px 22px -8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)}}
+:root[data-theme="dark"] :is(.qa .pebble,.iconbtn,.avatar,.ai-face,.comfort-card .bubble,.signal .hand,.checks .dot,.list .dot,.timeline .n){background:radial-gradient(circle at 32% 26%,#3a5a6c,var(--card-solid) 60%);box-shadow:0 10px 22px -8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)}
+
+/* type: the headline catches the light */
+.hero-title,.nv-date b,.mission,.statgrid .stat b{background:linear-gradient(120deg,var(--ink) 35%,var(--brand) 120%);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* switches and inputs */
+.switch{box-shadow:inset 0 1px 3px rgba(20,50,74,.18)}
+.switch[aria-checked="true"]{background:linear-gradient(180deg,var(--brand-hi),var(--brand))}
+.switch::after{background:linear-gradient(180deg,#fff,#eef3f6);box-shadow:0 2px 6px rgba(20,50,74,.25),inset 0 -1px 0 rgba(20,50,74,.06)}
+.field input,.field textarea,.field select,.composer input{box-shadow:inset 0 1px 3px rgba(20,50,74,.07)}
+
+/* tab bar: glass with a lit top edge; the active icon glows */
+.tabbar{box-shadow:0 -10px 30px -18px rgba(20,50,74,.25),inset 0 1px 0 rgba(255,255,255,.7)}
+.tabbar button[aria-current="page"] .ico{filter:drop-shadow(0 4px 8px color-mix(in srgb,var(--brand) 45%,transparent))}
+.tab-dot{box-shadow:0 0 10px 2px color-mix(in srgb,var(--brand) 55%,transparent)}
+.msg.ai{box-shadow:var(--lift),var(--hi)}
+.msg.me{background:linear-gradient(180deg,var(--brand-hi),var(--brand) 60%,var(--brand-lo));box-shadow:0 10px 20px -10px color-mix(in srgb,var(--brand) 70%,transparent),inset 0 1px 0 rgba(255,255,255,.25)}
+
+/* ===== 3D procedures ===== */
+.see3d-hero{display:flex;flex-direction:column;gap:4px;background-image:radial-gradient(120% 140% at 100% 0%,color-mix(in srgb,var(--brand) 16%,transparent),transparent 60%),linear-gradient(180deg,var(--card-top),var(--card))}
+.see3d-hero b{font-size:17px;letter-spacing:-.01em}
+.pill3d{position:absolute;top:8px;left:8px;font-size:10px;font-weight:800;letter-spacing:.14em;padding:3px 7px;border-radius:6px;color:#fff;background:linear-gradient(180deg,var(--brand-hi),var(--brand-lo));box-shadow:0 4px 10px -4px color-mix(in srgb,var(--brand) 80%,transparent)}
+.see3d{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-radius:22px;padding:14px 16px;color:#fff;
+  background:radial-gradient(120% 160% at 100% 0%,rgba(255,255,255,.22),transparent 55%),linear-gradient(135deg,var(--brand-hi),var(--brand) 50%,var(--brand-lo));
+  box-shadow:0 18px 34px -16px color-mix(in srgb,var(--brand) 85%,transparent),inset 0 1px 0 rgba(255,255,255,.35)}
+.see3d .cube{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.35);font-weight:800;letter-spacing:.06em;font-size:13px}
+.see3d b{display:block;font-size:15.5px}
+.see3d span.s{font-size:12.5px;opacity:.85}
+
+.procview{padding-top:0;gap:0}
+.proc-stage{position:sticky;top:0;z-index:4;margin:0 -22px;flex:none;overflow:hidden;border-radius:0 0 30px 30px;
+  background:radial-gradient(85% 70% at 50% 46%,#f6f9fb 0%,color-mix(in srgb,var(--brand) 14%,#e9f0f3) 52%,color-mix(in srgb,var(--brand) 34%,#c9d9e1) 100%);
+  box-shadow:0 18px 40px -22px rgba(20,50,74,.45),inset 0 -1px 0 rgba(255,255,255,.6)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .proc-stage{background:radial-gradient(90% 75% at 50% 42%,#21404f 0%,#132631 60%,#0c1a22 100%)}}
+:root[data-theme="dark"] .proc-stage{background:radial-gradient(90% 75% at 50% 42%,#21404f 0%,#132631 60%,#0c1a22 100%)}
+.proc-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab}
+.proc-canvas:active{cursor:grabbing}
+.hud{position:absolute;inset:14px;pointer-events:none}
+.hud .br{position:absolute;width:18px;height:18px;border-color:color-mix(in srgb,var(--brand) 55%,transparent);border-style:solid;border-width:0}
+.hud .tl{top:44px;left:0;border-top-width:1.5px;border-left-width:1.5px;border-top-left-radius:6px}
+.hud .tr{top:44px;right:0;border-top-width:1.5px;border-right-width:1.5px;border-top-right-radius:6px}
+.hud .bl{bottom:0;left:0;border-bottom-width:1.5px;border-left-width:1.5px;border-bottom-left-radius:6px}
+.hud .br2{bottom:0;right:0;border-bottom-width:1.5px;border-right-width:1.5px;border-bottom-right-radius:6px}
+.proc-back{position:absolute;top:12px;left:16px;z-index:2}
+.hud-title{position:absolute;top:14px;left:68px;display:flex;flex-direction:column;gap:1px;pointer-events:none}
+.hud-title b{font-size:19px;letter-spacing:-.02em}
+.hud-step{position:absolute;top:16px;right:20px;display:flex;align-items:baseline;gap:4px;font-variant-numeric:tabular-nums;pointer-events:none}
+.hud-step b{font-size:26px;font-weight:700;letter-spacing:-.03em;color:var(--brand)}
+.hud-step span{font-size:12px;color:var(--muted);font-weight:600}
+.hud-foot{position:absolute;left:26px;right:26px;bottom:22px;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.hud-label{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--brand)}
+.hud-bar{position:relative;height:3px;border-radius:2px;background:color-mix(in srgb,var(--brand) 16%,transparent)}
+.hud-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:linear-gradient(90deg,var(--brand-hi),var(--brand));box-shadow:0 0 10px color-mix(in srgb,var(--brand) 70%,transparent)}
+.hud-bar b{position:absolute;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--card-solid);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--brand) 60%,transparent)}
+.hud-hint{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--muted);padding:6px 12px;border-radius:999px;background:color-mix(in srgb,var(--card-solid) 70%,transparent);backdrop-filter:blur(8px);transition:opacity .5s var(--ease),transform .5s var(--ease);pointer-events:none}
+.hud-hint .ico{transform:rotate(90deg);animation:nudge 1.6s ease-in-out infinite}
+.hud-hint.gone{opacity:0;transform:translate(-50%,8px)}
+@keyframes nudge{50%{transform:rotate(90deg) translateX(3px)}}
+.proc-fallback{position:absolute;inset:auto 24px 50% 24px;text-align:center;color:var(--muted);font-size:14px}
+.proc-steps{display:flex;flex-direction:column;padding-top:8px}
+.pstep{display:flex;flex-direction:column;gap:6px;padding:26px 4px 0;opacity:.28;transform:translateY(6px) scale(.985);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.pstep.on{opacity:1;transform:none}
+.pnum{font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--brand)}
+.pstep h3{font-size:24px;line-height:1.15}
+.pstep p{font-size:15.5px;line-height:1.6;color:var(--muted);max-width:34ch}
+.pstep.on p{color:var(--ink)}
+.pstep-end{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+
+.seg{grid-template-columns:repeat(4,1fr)!important}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 .urgent-row{color:inherit}
@@ -583,18 +726,33 @@ svg .lbl.sm{font-size:9.5px;letter-spacing:.06em}
         <span class="fab-photo"><img src="img/dr-cueto.jpg" alt=""><i class="online"></i></span>
       </button>
       <div class="splash" id="splash" aria-hidden="true">
-        <div class="splash-logo">
-          <svg class="splash-tooth" viewBox="0 0 120 120" aria-hidden="true">
-            <path pathLength="1" d="M14 34 C8 10 38 4 60 15 C82 4 112 10 106 34 C104 56 98 66 95 82 C92 101 88 114 81 114 C74 114 74 94 70 82 C67 74 53 74 50 82 C46 94 46 114 39 114 C32 114 28 101 25 82 C22 66 16 56 14 34 Z"/>
+        <div class="sp-grid"></div>
+        <div class="sp-dust"><i style="left:0%;top:40%;animation-duration:2.4s;animation-delay:0.0s"></i><i style="left:37%;top:93%;animation-duration:3.0s;animation-delay:0.35s"></i><i style="left:74%;top:91%;animation-duration:3.5999999999999996s;animation-delay:0.7s"></i><i style="left:11%;top:89%;animation-duration:4.199999999999999s;animation-delay:1.0499999999999998s"></i><i style="left:48%;top:87%;animation-duration:4.8s;animation-delay:1.4s"></i><i style="left:85%;top:85%;animation-duration:2.4s;animation-delay:1.75s"></i><i style="left:22%;top:83%;animation-duration:3.0s;animation-delay:2.0999999999999996s"></i><i style="left:59%;top:81%;animation-duration:3.5999999999999996s;animation-delay:0.0s"></i><i style="left:96%;top:79%;animation-duration:4.199999999999999s;animation-delay:0.35s"></i><i style="left:33%;top:77%;animation-duration:4.8s;animation-delay:0.7s"></i><i style="left:70%;top:75%;animation-duration:2.4s;animation-delay:1.0499999999999998s"></i><i style="left:7%;top:73%;animation-duration:3.0s;animation-delay:1.4s"></i><i style="left:44%;top:71%;animation-duration:3.5999999999999996s;animation-delay:1.75s"></i><i style="left:81%;top:69%;animation-duration:4.199999999999999s;animation-delay:2.0999999999999996s"></i><i style="left:18%;top:67%;animation-duration:4.8s;animation-delay:0.0s"></i><i style="left:55%;top:65%;animation-duration:2.4s;animation-delay:0.35s"></i><i style="left:92%;top:63%;animation-duration:3.0s;animation-delay:0.7s"></i><i style="left:29%;top:61%;animation-duration:3.5999999999999996s;animation-delay:1.0499999999999998s"></i><i style="left:66%;top:59%;animation-duration:4.199999999999999s;animation-delay:1.4s"></i><i style="left:3%;top:57%;animation-duration:4.8s;animation-delay:1.75s"></i><i style="left:40%;top:55%;animation-duration:2.4s;animation-delay:2.0999999999999996s"></i><i style="left:77%;top:53%;animation-duration:3.0s;animation-delay:0.0s"></i></div>
+        <div class="sp-hud">
+          <svg viewBox="0 0 300 300">
+            <defs><linearGradient id="spScan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd6ff" stop-opacity="0"/><stop offset=".5" stop-color="#7fd6ff" stop-opacity=".55"/><stop offset="1" stop-color="#7fd6ff" stop-opacity="0"/></linearGradient></defs>
+            <circle class="sp-ring r4" cx="150" cy="150" r="148"/>
+            <circle class="sp-ring r1" cx="150" cy="150" r="136"/>
+            <circle class="sp-ring r2" cx="150" cy="150" r="118"/>
+            <circle class="sp-ring r3" cx="150" cy="150" r="104"/>
+            <g transform="translate(90 92)">
+              <path class="sp-tooth" pathLength="1" d="M14 34 C8 10 38 4 60 15 C82 4 112 10 106 34 C104 56 98 66 95 82 C92 101 88 114 81 114 C74 114 74 94 70 82 C67 74 53 74 50 82 C46 94 46 114 39 114 C32 114 28 101 25 82 C22 66 16 56 14 34 Z"/>
+              <rect class="sp-scan" x="0" y="50" width="120" height="16" rx="2"/>
+            </g>
           </svg>
-          <img class="splash-word" src="img/word-asap.png" alt="">
         </div>
+        <div class="sp-read"><span>INITIALIZING</span><b id="spPct">000</b></div>
+        <div class="sp-flash"></div>
+        <div class="sp-logo"><img src="img/asap-logo.png" alt=""></div>
+        <p class="sp-tag">Your moment of calm</p>
+      </div>
       </div>
       </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (() => {
 const $ = (s, r = document) => r.querySelector(s);
@@ -808,7 +966,7 @@ function render() {
 const later = fn => REDUCE ? fn() : setTimeout(fn, 120);
 function updateFab() {
   const fab = $('#askFab'), r = ROUTES[current.name];
-  const show = !booting && !r.noTabs && r.tab !== 'ask';
+  const show = !booting && !r.noTabs && !r.noFab && r.tab !== 'ask';
   if (show && fab.hidden) { fab.hidden = false; fab.classList.remove('pop'); void fab.offsetWidth; fab.classList.add('pop'); }
   else if (!show) fab.hidden = true;
 }
@@ -1140,18 +1298,19 @@ let learnTab = 'read', segFrom = 'read';
 ROUTES.learn = () => {
   const learned = Object.keys(S.quiz).length;
   return `${topbar('Smile School', {backBtn:false})}
-  <div class="seg" role="tablist"><span class="seg-pill" aria-hidden="true"></span><button role="tab" id="tRead" aria-selected="${learnTab==='read'}">Lessons</button><button role="tab" id="tPlay" aria-selected="${learnTab==='play'}">Tools</button><button role="tab" id="tWatch" aria-selected="${learnTab==='watch'}">Videos</button></div>
+  <div class="seg" role="tablist"><span class="seg-pill" aria-hidden="true"></span><button role="tab" id="tRead" aria-selected="${learnTab==='read'}">Lessons</button><button role="tab" id="t3d" aria-selected="${learnTab==='3d'}">3D</button><button role="tab" id="tPlay" aria-selected="${learnTab==='play'}">Tools</button><button role="tab" id="tWatch" aria-selected="${learnTab==='watch'}">Videos</button></div>
   <div class="seg-body">${learnTab === 'read' ? `
     <div class="card progress"><div style="flex:1;display:flex;flex-direction:column;gap:8px"><b>${learned === SERVICES.length ? 'Smile School graduate!' : 'Finish a quiz to earn a star'}</b><div class="meter"><i style="width:${learned/SERVICES.length*100}%"></i></div></div><span class="stars">${STAR}</span><b style="font-variant-numeric:tabular-nums">${learned}/${SERVICES.length}</b></div>
     <div class="svc-grid">${SERVICES.map(s => `<button class="svc" data-go="service" data-arg="${s.id}"><span class="art" ${s.img ? `style="background-image:url(${s.img})"` : ''}>${s.img ? '' : icon(s.ico)}${S.quiz[s.id] ? `<span class="done">${icon('check')}</span>` : ''}</span><span class="t"><b>${s.name}</b><span>${s.time}</span></span></button>`).join('')}</div>`
-  : learnTab === 'play' ? toolGrid() : videoList()}</div>`;
+  : learnTab === '3d' ? proc3dGrid() : learnTab === 'play' ? toolGrid() : videoList()}</div>`;
 };
 ROUTES.learn.tab = 'learn';
 ROUTES.learn.after = v => {
   $('#tRead', v).onclick = () => { learnTab = 'read'; render(); };
   $('#tWatch', v).onclick = () => { learnTab = 'watch'; render(); };
   $('#tPlay', v).onclick = () => { learnTab = 'play'; render(); };
-  const order = ['read', 'play', 'watch'], pill = $('.seg-pill', v), btns = v.querySelectorAll('.seg button');
+  $('#t3d', v).onclick = () => { learnTab = '3d'; render(); };
+  const order = ['read', '3d', 'play', 'watch'], pill = $('.seg-pill', v), btns = v.querySelectorAll('.seg button');
   const place = (i, animate) => { pill.style.transition = animate ? '' : 'none'; pill.style.width = btns[i].offsetWidth + 'px'; pill.style.transform = `translateX(${btns[i].offsetLeft - 4}px)`; };
   place(order.indexOf(segFrom), false); void pill.offsetWidth;
   requestAnimationFrame(() => place(order.indexOf(learnTab), true));
@@ -1179,6 +1338,7 @@ ROUTES.service = id => {
   return `
   <div class="detail-hero" ${s.img ? `style="background-image:url(${s.img})"` : ''}>${s.img ? '' : icon(s.ico)}<button class="iconbtn back" data-back aria-label="Back">${icon('back')}</button></div>
   <div class="section"><span class="eyebrow">Smile School</span><h2 style="font-family:var(--f-display);font-size:32px;text-transform:uppercase;line-height:1">${s.name}</h2><p>${s.what}</p></div>
+  ${LESSON_PROC[id] ? `<button class="see3d" data-go="proc" data-arg="${LESSON_PROC[id]}"><span class="cube">3D</span><span style="flex:1"><b>See it happen in 3D</b><span class="s">Scroll through each step of the procedure</span></span>${icon('next')}</button>` : ''}
   <div class="stats"><div class="stat"><small>Time in chair</small><b>${s.time}</b></div><div class="stat"><small>How often</small><b>${s.visits}</b></div></div>
   <div class="ouch"><span class="eyebrow">Does it hurt?</span><p>${s.ouch}</p></div>
   <div class="section"><span class="eyebrow">What happens, step by step</span><ol class="timeline">${s.steps.map((t,i) => `<li><span class="n">${i+1}</span><p>${t}</p></li>`).join('')}</ol></div>
@@ -1441,6 +1601,432 @@ TOOL_AFTER.sugar = v => {
   const upd = () => { $('#sugarCount', v).textContent = sugarN; $('#sugarOut', v).innerHTML = sugarOut(); };
   $('#sugarRange', v).addEventListener('input', e => { sugarN = +e.target.value; upd(); });
   $('#sugarSlow', v).onclick = e => { sugarSlow = !sugarSlow; e.currentTarget.setAttribute('aria-checked', sugarSlow); upd(); };
+};
+
+/* ---------- 3D procedures ----------
+   A small three.js scene: a section of lower gum with five teeth, the middle one in focus.
+   Each procedure is a list of steps plus apply(P), where P runs 0..steps-1 as the patient
+   scrolls. apply() poses the whole scene from scratch every frame, so scrolling back
+   and forth always shows the right state. */
+const PROCS = [
+  {id:'cleaning', name:'Cleaning', thumb:'s_cleaning', lesson:'cleaning', cam:'close', steps:[
+    ['Plaque and tartar', 'A sticky film of plaque collects along the gumline. Over time it hardens into tartar, which brushing can\'t remove.'],
+    ['Scaling', 'Your hygienist gently scrapes tartar off the tooth and just under the gumline with a fine instrument.'],
+    ['Polishing', 'A soft spinning cup and a gritty paste smooth the surface, so new plaque has a harder time sticking.'],
+    ['Fresh and clean', 'Smooth, bright and healthy. A cleaning every six months keeps it that way.']]},
+  {id:'filling', name:'Filling', thumb:'s_fillings', lesson:'fillings', cam:'top', steps:[
+    ['A small cavity', 'Decay has made a soft spot in the enamel. It often doesn\'t hurt yet, which is why checkups matter.'],
+    ['Numb and comfortable', 'The area is numbed first, so you feel pressure and vibration, not pain.'],
+    ['Remove the decay', 'A small drill cleans out the soft, decayed part of the tooth.'],
+    ['Fill it in', 'Tooth-colored material is placed in thin layers to rebuild the tooth.'],
+    ['Harden with light', 'A blue light sets each layer in seconds. Then your bite is checked and polished.']]},
+  {id:'crown', name:'Crown', thumb:'s_crowns', lesson:'crowns', cam:'close', steps:[
+    ['A weak or cracked tooth', 'Big fillings or cracks can leave a tooth too weak to chew on safely.'],
+    ['Shape the tooth', 'After numbing, the tooth is gently shaped so a crown can fit over it.'],
+    ['Temporary crown', 'A temporary crown protects the tooth while your custom crown is made in our lab.'],
+    ['Final crown', 'The temporary comes off, and your permanent crown is fitted and bonded in place.'],
+    ['Strong again', 'The crown covers the whole tooth, so you can chew normally again.']]},
+  {id:'rootcanal', name:'Root canal', thumb:'v_rootcanal', lesson:'rootcanal', cam:'xray', steps:[
+    ['Infection inside', 'Bacteria have reached the pulp, the soft core of the tooth where the nerve lives. That\'s what causes the throbbing.'],
+    ['A small opening', 'After numbing, the doctor makes a tiny opening in the top of the tooth.'],
+    ['Clean the canals', 'The infected pulp is removed, and the canals are cleaned and shaped.'],
+    ['Fill and seal', 'The clean canals are filled with a rubbery material and sealed.'],
+    ['Crown on top', 'A crown usually goes on top to protect the tooth for years to come.']]},
+  {id:'extraction', name:'Extraction', thumb:'s_extractions', lesson:'extractions', cam:'wide', steps:[
+    ['A tooth that can\'t be saved', 'Sometimes a tooth is too damaged or infected to fix.'],
+    ['Numb and loosen', 'After numbing, the tooth is gently rocked to loosen it. You feel pressure, not pain.'],
+    ['Removed', 'The tooth comes out, usually in one piece.'],
+    ['Gauze and rest', 'You bite on gauze to help a protective clot form. Skip straws for a few days.'],
+    ['Healing', 'Over the next few weeks the gum closes and heals. We\'ll talk about options to replace the tooth.']]},
+  {id:'implant', name:'Implant', thumb:'v_ahmed', lesson:'implants', cam:'xray', steps:[
+    ['A failing tooth', 'A tooth that\'s too damaged to save is ready to be replaced.'],
+    ['Tooth removed', 'The old tooth is gently removed.'],
+    ['Implant placed', 'A small titanium post goes into the jaw, right where the root used to be.'],
+    ['Temporary crown', 'A temporary crown goes on, so you can smile while the implant bonds with the bone.'],
+    ['Healing', 'Over a few months, bone grows tightly around the implant. Then the temporary comes off.'],
+    ['Final crown', 'Your custom crown attaches to the implant. It looks, feels and works like a natural tooth.']]},
+  {id:'denture', name:'Denture', thumb:'s_dentures', lesson:'dentures', cam:'arch', steps:[
+    ['Missing teeth', 'When most or all of your teeth are gone, chewing and smiling get harder.'],
+    ['Impressions', 'We take precise impressions of your gums so your denture fits just right.'],
+    ['Try-in', 'You try a wax model first, so we can check the fit, bite and look before it\'s finished.'],
+    ['Your denture', 'Our lab makes your final denture, which rests securely over your gums.'],
+    ['Fit and adjust', 'We fine-tune the fit, and follow-up visits keep it comfortable.']]},
+  {id:'partial', name:'Partial denture', thumb:'v_partial', lesson:'dentures', cam:'arch', steps:[
+    ['A few teeth missing', 'Gaps can let other teeth drift and make chewing harder.'],
+    ['Custom design', 'A partial is designed to fit around the teeth you still have.'],
+    ['Clasps hold it', 'Small clasps gently hug neighboring teeth to keep it steady.'],
+    ['In place', 'The gap is filled, and it comes out easily for cleaning.']]},
+  {id:'fixed', name:'Fixed denture', thumb:'v_fixed', lesson:'implants', cam:'arch', steps:[
+    ['No teeth left', 'You\'re missing all the teeth on an arch, or you\'re about to lose them.'],
+    ['Implants placed', 'A few implants go into the jaw as strong anchors.'],
+    ['Bridge attached', 'A full arch of teeth attaches to the implants and stays in.'],
+    ['A full smile', 'It doesn\'t come out at night, and you can bite and chew with confidence.']]},
+  {id:'whitening', name:'Whitening', thumb:'v_whitening', lesson:'whitening', cam:'arch', steps:[
+    ['Stains over time', 'Coffee, tea and time leave stains on enamel.'],
+    ['Protect and apply', 'Your gums are protected, then a whitening gel is applied.'],
+    ['Activate', 'A light helps the gel lift stains from deep in the enamel.'],
+    ['Brighter smile', 'Several shades whiter in about an hour. Any mild sensitivity fades in a day or two.']]},
+];
+const LESSON_PROC = {cleaning:'cleaning', fillings:'filling', crowns:'crown', rootcanal:'rootcanal', extractions:'extraction', implants:'implant', dentures:'denture', whitening:'whitening'};
+
+const clamp01 = x => Math.max(0, Math.min(1, x));
+const easeIO = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+const seg = (P, a, b) => easeIO(clamp01((P - a) / (b - a)));
+const win = (P, a, b, f = .25) => Math.min(seg(P, a - f, a), 1 - seg(P, b, b + f));   // 0 → 1 → 0 window
+
+let T3 = null;
+function init3D() {
+  const THREE = window.THREE;
+  const canvas = document.createElement('canvas'); canvas.className = 'proc-canvas';
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .82;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const scene = new THREE.Scene();
+
+  // Soft studio reflections: a bright gradient dome with three light panels
+  const pm = new THREE.PMREMGenerator(renderer), env = new THREE.Scene();
+  const dome = new THREE.SphereGeometry(10, 32, 16), dc = [], dp = dome.attributes.position;
+  for (let i = 0; i < dp.count; i++) { const h = Math.min(1, Math.max(0, (dp.getY(i) / 10 + .3) / 1.1)); dc.push(.74 + .26 * h, .8 + .2 * h, .86 + .14 * h); }
+  dome.setAttribute('color', new THREE.Float32BufferAttribute(dc, 3));
+  env.add(new THREE.Mesh(dome, new THREE.MeshBasicMaterial({vertexColors:true, side:THREE.BackSide})));
+  [[6, 3, [0, 6, 4]], [4, 4, [-6, 2, 3]], [3, 6, [6, 3, -3]]].forEach(([w, h, p]) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({color:0xffffff, side:THREE.DoubleSide}));
+    m.position.set(...p); m.lookAt(0, 0, 0); env.add(m);
+  });
+  scene.environment = pm.fromScene(env, .04).texture;
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xd9a3ab, .35));
+  const key = new THREE.DirectionalLight(0xfff8f0, 1.9); key.position.set(3, 7, 5); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024); Object.assign(key.shadow.camera, {left:-6, right:6, top:6, bottom:-6, near:1, far:20});
+  key.shadow.bias = -.0006; key.shadow.radius = 5; scene.add(key);
+  const rim = new THREE.DirectionalLight(0xa9d8ff, .85); rim.position.set(-5, 3, -5); scene.add(rim);
+
+  const css = getComputedStyle(document.documentElement), brand = new THREE.Color(css.getPropertyValue('--brand').trim() || '#2B6F8E');
+  const rig = new THREE.Group(); scene.add(rig);
+
+  // Materials
+  const enamel = () => new THREE.MeshPhysicalMaterial({color:0xf7f5ef, roughness:.28, clearcoat:1, clearcoatRoughness:.08, envMapIntensity:.55});
+  const M = {
+    gum: new THREE.MeshPhysicalMaterial({color:0xc4566a, roughness:.48, clearcoat:.55, clearcoatRoughness:.3, envMapIntensity:.45}),
+    metal: new THREE.MeshStandardMaterial({color:0xcfd6dc, metalness:.95, roughness:.25}),
+    pulp: new THREE.MeshStandardMaterial({color:0xd4566a, emissive:0x7a0f1e, emissiveIntensity:.4, roughness:.55}),
+    plaque: new THREE.MeshStandardMaterial({color:0xd6bd72, roughness:.95}),
+    dark: new THREE.MeshStandardMaterial({color:0x3a2219, roughness:.9}),
+    socket: new THREE.MeshStandardMaterial({color:0x8e3a44, roughness:.8}),
+    filling: new THREE.MeshPhysicalMaterial({color:0xfaf7ef, roughness:.25, clearcoat:1, emissive:0x4aa8ff, emissiveIntensity:0}),
+    temp: new THREE.MeshStandardMaterial({color:0xe9e3d6, roughness:.75}),
+    gutta: new THREE.MeshStandardMaterial({color:0xe0894b, roughness:.55}),
+    base: new THREE.MeshPhysicalMaterial({color:0xea8592, roughness:.22, clearcoat:1, clearcoatRoughness:.08}),
+    gauze: new THREE.MeshStandardMaterial({color:0xf3f5f7, roughness:.95}),
+    rubber: new THREE.MeshStandardMaterial({color:0x8fc7e8, roughness:.6}),
+    gel: new THREE.MeshPhysicalMaterial({color:0x9fd8ff, roughness:.05, clearcoat:1, transparent:true, opacity:0, depthWrite:false}),
+    glow: new THREE.MeshBasicMaterial({color:0x7cc4ff, transparent:true, opacity:0, blending:THREE.AdditiveBlending, depthWrite:false}),
+    holo: new THREE.MeshBasicMaterial({color:brand, transparent:true, opacity:0, blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide}),
+  };
+
+  // Geometry
+  const crownGeo = (cusp = 1) => {
+    const g = new THREE.SphereGeometry(1, 72, 48), p = g.attributes.position, v = new THREE.Vector3();
+    const bump = (x, z, cx, cz) => Math.exp(-((x - cx) ** 2 + (z - cz) ** 2) / .018);
+    for (let i = 0; i < p.count; i++) {
+      v.fromBufferAttribute(p, i).normalize();
+      const sy = v.y, c = Math.sqrt(Math.max(0, 1 - sy * sy)), th = Math.atan2(v.z, v.x);
+      const k = Math.pow(Math.pow(Math.abs(Math.cos(th)), 3.2) + Math.pow(Math.abs(Math.sin(th)), 3.2), -1 / 3.2);
+      let X = Math.cos(th) * k * c * .6, Z = Math.sin(th) * k * c * .54, Y;
+      if (sy >= 0) {
+        Y = .4 * (1 - Math.pow(1 - sy, 2.6));
+        const w = Math.pow(sy, 3);
+        Y += cusp * w * (.075 * (bump(X, Z, .2, .19) + bump(X, Z, -.2, .19) + bump(X, Z, .2, -.19) + bump(X, Z, -.2, -.19)) - .035 * Math.exp(-X * X / .004) - .02 * Math.exp(-Z * Z / .004));
+      } else {
+        const a = -sy; Y = -.5 * (1 - Math.pow(1 - a, 1.7));
+        const sh = 1 - .3 * Math.pow(a, 1.4); X *= sh; Z *= sh;
+      }
+      p.setXYZ(i, X, Y, Z);
+    }
+    g.computeVertexNormals(); return g;
+  };
+  const CROWN = crownGeo(), CROWN_PREP = crownGeo(.25);
+  const screwGeo = () => {
+    const g = new THREE.CylinderGeometry(.2, .12, 1.3, 40, 60), p = g.attributes.position, v = new THREE.Vector3();
+    for (let i = 0; i < p.count; i++) {
+      v.fromBufferAttribute(p, i); const r = Math.hypot(v.x, v.z);
+      if (r > .05) { const k = (r + .035 * Math.sin(v.y * 30 + Math.atan2(v.z, v.x))) / r; v.x *= k; v.z *= k; }
+      p.setXYZ(i, v.x, v.y, v.z);
+    }
+    g.computeVertexNormals(); return g;
+  };
+  const SCREW = screwGeo();
+  const roundedSlab = (W, H, R, depth, bevel) => {
+    const s = new THREE.Shape();
+    s.moveTo(-W/2, -H); s.lineTo(W/2, -H); s.lineTo(W/2, -R); s.quadraticCurveTo(W/2, 0, W/2 - R, 0);
+    s.lineTo(-W/2 + R, 0); s.quadraticCurveTo(-W/2, 0, -W/2, -R); s.closePath();
+    const g = new THREE.ExtrudeGeometry(s, {depth, bevelEnabled:true, bevelThickness:bevel, bevelSize:bevel, bevelSegments:10, curveSegments:28});
+    g.translate(0, -bevel, -depth / 2); return g;
+  };
+  const shadow = m => { m.castShadow = true; m.receiveShadow = true; return m; };
+
+  // A tooth: crown, neck and two roots (plus a hidden pulp for the focus tooth)
+  const makeTooth = (s, mat) => {
+    const g = new THREE.Group(), crown = shadow(new THREE.Mesh(CROWN, mat)); crown.position.y = .42;
+    const neck = shadow(new THREE.Mesh(new THREE.CylinderGeometry(.46, .38, .4, 40), mat)); neck.position.y = -.02;
+    const roots = [-1, 1].map(sd => { const r = shadow(new THREE.Mesh(new THREE.CylinderGeometry(.21, .06, 1.3, 24), mat)); r.position.set(sd * .2, -.82, 0); r.rotation.z = sd * .1; g.add(r); return r; });
+    g.add(crown, neck); g.scale.setScalar(s);
+    return {g, crown, neck, roots, mat, s};
+  };
+  const XS = [-2.9, -1.5, 0, 1.5, 2.9], SC = [.78, .92, 1, .92, .78];
+  const teeth = XS.map((x, i) => {
+    const t = makeTooth(SC[i], enamel()); t.x = x; rig.add(t.g);
+    // a soft gum collar hugging the neck of each tooth
+    t.cuff = shadow(new THREE.Mesh(new THREE.TorusGeometry(.44 * SC[i], .11 * SC[i], 14, 48), M.gum)); t.cuff.rotation.x = Math.PI / 2; t.cuff.scale.y = .9; t.cuff.position.set(x, .0, 0); rig.add(t.cuff);
+    return t;
+  });
+  const F = teeth[2];
+
+  const pulp = new THREE.Group();
+  const chamber = new THREE.Mesh(new THREE.SphereGeometry(.2, 24, 16), M.pulp); chamber.scale.set(1.2, .7, 1); chamber.position.y = .32;
+  const canals = [-1, 1].map(sd => { const c = new THREE.Mesh(new THREE.CylinderGeometry(.06, .025, 1.25, 12), M.pulp); c.position.set(sd * .2, -.72, 0); c.rotation.z = sd * .1; pulp.add(c); return c; });
+  pulp.add(chamber); F.g.add(pulp);
+  const gutta = [-1, 1].map(sd => { const c = new THREE.Mesh(new THREE.CylinderGeometry(.065, .03, 1.25, 12), M.gutta); c.position.set(sd * .2, -.72, 0); c.rotation.z = sd * .1; F.g.add(c); return c; });
+  const access = new THREE.Mesh(new THREE.CylinderGeometry(.1, .1, .5, 20), M.dark); access.position.y = .78; F.g.add(access);
+
+  const gum = shadow(new THREE.Mesh(roundedSlab(7.8, 1.9, .8, 1.7, .32), M.gum)); rig.add(gum);
+  const socket = new THREE.Mesh(new THREE.CircleGeometry(.4, 40), M.socket); socket.rotation.x = -Math.PI / 2; socket.position.y = .012; rig.add(socket);
+  const gauze = shadow(new THREE.Mesh(new THREE.CylinderGeometry(.2, .2, .8, 24), M.gauze)); gauze.geometry.rotateZ(Math.PI / 2); rig.add(gauze);
+
+  const plaque = [];
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 2, m = shadow(new THREE.Mesh(new THREE.SphereGeometry(.08 + Math.random() * .07, 12, 10), M.plaque));
+    m.position.set(Math.cos(a) * .47, .06 + Math.random() * .12, Math.sin(a) * .42); m.scale.y = .6; F.g.add(m); plaque.push(m);
+  }
+  const cavity = new THREE.Mesh(new THREE.SphereGeometry(.15, 24, 16), M.dark); cavity.scale.set(1.2, .5, 1); cavity.position.set(.08, .87, .06); F.g.add(cavity);
+  const filling = new THREE.Mesh(new THREE.SphereGeometry(.17, 24, 16), M.filling); filling.scale.set(1.2, .45, 1.05); filling.position.set(.08, .87, .06); F.g.add(filling);
+  const crack = new THREE.Mesh(new THREE.BoxGeometry(.02, .5, .02), M.dark); crack.position.set(.05, .55, .6); crack.rotation.z = .2; F.g.add(crack);
+
+  const at = (m, x, y, z) => { m.position.set(x, y, z); return m; };
+  const tool = (parts) => { const g = new THREE.Group(); parts.forEach(m => g.add(shadow(m))); rig.add(g); return g; };
+  const handle = () => new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 1.8, 16), M.metal);
+  const scaler = tool([at(handle(), 0, .9, 0), at(new THREE.Mesh(new THREE.TorusGeometry(.13, .022, 10, 24, Math.PI), M.metal), .13, 0, 0)]);
+  const polisher = tool([at(handle(), 0, .95, 0), new THREE.Mesh(new THREE.CylinderGeometry(.16, .12, .18, 24), M.rubber)]);
+  const drill = tool([at(handle(), 0, 1, 0), new THREE.Mesh(new THREE.SphereGeometry(.06, 16, 12), M.metal)]);
+  const cure = new THREE.Group();
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(.06, .5, 1.3, 32, 1, true), M.glow); beam.position.y = .65;
+  cure.add(beam, at(shadow(new THREE.Mesh(new THREE.CylinderGeometry(.12, .12, .9, 20), M.metal)), 0, 1.75, 0)); rig.add(cure);
+
+  const crownCopy = (mat, s = 1.04) => { const m = shadow(new THREE.Mesh(CROWN, mat)); m.scale.setScalar(s); rig.add(m); return m; };
+  const temp = crownCopy(M.temp), finalMat = enamel(), fin = crownCopy(finalMat, 1.02);
+  const implant = s => {
+    const g = new THREE.Group(), screw = shadow(new THREE.Mesh(SCREW, M.metal)); screw.position.y = -.7;
+    const abut = shadow(new THREE.Mesh(new THREE.CylinderGeometry(.15, .2, .32, 24), M.metal)); abut.position.y = .1;
+    g.add(screw, abut); g.scale.setScalar(s); rig.add(g); return g;
+  };
+  const imp = implant(1), impA = implant(.9), impB = implant(.9);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(.75, .012, 8, 96), M.holo); ring.rotation.x = Math.PI / 2; rig.add(ring);
+  const boneGlow = new THREE.Mesh(new THREE.TorusGeometry(.3, .05, 12, 48), M.glow); boneGlow.rotation.x = Math.PI / 2; boneGlow.position.y = -1; rig.add(boneGlow);
+  const scan = new THREE.Group(); scan.add(new THREE.Mesh(new THREE.BoxGeometry(.035, 1.5, 2.7), M.holo), new THREE.Mesh(new THREE.BoxGeometry(.5, 1.5, 2.7), M.glow)); rig.add(scan);
+
+  // Denture-style appliances: a pink base with crowns on top
+  const appliance = (W, xs) => {
+    const g = new THREE.Group(), mats = {base:M.base.clone(), tooth:enamel()};
+    const base = shadow(new THREE.Mesh(roundedSlab(W, .62, .3, 1.95, .3), mats.base)); base.position.y = .32; g.add(base);
+    xs.forEach(([x, s]) => { const c = shadow(new THREE.Mesh(CROWN, mats.tooth)); c.position.set(x, .72, 0); c.scale.setScalar(s); g.add(c); });
+    rig.add(g); return {g, mats};
+  };
+  const denture = appliance(7.7, XS.map((x, i) => [x, SC[i]]));
+  const partial = appliance(2.9, [[0, 1], [1.5, .92]]); partial.g.children[0].position.x = .75;
+  const clasps = [-1.5, 2.9].map(x => { const c = new THREE.Mesh(new THREE.TorusGeometry(.42, .03, 10, 40, Math.PI * 1.15), M.metal); c.position.set(x, .2, 0); c.rotation.x = Math.PI / 2; c.rotation.z = x < 0 ? -.4 : Math.PI + .4; partial.g.add(c); return c; });
+  const bridge = appliance(7.5, XS.map((x, i) => [x, SC[i]]));
+  const gels = teeth.map(t => { const m = new THREE.Mesh(CROWN, M.gel); m.scale.setScalar(t.s * 1.07); m.position.set(t.x, .42 * t.s, 0); rig.add(m); return m; });
+  const lamp = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.9, .9, 48, 1, true), M.glow); lamp.position.y = 1.5; rig.add(lamp);
+
+  // Holographic floor grid under the model
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), new THREE.ShaderMaterial({transparent:true, depthWrite:false, uniforms:{c:{value:brand}, t:{value:0}},
+    vertexShader:'varying vec2 u;void main(){u=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'uniform vec3 c;uniform float t;varying vec2 u;void main(){vec2 p=(u-.5)*30.;vec2 g=abs(fract(p)-.5);float l=1.-smoothstep(0.,.05,min(g.x,g.y));float r=length(u-.5)*2.;float f=smoothstep(.9,.1,r);float ring=smoothstep(.012,0.,abs(r-.42-.02*sin(t*.8)))+smoothstep(.006,0.,abs(r-.6));gl_FragColor=vec4(c,(l*.16+ring*.55)*f);}'}));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -2.3; rig.add(floor);
+  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), new THREE.ShadowMaterial({opacity:.12})); catcher.rotation.x = -Math.PI / 2; catcher.position.y = -2.28; catcher.receiveShadow = true; rig.add(catcher);
+
+  const camera = new THREE.PerspectiveCamera(30, 1, .1, 100);
+  const CAMS = {close:[0, 3.9, 7.2, .55], top:[0, 5.4, 6, .7], xray:[0, 1.6, 9.4, .3], wide:[0, 4.2, 9.2, .5], arch:[0, 5.6, 11.6, .55]};
+  const WHITE = new THREE.Color(0xf7f5ef), STAIN = new THREE.Color(0xd9c493), DENTIN = new THREE.Color(0xe7d3a1);
+  const setOp = (mat, o) => { mat.opacity = o; mat.transparent = o < .999; mat.depthWrite = o > .6; };
+
+  function reset() {
+    teeth.forEach(t => {
+      t.g.visible = true; t.g.position.set(t.x, 0, 0); t.g.rotation.set(0, 0, 0); t.g.scale.setScalar(t.s);
+      t.crown.geometry = CROWN; t.crown.scale.setScalar(1); t.mat.color.copy(WHITE); t.mat.emissive.setRGB(0, 0, 0); setOp(t.mat, 1);
+    });
+    setOp(M.gum, 1); [pulp, ...gutta, access, socket, gauze, cavity, filling, crack, scaler, polisher, drill, cure, temp, fin, imp, impA, impB, ring, boneGlow, scan, denture.g, partial.g, bridge.g, lamp, ...gels].forEach(o => o.visible = false);
+    plaque.forEach(m => m.visible = false); M.dark.color.set(0x3a2219); M.filling.emissiveIntensity = 0; M.pulp.color.set(0xd4566a); M.pulp.emissiveIntensity = .4;
+    [denture, partial, bridge].forEach(a => { setOp(a.mats.base, 1); setOp(a.mats.tooth, 1); a.mats.tooth.color.copy(WHITE); a.mats.base.color.set(0xea8592); });
+  }
+  const show = (o, on = true) => { o.visible = on; return o; };
+  const glowRing = (k, y = .2, r = 1) => { if (k <= .01) return; show(ring); ring.position.set(0, y, 0); ring.scale.setScalar(r * (1 + .15 * (1 - k))); M.holo.opacity = .9 * k; };
+  const capAt = (m, y) => { m.position.set(0, .42 + y, 0); };
+
+  const APPLY = {
+    cleaning(P, t) {
+      const clean = seg(P, 1.4, 2.7);
+      [F, teeth[1], teeth[3]].forEach(x => x.mat.color.copy(STAIN).lerp(WHITE, .45 + .55 * clean));
+      const pl = 1 - seg(P, .7, 1.7); plaque.forEach(m => { m.visible = pl > .02; m.scale.set(pl, pl * .6, pl); });
+      const sc = win(P, .55, 1.6); if (sc > 0) { show(scaler).position.set(.45 * Math.sin(t * 2.2), .12 + 1.2 * (1 - sc), .66); scaler.rotation.set(-.35, 0, .25); }
+      const po = win(P, 1.55, 2.6); if (po > 0) { show(polisher).position.set(.4 * Math.sin(t * 1.6), .48 + 1.2 * (1 - po), .72); polisher.rotation.set(-1.25, t * 10, 0); }
+      glowRing(seg(P, 2.6, 3), .2, 1);
+    },
+    filling(P, t) {
+      const prep = seg(P, 1.7, 2.4);
+      show(cavity, P < 3.3); M.dark.color.set(0x3a2219).lerp(new THREE.Color(0xc9a77a), prep); cavity.scale.set(1.2 + .25 * prep, .5, 1 + .2 * prep);
+      const fl = seg(P, 2.6, 3.4); if (fl > 0) { show(filling); filling.scale.set(1.25 * fl + .01, .45 * fl + .01, 1.1 * fl + .01); }
+      const d = win(P, 1.65, 2.5); if (d > 0) { show(drill).position.set(.08, 1.05 + 1 * (1 - d), .06); drill.rotation.set(0, t * 30, 0); }
+      const numb = win(P, .7, 1.4); if (numb > 0) glowRing(numb * (.6 + .4 * Math.sin(t * 4)), .02, .8);
+      const c = win(P, 3.55, 4.3, .3); if (c > 0) { show(cure).position.set(.08, .95, .06); M.glow.opacity = .55 * c; M.filling.emissiveIntensity = .5 * c; }
+      if (P > 4.3) glowRing(seg(P, 4.3, 4.8) * (1 - seg(P, 4.8, 5)), .2, 1);
+    },
+    crown(P, t) {
+      show(crack, P < 1.1);
+      const prep = seg(P, .6, 1.4); if (prep > .5) F.crown.geometry = CROWN_PREP;
+      F.crown.scale.set(1 - .3 * prep, 1 - .26 * prep, 1 - .3 * prep); F.mat.color.copy(WHITE).lerp(DENTIN, prep);
+      const tin = seg(P, 1.5, 2.2), tout = seg(P, 2.55, 3);
+      if (tin > 0 && tout < 1) { show(temp); capAt(temp, 1.8 * (1 - tin) + 1.6 * tout); setOp(M.temp, 1 - tout); }
+      const fin_ = seg(P, 2.9, 3.6); if (fin_ > 0) { show(fin); capAt(fin, 1.8 * (1 - fin_)); }
+      glowRing(seg(P, 3.6, 4) * (1 - .4 * seg(P, 4, 4.2)), .2, 1);
+    },
+    rootcanal(P, t) {
+      const xr = seg(P, 0, .55) * (1 - seg(P, 3.7, 4.2)); setOp(M.gum, 1 - .7 * xr); setOp(F.mat, 1 - .68 * xr); teeth.forEach(x => x !== F && setOp(x.mat, 1 - .4 * xr));
+      show(pulp, xr > .05); const inf = 1 - seg(P, 1.6, 2.4);
+      M.pulp.emissiveIntensity = .3 + .5 * inf * (.6 + .4 * Math.sin(t * 3)); pulp.scale.set(1, Math.max(.01, inf), 1); pulp.position.y = .32 * (1 - inf) * .2;
+      const ac = seg(P, .7, 1.3); if (ac > 0 && P < 3.4) { show(access); access.scale.set(ac, 1, ac); }
+      const fill = seg(P, 2.6, 3.3); gutta.forEach(g => { g.visible = fill > .01 && xr > .05; g.scale.set(1, fill, 1); g.position.y = -.72 - .62 * (1 - fill); });
+      const fin_ = seg(P, 3.4, 4); if (fin_ > 0) { show(fin); capAt(fin, 1.8 * (1 - fin_)); }
+      glowRing(seg(P, 3.9, 4), .2, 1);
+    },
+    extraction(P, t) {
+      F.mat.color.copy(STAIN); const w = win(P, .7, 1.4);
+      F.g.rotation.z = w * .07 * Math.sin(t * 10);
+      const up = seg(P, 1.3, 2.1); F.g.position.y = 2.8 * up; F.g.rotation.z += up * .5; setOp(F.mat, 1 - seg(P, 1.8, 2.1)); F.g.visible = up < .99;
+      if (P > 1.4) { show(socket); const heal = 1 - seg(P, 3.5, 4); socket.scale.setScalar(Math.max(.01, heal)); socket.visible = heal > .02; }
+      const gz = win(P, 2.75, 3.45, .35); if (gz > 0) { show(gauze).position.set(0, .2 + 1.6 * (1 - gz), 0); gauze.rotation.set(.15, .5, 0); }
+      glowRing(seg(P, 3.8, 4), .02, .9);
+    },
+    implant(P, t) {
+      F.mat.color.copy(STAIN); show(crack, P < .6);
+      const up = seg(P, .6, 1.4); F.g.position.y = 2.6 * up; setOp(F.mat, 1 - seg(P, 1.1, 1.4)); F.g.visible = up < .99;
+      const xr = seg(P, 1.5, 1.9) * (1 - seg(P, 4.4, 4.9)); setOp(M.gum, 1 - .65 * xr);
+      if (P > 1.2) show(socket, P < 2.2);
+      const s = seg(P, 1.7, 2.5); if (s > 0) { show(imp); imp.position.set(0, 2.4 * (1 - s), 0); imp.rotation.y = s * 14; }
+      const tin = seg(P, 2.6, 3.2), tout = seg(P, 3.7, 4.1);
+      if (tin > 0 && tout < 1) { show(temp); capAt(temp, 1.8 * (1 - tin) + 1.5 * tout); setOp(M.temp, 1 - tout); }
+      const bone = win(P, 3.6, 4.4); if (bone > 0) { show(boneGlow); M.glow.opacity = .7 * bone * (.6 + .4 * Math.sin(t * 3)); boneGlow.scale.setScalar(1 + .3 * Math.sin(t * 2)); }
+      const fin_ = seg(P, 4.4, 5); if (fin_ > 0) { show(fin); capAt(fin, 1.8 * (1 - fin_)); }
+      glowRing(seg(P, 4.9, 5), .2, 1);
+    },
+    denture(P, t) {
+      teeth.forEach(x => x.g.visible = false);
+      const sc = win(P, .65, 1.5); if (sc > 0) { show(scan); scan.position.set(-4 + 8 * clamp01((P - .55) / 1.05), .1, 0); M.holo.opacity = .9 * sc; M.glow.opacity = .18 * sc; }
+      const dn = seg(P, 1.6, 2.3); if (dn > 0) { show(denture.g); denture.g.position.y = 2.2 * (1 - dn) + .08 * (1 - seg(P, 3.5, 4)) * Math.max(0, Math.sin(t * 6)) * win(P, 3.6, 3.9); }
+      const real = seg(P, 2.5, 3.2); setOp(denture.mats.base, .55 + .45 * real); setOp(denture.mats.tooth, .55 + .45 * real);
+      denture.mats.base.color.set(0xd9a59a).lerp(new THREE.Color(0xea8592), real);
+      if (P > 3.7) { show(ring); ring.position.set(0, .3, 0); ring.scale.setScalar(4.3 * (1 + .1 * (1 - seg(P, 3.7, 4)))); M.holo.opacity = .7 * seg(P, 3.7, 4); }
+    },
+    partial(P, t) {
+      F.g.visible = false; teeth[3].g.visible = false;
+      const d = seg(P, .6, 1.3); if (d > 0) { show(partial.g); const seat = seg(P, 1.7, 2.5); partial.g.position.y = 1.6 * (1 - seat); setOp(partial.mats.base, .3 + .7 * Math.max(seat, seg(P, 2.6, 3))); setOp(partial.mats.tooth, .3 + .7 * Math.max(seat, seg(P, 2.6, 3))); }
+      clasps.forEach(c => c.scale.setScalar(1 + .06 * win(P, 1.8, 2.6) * Math.sin(t * 5)));
+      glowRing(seg(P, 2.7, 3), .25, 1.8);
+    },
+    fixed(P, t) {
+      teeth.forEach(x => x.g.visible = false);
+      const xr = seg(P, .5, .9) * (1 - seg(P, 1.9, 2.4)); setOp(M.gum, 1 - .65 * xr);
+      [[impA, -1.5], [impB, 1.5]].forEach(([g, x]) => { const s = seg(P, .6, 1.4); if (s > 0) { show(g); g.position.set(x, 2.4 * (1 - s), 0); g.rotation.y = s * 14; } });
+      const b = seg(P, 1.6, 2.4); if (b > 0) { show(bridge.g); bridge.g.position.y = 2 * (1 - b); }
+      if (P > 2.6) { show(ring); ring.position.set(0, .3, 0); ring.scale.setScalar(4.3); M.holo.opacity = .7 * seg(P, 2.6, 3); }
+    },
+    whitening(P, t) {
+      const w = seg(P, 1.8, 2.9); teeth.forEach(x => x.mat.color.copy(STAIN).lerp(WHITE, w));
+      const g = seg(P, .6, 1.3) * (1 - seg(P, 2.5, 2.9)); gels.forEach(m => { m.visible = g > .02; }); setOp(M.gel, .45 * g); M.gel.opacity = .45 * g;
+      const l = win(P, 1.7, 2.6); if (l > 0) { show(lamp); M.glow.opacity = .07 * l * (.8 + .2 * Math.sin(t * 4)); teeth.forEach(x => x.mat.emissive && x.mat.emissive.setRGB(.06 * l, .12 * l, .2 * l)); }
+      if (P > 2.6) { show(ring); ring.position.set(0, .3, 0); ring.scale.setScalar(4.3); M.holo.opacity = .7 * seg(P, 2.6, 3); }
+    },
+  };
+
+  const state = {proc:null, P:0, target:0, yaw:0, yawV:0, dragging:false, running:false, last:0};
+  function frame(now) {
+    if (!canvas.isConnected) { state.running = false; return; }
+    requestAnimationFrame(frame);
+    const t = now / 1000, w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+    state.P += (state.target - state.P) * (REDUCE ? 1 : .09);
+    if (!state.dragging) { state.yawV *= .92; state.yaw += state.yawV; state.yaw *= .985; }
+    const c = CAMS[state.proc.cam], sway = REDUCE ? 0 : Math.sin(t * .35) * .35;
+    camera.position.set(c[0] + sway, c[1], c[2]); camera.lookAt(0, c[3], 0);
+    rig.rotation.y = state.yaw + (REDUCE ? 0 : Math.sin(t * .25) * .06);
+    floor.material.uniforms.t.value = t;
+    reset(); APPLY[state.proc.id](state.P, t); teeth.forEach(x => x.cuff.visible = x.g.visible);
+    renderer.render(scene, camera);
+    state.onFrame?.(state.P);
+  }
+  return {
+    canvas, state,
+    start(proc) { state.proc = proc; state.P = state.target = 0; state.yaw = 0; if (!state.running) { state.running = true; requestAnimationFrame(frame); } },
+    drag(dx) { state.yawV = 0; state.yaw = Math.max(-1.1, Math.min(1.1, state.yaw + dx * .008)); },
+    fling(v) { state.yawV = v * .008; },
+  };
+}
+
+const proc3dGrid = () => `<div class="card see3d-hero"><span class="eyebrow">See it happen</span><b>Watch your procedure, step by step, in 3D</b><span class="small muted">Pick one and scroll slowly. The tooth changes as you read.</span></div>
+  <div class="svc-grid">${PROCS.map(p => `<button class="svc" data-go="proc" data-arg="${p.id}"><span class="art" style="background-image:url(img/thumb-${p.thumb}.jpg)"><span class="pill3d">3D</span></span><span class="t"><b>${p.name}</b><span>${p.steps.length} steps</span></span></button>`).join('')}</div>`;
+
+ROUTES.proc = id => {
+  const p = PROCS.find(x => x.id === id), n = p.steps.length;
+  return `
+  <div class="proc-stage" id="stage">
+    <div class="hud" aria-hidden="true"><i class="br tl"></i><i class="br tr"></i><i class="br bl"></i><i class="br br2"></i></div>
+    <button class="iconbtn proc-back" data-back aria-label="Back">${icon('back')}</button>
+    <div class="hud-title"><span class="eyebrow">3D procedure</span><b>${p.name}</b></div>
+    <div class="hud-step"><b id="hudNum">01</b><span>/ ${String(n).padStart(2, '0')}</span></div>
+    <div class="hud-foot"><span class="hud-label" id="hudLabel">${p.steps[0][0]}</span><div class="hud-bar"><i id="hudFill"></i>${p.steps.map((_, i) => `<b style="left:${n > 1 ? i / (n - 1) * 100 : 0}%"></b>`).join('')}</div></div>
+    <div class="hud-hint" id="hudHint">Scroll slowly ${icon('next', 'ico sm')}</div>
+    <p class="proc-fallback" hidden>3D needs a newer browser. You can still read each step below.</p>
+  </div>
+  <div class="proc-steps" id="steps">
+    ${p.steps.map(([t, d], i) => `<section class="pstep${i ? '' : ' on'}" data-i="${i}"><span class="pnum">${String(i + 1).padStart(2, '0')}</span><h3>${t}</h3><p>${d}</p></section>`).join('')}
+    <section class="pstep-end card">
+      <span class="eyebrow">Questions about ${p.name.toLowerCase()}?</span>
+      <div class="chips"><button class="chip act" data-go="book">${icon('cal', 'ico sm')} Book a visit</button><button class="chip act" data-go="service" data-arg="${p.lesson}">${icon('book', 'ico sm')} Read the lesson</button><button class="chip act" data-go="ask" data-arg="${p.lesson}">${icon('chat', 'ico sm')} Ask about it</button></div>
+    </section>
+    <div class="proc-spacer"></div>
+  </div>`;
+};
+ROUTES.proc.tab = 'learn'; ROUTES.proc.noFab = true; ROUTES.proc.cls = 'procview';
+ROUTES.proc.after = (v, id) => {
+  const p = PROCS.find(x => x.id === id), n = p.steps.length, stage = $('#stage', v);
+  const H = v.clientHeight, stageH = Math.round(H * .5), stepH = Math.round(H * .46);
+  stage.style.height = stageH + 'px';
+  v.querySelectorAll('.pstep').forEach(s => s.style.minHeight = stepH + 'px');
+  $('.proc-spacer', v).style.height = Math.max(0, H - stageH - stepH) + 'px';
+  const num = $('#hudNum', v), label = $('#hudLabel', v), fill = $('#hudFill', v), hint = $('#hudHint', v), secs = [...v.querySelectorAll('.pstep')];
+  let shown = 0;
+  const showStep = P => {
+    const i = Math.min(n - 1, Math.round(P));
+    fill.style.width = (n > 1 ? P / (n - 1) * 100 : 100) + '%';
+    if (i !== shown) { shown = i; num.textContent = String(i + 1).padStart(2, '0'); label.textContent = p.steps[i][0]; secs.forEach((s, k) => s.classList.toggle('on', k === i)); try { navigator.vibrate?.(4); } catch {} }
+  };
+  const scrollP = () => Math.max(0, Math.min(n - 1, v.scrollTop / stepH));
+  let has3D = !!window.THREE;
+  if (has3D) { try { T3 = T3 || init3D(); } catch (e) { console.error('3D unavailable:', e); has3D = false; } }
+  if (!has3D) $('.proc-fallback', v).hidden = false;
+  else { stage.prepend(T3.canvas); T3.start(p); T3.state.onFrame = showStep; }
+  v.addEventListener('scroll', () => {
+    hint.classList.toggle('gone', v.scrollTop > 20);
+    if (has3D) T3.state.target = scrollP(); else showStep(scrollP());
+  }, {passive:true});
+  if (!has3D) return;
+  // drag sideways on the model to turn it
+  let lx = null, lt = 0, vx = 0;
+  T3.canvas.onpointerdown = e => { lx = e.clientX; lt = e.timeStamp; T3.state.dragging = true; T3.canvas.setPointerCapture(e.pointerId); };
+  T3.canvas.onpointermove = e => { if (lx === null) return; const dx = e.clientX - lx; vx = dx / Math.max(1, e.timeStamp - lt) * 16; lx = e.clientX; lt = e.timeStamp; T3.drag(dx); };
+  T3.canvas.onpointerup = T3.canvas.onpointercancel = () => { if (lx === null) return; lx = null; T3.state.dragging = false; T3.fling(vx); };
 };
 
 /* ---------- Ask: built-in assistant ----------
@@ -1988,7 +2574,10 @@ go(S.user ? 'home' : 'welcome', null, {tab:true});
     setTimeout(() => { booting = false; updateFab(); }, REDUCE ? 0 : 700);
   };
   splash.addEventListener('click', finish);           // tap to skip
-  setTimeout(finish, REDUCE ? 500 : 3000);
+  const pct = $('#spPct'), t0 = performance.now();
+  const count = now => { if (done) return; const k = Math.min(1, (now - t0 - 450) / 1000); pct.textContent = String(Math.max(0, Math.round(easeIO(Math.max(0, k)) * 100))).padStart(3, '0'); if (k < 1) requestAnimationFrame(count); };
+  requestAnimationFrame(count);
+  setTimeout(finish, REDUCE ? 500 : 3700);
 })();
 })();
 </script>
