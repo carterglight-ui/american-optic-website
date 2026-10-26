@@ -6,7 +6,7 @@ date: 2026-10-26
 tags: Behind the Scenes, Dental Video Production, Jacksonville Video Production, Commercial Video
 ---
 
-There's something so frustrating about trying to make a dental office look cinematic. Don't get me wrong at all. Dental practices are absolutely excellent at being dental practices. They're clean, they're bright, they're well organised and they're all designed to make you feel at ease.
+There's something so frustrating about trying to make a dental office look cinematic. Don't get me wrong at all. Dental practices are absolutely excellent at being dental practices. They're clean, they're bright, they're well organized and they're all designed to make you feel at ease.
 
 The problem is that almost none of those attributes really translate into anything particularly cinematic. White walls, white ceilings, overhead lighting, reflective surfaces. Rooms barely large enough to fit a dentist, a patient and a camera (let alone a proper lighting rig). And that's before you even get into the real problem: it's a running business, not a film set.
 
@@ -14,7 +14,7 @@ I've spent a fair bit of time doing video for dental practices all over Jacksonv
 
 ## The Problem With Lighting a Room That's Already Bright
 
-One of the biggest myths about professional video production is that more light equals a better image. In reality the first thing I often want to do when walking into a room is to switch off half the lights. Dental surgeries generally have very even overhead lighting. That's ideal for clinical work really, but not necessarily so for creating any sense of depth, contrast or separation between the subject and the background. When everything is equally bright everything starts to look flat.
+One of the biggest myths about professional video production is that more light equals a better image. In reality the first thing I often want to do when walking into a room is to switch off half the lights. Dental offices generally have very even overhead lighting. That's ideal for clinical work really, but not necessarily so for creating any sense of depth, contrast or separation between the subject and the background. When everything is equally bright everything starts to look flat.
 
 For a contemporary setup imagine filming a dentist talking directly to the camera in a small treatment room. The room has bright overhead lighting, a big dental chair, cabinetry on pretty much every wall and possibly a window which is either absolutely fantastic or completely killing the exposure. You could technically just put a camera on a tripod, hit record and call it a day. But there's a difference between recording someone talking and actually producing an image.
 
@@ -42,11 +42,11 @@ Not every business requires a huge commercial production. In fact, most don't. B
 
 Professional video production doesn't necessarily mean making everything look expensive. It's about making the business look like itself, at its very best.
 
-For dental practices that's probably about creating a clinical environment that feels welcoming rather than intimidating. It could be about helping a nervous patient feel at ease when they're giving a testimonial. It could be about producing a short advert that conveys a sense of professionalism without being at all corporate. Those are creative problems rather than just technical ones. And they're the kind of problems I like to solve.
+For dental practices that's probably about creating a clinical environment that feels welcoming rather than intimidating. It could be about helping a nervous patient feel at ease when they're giving a testimonial. It could be about producing a short ad that conveys a sense of professionalism without being at all corporate. Those are creative problems rather than just technical ones. And they're the kind of problems I like to solve.
 
 ## What I'd Do Differently Next Time
 
-Something I've come to realise is that every production teaches you something even if it does seem to be a bit of a repeat. You could film in the same building, with the same gear, with the same general aims and still the circumstances would be entirely different. Different people. Different rooms. Different lighting. Different time constraints.
+Something I've come to realize is that every production teaches you something even if it does seem to be a bit of a repeat. You could film in the same building, with the same gear, with the same general aims and still the circumstances would be entirely different. Different people. Different rooms. Different lighting. Different time constraints.
 
 The aim is to keep perfecting the process. Spend less time fixing things. Make better decisions earlier on. Prevent the problems before they occur. And hopefully on occasion you walk away with a shot that's better than the one you originally envisaged.
 
@@ -54,6 +54,6 @@ That's one of the reasons I've been keen to start recording these experiences. N
 
 ## About American Optic Media
 
-I'm the filmmaker behind American Optic Media (a Jacksonville, FL based creative production company) and we specialise in commercial video production, professional video editing, photography and marketing content for businesses. From health and care adverts, through to motor car adverts and corporate brand videos, I work with businesses to produce visual content that is both creative and practical.
+I'm the filmmaker behind American Optic Media (a Jacksonville, FL based creative production company) and we specialize in commercial video production, professional video editing, photography and marketing content for businesses. From health care ads, through to car ads and corporate brand videos, I work with businesses to produce visual content that is both creative and practical.
 
 If you're after professional video production in Jacksonville then [check out my work](/gallery.html) or [get in touch](/quote.html) to talk about your next project.
