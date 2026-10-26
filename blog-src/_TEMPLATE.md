@@ -1,5 +1,6 @@
 ---
 title: How Much Does a Car Dealership Video Cost in Jacksonville?
+seotitle: Car Dealership Video Cost in Jacksonville
 description: One or two sentences (about 150 characters) shown in Google search results. Include the main keyword.
 date: 2026-11-02
 tags: Dealership Video, Jacksonville Video Production

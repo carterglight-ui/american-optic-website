@@ -263,7 +263,7 @@ function loadPosts() {
     const words = plainText(html).split(" ").filter(Boolean).length;
     const description = (meta.description || plainText(html).slice(0, 155)).trim();
     posts.push({
-      file: f, slug, title, date, updated: meta.updated || date, description,
+      file: f, slug, title, seoTitle: meta.seotitle || "", date, updated: meta.updated || date, description,
       image: meta.image || "", imageAlt: meta.imagealt || title,
       tags: (meta.tags || "").split(",").map((t) => t.trim()).filter(Boolean),
       author: meta.author || DEFAULT_AUTHOR, html, minutes: Math.max(1, Math.round(words / 200)),
@@ -328,7 +328,7 @@ ${CTA}
 function buildPost(p, posts) {
   const canonical = `${SITE}/blog/${p.slug}.html`;
   const image = p.image || DEFAULT_IMAGE;
-  const title = `${p.title} | ${NAME}`;
+  const title = `${p.seoTitle || p.title} | ${NAME}`;
   const others = posts.filter((x) => x.slug !== p.slug).slice(0, 3);
   const jsonld = [
     {
