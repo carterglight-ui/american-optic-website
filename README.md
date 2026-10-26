@@ -181,6 +181,31 @@ To swap in a different video later: compress a new cut the same way
 (`ffmpeg` command above, replacing the input file) and overwrite
 `assets/pitch-reel.mp4`, or point the `<source src="...">` at a new filename.
 
+## 5b. The blog
+
+Posts are plain Markdown files in `blog-src/`. A small script turns them into
+real, fast HTML pages (best for Google) and rebuilds the blog index, the
+sitemap (`sitemap.xml`) and the RSS feed (`rss.xml`). No dependencies, just Node.
+
+**Adding a post**
+
+1. Copy `blog-src/_TEMPLATE.md` to `blog-src/YYYY-MM-DD-short-title.md`
+   (files starting with `_` are ignored).
+2. Fill in the top block (title, description, date, tags, optional cover image)
+   and write the post under it. Set `draft: true` to hide it.
+3. Put photos in `assets/blog/<post-name>/` (JPG, about 1600px wide) and
+   reference them as `![Caption](/assets/blog/<post-name>/photo.jpg)`.
+4. Run `node scripts/build-blog.js`, check it at
+   `http://localhost:8123/blog/`, then commit and push.
+
+Every post gets its own title tag, meta description, canonical URL, link
+preview, Article + breadcrumb structured data, related posts, and a quote
+button at the bottom. Generated files (`blog/`, `sitemap.xml`, `rss.xml`) are
+committed on purpose so the host needs no build step.
+
+After the first post is live, submit `https://americanopticmedia.com/sitemap.xml`
+in Google Search Console so Google finds new posts quickly.
+
 ## 6. Accessibility notes
 
 Built to WCAG AA: visible focus rings, real form labels, keyboard-operable

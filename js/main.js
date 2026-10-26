@@ -26,7 +26,7 @@
   }
 
   function bookHref() {
-    return CFG.calendarUrl ? CFG.calendarUrl : "quote.html";
+    return CFG.calendarUrl ? CFG.calendarUrl : "/quote.html";
   }
 
   document.querySelectorAll("[data-email-link]").forEach(function (a) {
